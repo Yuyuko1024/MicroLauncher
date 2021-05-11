@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">MicroLauncher</string>
+    <string name="menu">Menu</string>
+    <string name="contact">Contact</string>
+    <string name="power_btn">Power</string>
+    <string name="default_date">Aug 10th, 1919</string>
+    <string name="vol_media_title">Media / Game Volume</string>
+    <string name="vol_ring_title">Ringtone Volume</string>
+    <string name="vol_alarm_title">Alarm Volume</string>
+    <string name="volume_changer">Volume Changer</string>
+    <string name="default_lunar">" "</string>
+    <string name="menu_app">Application</string>
+    <string name="menu_set_wallpaper">Set Wallpaper</string>
+    <string name="menu_settings_system">System Settings</string>
+    <string name="menu_start">How to use?</string>
+    <string name="menu_volume_dash">Volume Changer</string>
+    <string name="menu_settings_launcher">Launcher Settings</string>
+    <string name="menu_about_me">About</string>
+    <string name="menu_app_sum">App List</string>
+    <string name="menu_set_wallpaper_sum">Beautify your device</string>
+    <string name="menu_settings_system_sum">Setup your device</string>
+    <string name="menu_start_sum">Let me know !</string>
+    <string name="menu_volume_sum">Change device volume</string>
+    <string name="menu_settings_launcher_sum">Developing...XD</string>
+    <string name="menu_about_sum">About this launcher</string>
+    <string name="menu_title">Menu</string>
+</resources>

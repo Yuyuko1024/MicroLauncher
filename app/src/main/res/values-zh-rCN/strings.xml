@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">微  型  启  动  器</string>
+    <string name="menu">功能表</string>
+    <string name="contact">电话本</string>
+    <string name="power_btn">电源</string>
+    <string name="default_date">1919年8月10日</string>
+    <string name="vol_media_title">媒体 / 游戏 音量</string>
+    <string name="vol_ring_title">铃声音量</string>
+    <string name="vol_alarm_title">闹钟音量</string>
+    <string name="volume_changer">音量面板</string>
+    <string name="default_lunar">农历  正月初一</string>
+    <string name="menu_app">应用程序</string>
+    <string name="menu_set_wallpaper">设置壁纸</string>
+    <string name="menu_settings_system">系统设置</string>
+    <string name="menu_start">如何使用该桌面？</string>
+    <string name="menu_volume_dash">音量面板</string>
+    <string name="menu_settings_launcher">桌面设置</string>
+    <string name="menu_about_me">关于</string>
+    <string name="menu_app_sum">打开应用程序列表</string>
+    <string name="menu_set_wallpaper_sum">美化设备</string>
+    <string name="menu_settings_system_sum">打开系统设置</string>
+    <string name="menu_start_sum">让我看看！</string>
+    <string name="menu_volume_sum">修改设备音量</string>
+    <string name="menu_settings_launcher_sum">开发中...qwq</string>
+    <string name="menu_about_sum">关于这个桌面</string>
+    <string name="menu_title">功能表</string>
+</resources>
