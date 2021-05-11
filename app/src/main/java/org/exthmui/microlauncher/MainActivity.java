@@ -129,6 +129,11 @@ public class MainActivity extends AppCompatActivity {
                Intent menu_it = new Intent(MainActivity.this, MenuActivity.class);
                startActivity(menu_it);
                return true;}
+           //突然想起来得把音量控制面板绑定到#键上
+           else if (keyCode == KeyEvent.KEYCODE_POUND ){
+               Intent vol_it = new Intent(MainActivity.this, VolumeChanger.class);
+               startActivity(vol_it);
+               return true;}
            //暂时先不用这里
             /*else if (keyCode == KeyEvent.KEYCODE_1 ){
                 Intent vol_it = new Intent(MainActivity.this, VolumeChanger.class);
