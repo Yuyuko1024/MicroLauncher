@@ -88,6 +88,8 @@ public class MenuActivity extends AppCompatActivity {
             switch (Math.toIntExact(id)){
                 case 0:
                     //TODO:App List
+                    Intent app_it= new Intent(MenuActivity.this,AppListActivity.class);
+                    startActivity(app_it);
                     break;
                 case 1:
                     Toast.makeText(MenuActivity.this,R.string.choose_wallpaper,Toast.LENGTH_LONG).show();

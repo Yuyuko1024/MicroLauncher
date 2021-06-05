@@ -3,6 +3,8 @@
     package="org.exthmui.microlauncher">
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.EXPAND_STATUS_BAR"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -24,6 +26,16 @@
         <activity android:name=".MenuActivity"
             android:label="@string/menu_title"
             android:theme="@style/Theme.MicroLauncher"/>
+        <activity android:name=".AppListActivity"
+            android:label="@string/app_list_title"
+            android:theme="@style/Theme.MicroLauncher"/>
+        <service
+            android:name=".NotiGeter"
+            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
+            <intent-filter>
+                <action android:name="android.service.notification.NotificationListenerService" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_app_manage"
+        android:title="@string/app_menu_manage"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/menu_about_phone"
+        android:title="@string/menu_about_phone"
+        app:showAsAction="never"/>
+</menu>

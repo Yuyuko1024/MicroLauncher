@@ -25,4 +25,16 @@
     <string name="menu_about_sum">About this launcher</string>
     <string name="menu_title">Menu</string>
     <string name="choose_wallpaper">Choose a picture you like as the wallpaper of your device!</string>
+    <string name="back">Back</string>
+    <string name="default_volume" translatable="false">0</string>
+    <string name="singer">Not playing</string>
+    <string name="title">Not playing</string>
+    <string name="default_app_title">App Title</string>
+    <string name="app_list_title">App List</string>
+    <string name="app_menu_string">Menu</string>
+    <string name="app_menu_open">Open</string>
+    <string name="app_menu_uninstall">Uninstall</string>
+    <string name="app_menu_info">App Info</string>
+    <string name="app_menu_manage">App Manage</string>
+    <string name="menu_about_phone">About phone</string>
 </resources>

@@ -1,8 +1,16 @@
 package org.exthmui.microlauncher;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.media.MediaMetadata;
+import android.media.session.MediaController;
+import android.media.session.MediaSessionManager;
+import android.media.session.PlaybackState;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -11,29 +19,85 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private final static String TAG = "ML_MainActivity";
     private final static String dateFormat = "yyyy年MM月dd日";
     private String week;
     private Calendar c = Calendar.getInstance();
+    private Context mContext;
+    private MediaSessionManager mMediaSessionManager;
+    private MediaController mMediaController;
     Class serviceManagerClass;
     Button menu,contact;
-    TextView dateView,lunar;
+    ImageButton prev,play,next;
+    TextView dateView,lunar,title,singer;;
+    ImageView cover;
     Intent it = new Intent();
+
+    private MediaController.Callback mMediaCallback = new MediaController.Callback() {
+        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+        @Override
+        public void onPlaybackStateChanged(@Nullable PlaybackState state) {
+            super.onPlaybackStateChanged(state);
+            if (state != null) updatePlayPauseStatus(state.getState());
+        }
+
+        @Override
+        public void onSessionDestroyed() {
+            super.onSessionDestroyed();
+        }
+
+        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+        @Override
+        public void onMetadataChanged(@Nullable MediaMetadata metadata) {
+            updateMetaData(metadata);
+        }
+    };
+
+    private MediaSessionManager.OnActiveSessionsChangedListener onActiveSessionsChangedListener = new MediaSessionManager.OnActiveSessionsChangedListener() {
+
+        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+        @Override
+        public void onActiveSessionsChanged(@Nullable List<MediaController> controllers) {
+            if (mMediaController != null) mMediaController.unregisterCallback(mMediaCallback);
+            if (controllers == null) return;
+            for (MediaController controller : controllers) {
+                mMediaController = controller;
+                if (getMediaControllerPlaybackState(controller) == PlaybackState.STATE_PLAYING) {
+                    break;
+                }
+            }
+            if (mMediaController != null) {
+                mMediaController.registerCallback(mMediaCallback);
+                mMediaCallback.onMetadataChanged(mMediaController.getMetadata());
+                mMediaCallback.onPlaybackStateChanged(mMediaController.getPlaybackState());
+            }
+        }
+    };
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mMediaSessionManager = (MediaSessionManager) getSystemService(Context.MEDIA_SESSION_SERVICE);
         if (Build.VERSION.SDK_INT>=21)
         {
             View decorView = getWindow().getDecorView();
@@ -49,9 +113,27 @@ public class MainActivity extends AppCompatActivity {
         lunar.setText(getDayLunar());
         menu=findViewById(R.id.menu);
         contact=findViewById(R.id.contact);
+        title=findViewById(R.id.title);
+        singer=findViewById(R.id.singer);
+        prev=findViewById(R.id.prev);
+        play=findViewById(R.id.play);
+        next=findViewById(R.id.next);
+        cover=findViewById(R.id.cover);
+        prev.setOnClickListener(new Click());
+        play.setOnClickListener(new Click());
+        next.setOnClickListener(new Click());
+        bindMediaListeners();
         contact.setOnClickListener(new mClick());
         menu.setOnClickListener(new mClick());
     }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void bindMediaListeners() {
+        ComponentName listener = new ComponentName(this, NotiGeter.class);
+        mMediaSessionManager.addOnActiveSessionsChangedListener(onActiveSessionsChangedListener, listener);
+        onActiveSessionsChangedListener.onActiveSessionsChanged(mMediaSessionManager.getActiveSessions(listener));
+    }
+
 
     private void printDayOfWeek() {
         switch (c.get(Calendar.DAY_OF_WEEK)) {
@@ -158,22 +240,86 @@ public class MainActivity extends AppCompatActivity {
                    Method clearAll = statusBarClass.getMethod("toggleRecentApps");
                    clearAll.setAccessible(true);
                    clearAll.invoke(statusBarObject);
-               } catch (ClassNotFoundException e) {
-                   e.printStackTrace();
-               } catch (NoSuchMethodException e) {
-                   e.printStackTrace();
-               } catch (IllegalArgumentException e) {
-                   e.printStackTrace();
-               } catch (IllegalAccessException e) {
-                   e.printStackTrace();
-               } catch (InvocationTargetException e) {
-                   e.printStackTrace();
-               } catch (RemoteException e) {
+               } catch (ClassNotFoundException | IllegalArgumentException | NoSuchMethodException | IllegalAccessException | InvocationTargetException | RemoteException e) {
                    e.printStackTrace();
                }
                return true;}
         return false;
     }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void updateMetaData(MediaMetadata mediaMetadata) {
+        if (mediaMetadata == null) return;
+        title.setText(mediaMetadata.getText(MediaMetadata.METADATA_KEY_TITLE));
+        singer.setText(mediaMetadata.getString(MediaMetadata.METADATA_KEY_ARTIST));
+        // Try to get album cover
+        if (!(setAlbumImgFromBitmap(mediaMetadata.getBitmap(MediaMetadata.METADATA_KEY_ART)) ||
+                setAlbumImgFromBitmap(mediaMetadata.getBitmap(MediaMetadata.METADATA_KEY_ALBUM_ART)) ||
+                setAlbumImgFromUri(mediaMetadata.getString(MediaMetadata.METADATA_KEY_ART_URI)) ||
+                setAlbumImgFromUri(mediaMetadata.getString(MediaMetadata.METADATA_KEY_ALBUM_ART_URI)))) {
+            cover.setImageResource(R.drawable.default_album_cover);
+        }
+    }
+
+    private boolean setAlbumImgFromBitmap(Bitmap bitmap) {
+        if (bitmap == null) return false;
+        cover.setImageBitmap(bitmap);
+        return true;
+    }
+
+    private boolean setAlbumImgFromUri(String uri) {
+        try {
+            Uri albumUri = Uri.parse(uri);
+            InputStream is = mContext.getContentResolver().openInputStream(albumUri);
+            if (is != null) {
+                cover.setImageBitmap(BitmapFactory.decodeStream(is));
+                is.close();
+            }
+        } catch (NullPointerException | IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    private void updatePlayPauseStatus(int state) {
+        if (state == PlaybackState.STATE_PLAYING) {
+            play.setImageResource(R.drawable.ic_media_pause);
+        } else {
+            play.setImageResource(R.drawable.ic_media_play);
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private int getMediaControllerPlaybackState(MediaController controller) {
+        if (controller != null) {
+            final PlaybackState playbackState = controller.getPlaybackState();
+            if (playbackState != null) {
+                return playbackState.getState();
+            }
+        }
+        return PlaybackState.STATE_NONE;
+    }
+
+    class Click implements View.OnClickListener{
+
+        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+        @Override
+        public void onClick(View v) {
+            if (v == prev) {
+                mMediaController.getTransportControls().skipToPrevious();
+            } else if (v == next) {
+                mMediaController.getTransportControls().skipToNext();
+            } else if (v == play) {
+                if (getMediaControllerPlaybackState(mMediaController) == PlaybackState.STATE_PLAYING) {
+                    mMediaController.getTransportControls().pause();
+                } else {
+                    mMediaController.getTransportControls().play();
+                }
+            }
+        }
+    }
+
     private static void doInStatusBar(Context mContext, String methodName) {
         try {
             Object service = mContext.getSystemService("statusbar");
