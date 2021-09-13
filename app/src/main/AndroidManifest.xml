@@ -17,7 +17,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MicroLauncher"
         tools:targetApi="lollipop">
-        <activity android:name=".MainActivity" android:theme="@style/TranslucentActivity">
+        <activity android:name=".activity.MainActivity" android:theme="@style/TranslucentActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.HOME" />
@@ -25,15 +25,15 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".VolumeChanger"
+        <activity android:name=".activity.VolumeChanger"
             android:label="@string/volume_changer"
             android:launchMode="singleInstance"
             android:theme="@style/Theme.MicroLauncher"/>
-        <activity android:name=".MenuActivity"
+        <activity android:name=".activity.MenuActivity"
             android:launchMode="singleInstance"
             android:label="@string/menu_title"
             android:theme="@style/Theme.MicroLauncher"/>
-        <activity android:name=".AppListActivity"
+        <activity android:name=".activity.AppListActivity"
             android:label="@string/app_list_title"
             android:theme="@style/Theme.MicroLauncher"/>
     </application>

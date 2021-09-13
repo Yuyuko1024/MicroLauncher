@@ -1,4 +1,4 @@
-package org.exthmui.microlauncher;
+package org.exthmui.microlauncher.activity;
 
 import android.content.Intent;
 import android.os.Build;
@@ -14,6 +14,8 @@ import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+
+import org.exthmui.microlauncher.R;
 
 public class MenuActivity extends AppCompatActivity {
     private ListView menu_view;
@@ -88,7 +90,7 @@ public class MenuActivity extends AppCompatActivity {
             switch (Math.toIntExact(id)){
                 case 0:
                     //TODO:App List
-                    Intent app_it= new Intent(MenuActivity.this,AppListActivity.class);
+                    Intent app_it= new Intent(MenuActivity.this, AppListActivity.class);
                     startActivity(app_it);
                     break;
                 case 1:

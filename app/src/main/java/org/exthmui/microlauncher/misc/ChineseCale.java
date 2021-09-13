@@ -1,4 +1,4 @@
-package org.exthmui.microlauncher;
+package org.exthmui.microlauncher.misc;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -11,7 +11,7 @@ import java.util.Date;
  * 来自https://blog.csdn.net/wx_lanyu/article/details/91347222
  * 非常感谢这位博主的农历类！
  */
-class ChineseCale {
+public class ChineseCale {
     private int year; // 农历的年份
     private int month;
     private int day;

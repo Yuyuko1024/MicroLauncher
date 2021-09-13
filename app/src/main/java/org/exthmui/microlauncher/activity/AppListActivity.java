@@ -1,4 +1,4 @@
-package org.exthmui.microlauncher;
+package org.exthmui.microlauncher.activity;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -13,7 +13,6 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -21,6 +20,10 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import org.exthmui.microlauncher.adapter.AppAdapter;
+import org.exthmui.microlauncher.misc.Application;
+import org.exthmui.microlauncher.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -130,7 +133,7 @@ public class AppListActivity extends AppCompatActivity {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         Log.d(TAG,"这个按键的KeyCode是 "+keyCode);
         if(keyCode == KeyEvent.KEYCODE_HOME){
-            Intent home = new Intent(AppListActivity.this,MainActivity.class);
+            Intent home = new Intent(AppListActivity.this, MainActivity.class);
             startActivity(home);
             finish();
         }

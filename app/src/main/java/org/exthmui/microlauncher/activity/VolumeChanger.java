@@ -1,4 +1,4 @@
-package org.exthmui.microlauncher;
+package org.exthmui.microlauncher.activity;
 
 import android.content.Context;
 import android.media.AudioManager;
@@ -8,6 +8,8 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import org.exthmui.microlauncher.R;
 
 public class VolumeChanger extends AppCompatActivity {
     TextView media,ring,alarm;

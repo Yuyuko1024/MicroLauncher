@@ -1,4 +1,4 @@
-package org.exthmui.microlauncher;
+package org.exthmui.microlauncher.adapter;
 
 import android.content.Intent;
 import android.view.ContextMenu;
@@ -12,6 +12,9 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import org.exthmui.microlauncher.misc.Application;
+import org.exthmui.microlauncher.R;
 
 import java.util.List;
 

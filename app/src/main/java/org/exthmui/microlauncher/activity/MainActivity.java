@@ -1,4 +1,4 @@
-package org.exthmui.microlauncher;
+package org.exthmui.microlauncher.activity;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -15,13 +15,13 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextClock;
 import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-import androidx.lifecycle.ViewModelProvider;
+
+import org.exthmui.microlauncher.R;
+import org.exthmui.microlauncher.misc.ChineseCale;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
