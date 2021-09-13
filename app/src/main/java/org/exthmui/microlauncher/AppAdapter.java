@@ -1,5 +1,6 @@
 package org.exthmui.microlauncher;
 
+import android.content.Intent;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -56,9 +57,11 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ApplicationViewH
 
 //      设置单击监听事件
         holder.mTextButton.setOnClickListener(v -> {
+            application.getAppIntent().addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             v.getContext().startActivity(application.getAppIntent());
         });
         holder.itemView.setOnClickListener(v -> {
+            application.getAppIntent().addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             v.getContext().startActivity(application.getAppIntent());
         });
 
