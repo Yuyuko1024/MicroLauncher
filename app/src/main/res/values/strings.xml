@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">MicroLauncher</string>
     <string name="menu">Menu</string>
-    <string name="dialer">Dialer</string>
+    <string name="contact">Contact</string>
     <string name="power_btn">Power</string>
     <string name="default_date">Aug 10th, 1919</string>
     <string name="vol_media_title">Media / Game Volume</string>

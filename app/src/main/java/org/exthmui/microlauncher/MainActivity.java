@@ -35,10 +35,8 @@ public class MainActivity extends AppCompatActivity {
     private final Calendar calendar = Calendar.getInstance();
     private String week;
     Class serviceManagerClass;
-    Button menu,dialer;
+    Button menu,contact;
     TextView dateView,lunar;
-    TextClock clock;
-    Intent it = new Intent();
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -59,11 +57,9 @@ public class MainActivity extends AppCompatActivity {
         dateView.setText(sdf.format(date)+" "+week);
         lunar.setText(getDayLunar());
         menu=findViewById(R.id.menu);
-        dialer=findViewById(R.id.dialer);
-        clock=findViewById(R.id.text_clock);
-        dialer.setOnClickListener(new mClick());
+        contact=findViewById(R.id.contact);
+        contact.setOnClickListener(new mClick());
         menu.setOnClickListener(new mClick());
-        clock.setOnClickListener(new mClick());
     }
 
     private void printDayOfWeek() {
@@ -98,19 +94,16 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             switch (v.getId()) {
-                case R.id.dialer:
+                case R.id.contact:
                     Intent i = new Intent();
-                    i.setClassName("com.android.dialer",
-                            "com.android.dialer.main.impl.MainActivity");
+                    i.setAction("android.intent.action.MAIN");
+                    i.addCategory("android.intent.category.APP_CONTACTS");
+                    i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(i);
                     break;
                 case R.id.menu:
                     Intent menu_it = new Intent(MainActivity.this, MenuActivity.class);
                     startActivity(menu_it);
-                    break;
-                case R.id.text_clock:
-                    Intent clock_intent = new Intent();
-                    clock_intent.setClassName("com.android.deskclock","");
                     break;
             }
         }
@@ -120,8 +113,10 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG,"这个按键的KeyCode是 "+keyCode);
            if (keyCode == KeyEvent.KEYCODE_BACK) {
                //ifHasDefaultActivity();
-               it.setClassName("com.android.dialer",
-                       "com.android.dialer.main.impl.MainActivity");
+               Intent it = new Intent();
+               it.setAction("android.intent.action.MAIN");
+               it.addCategory("android.intent.category.APP_CONTACTS");
+               it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                startActivity(it);
                return true;}
             else if(keyCode == KeyEvent.KEYCODE_DPAD_DOWN){
@@ -129,18 +124,25 @@ public class MainActivity extends AppCompatActivity {
                 doInStatusBar(getApplicationContext(), methodName);
                 return true;}
             else if (keyCode == KeyEvent.KEYCODE_DPAD_UP){
+               Intent it = new Intent();
                 it.setClassName("com.android.settings",
                         "com.android.settings.Settings");
                 startActivity(it);
                 return true;}
             else if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
-                it.setClassName("com.android.music","com.android.music.MusicBrowserActivity");
-                startActivity(it);
+               Intent it = new Intent();
+               it.setAction("android.intent.action.MAIN");
+               it.addCategory("android.intent.category.APP_MUSIC");
+               it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+               startActivity(it);
                 Log.d(TAG,"5,4,3,2,1,三倍ice cream!!!!!");
            return true;}
             else if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT){
-                it.setClassName("com.android.mms","com.android.mms.ui.ConversationList");
-                startActivity(it);
+               Intent it = new Intent();
+               it.setAction("android.intent.action.MAIN");
+               it.addCategory("android.intent.category.APP_MESSAGING");
+               it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+               startActivity(it);
            return true;}
            else if (keyCode == KeyEvent.KEYCODE_MENU ){
                Intent menu_it = new Intent(MainActivity.this, MenuActivity.class);

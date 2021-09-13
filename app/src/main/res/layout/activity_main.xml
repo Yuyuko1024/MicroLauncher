@@ -54,8 +54,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:text="@string/dialer"
-            android:id="@+id/dialer"
+            android:text="@string/contact"
+            android:id="@+id/contact"
             android:background="@color/transpart"
             android:textColor="@color/white"
             android:textSize="22sp"/>

@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">微  型  启  动  器</string>
     <string name="menu">功能表</string>
-    <string name="dialer">拨号盘</string>
+    <string name="contact">通讯录</string>
     <string name="power_btn">电源</string>
     <string name="default_date">1919年8月10日</string>
     <string name="vol_media_title">媒体 / 游戏 音量</string>
