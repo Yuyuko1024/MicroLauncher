@@ -3,7 +3,10 @@ package org.exthmui.microlauncher;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -12,10 +15,13 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextClock;
 import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.lifecycle.ViewModelProvider;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -29,8 +35,9 @@ public class MainActivity extends AppCompatActivity {
     private final Calendar calendar = Calendar.getInstance();
     private String week;
     Class serviceManagerClass;
-    Button menu,contact;
+    Button menu,dialer;
     TextView dateView,lunar;
+    TextClock clock;
     Intent it = new Intent();
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -52,9 +59,11 @@ public class MainActivity extends AppCompatActivity {
         dateView.setText(sdf.format(date)+" "+week);
         lunar.setText(getDayLunar());
         menu=findViewById(R.id.menu);
-        contact=findViewById(R.id.contact);
-        contact.setOnClickListener(new mClick());
+        dialer=findViewById(R.id.dialer);
+        clock=findViewById(R.id.text_clock);
+        dialer.setOnClickListener(new mClick());
         menu.setOnClickListener(new mClick());
+        clock.setOnClickListener(new mClick());
     }
 
     private void printDayOfWeek() {
@@ -89,15 +98,19 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             switch (v.getId()) {
-                case R.id.contact:
+                case R.id.dialer:
                     Intent i = new Intent();
-                    i.setClassName("com.android.contacts",
-                            "com.android.contacts.activities.PeopleActivity");
+                    i.setClassName("com.android.dialer",
+                            "com.android.dialer.main.impl.MainActivity");
                     startActivity(i);
                     break;
                 case R.id.menu:
                     Intent menu_it = new Intent(MainActivity.this, MenuActivity.class);
                     startActivity(menu_it);
+                    break;
+                case R.id.text_clock:
+                    Intent clock_intent = new Intent();
+                    clock_intent.setClassName("com.android.deskclock","");
                     break;
             }
         }
@@ -106,8 +119,9 @@ public class MainActivity extends AppCompatActivity {
     {
         Log.d(TAG,"这个按键的KeyCode是 "+keyCode);
            if (keyCode == KeyEvent.KEYCODE_BACK) {
-               it.setClassName("com.android.contacts",
-                       "com.android.contacts.activities.PeopleActivity");
+               //ifHasDefaultActivity();
+               it.setClassName("com.android.dialer",
+                       "com.android.dialer.main.impl.MainActivity");
                startActivity(it);
                return true;}
             else if(keyCode == KeyEvent.KEYCODE_DPAD_DOWN){
@@ -195,6 +209,14 @@ public class MainActivity extends AppCompatActivity {
         String lunarGanZhi = lunarCalender.cyclical(year,month,day);
         String lunarString = lunarCalender.getLunarString(year, month, day);
         return "农历"+"  "+lunarGanZhi+lunarAnimal+" "+lunarString;
+    }
+
+    public void ifHasDefaultActivity(){
+        PackageManager pm = getPackageManager();
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse("tel://10010"));
+        ResolveInfo info = pm.resolveActivity(intent,PackageManager.MATCH_DEFAULT_ONLY);
+        Log.e(TAG,"getDefaultActivity info=" + info + ";pkgName = " + info.activityInfo.packageName);
     }
 
 }
