@@ -9,6 +9,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,6 +28,7 @@ import java.util.List;
 public class AppListActivity extends AppCompatActivity {
     private RecyclerView mAppRecyclerView;
     private List<Application> mApplicationList;
+    private final static String TAG = "MenuActivity";
     TextView menu,back;
 
     @Override
@@ -122,5 +124,16 @@ public class AppListActivity extends AppCompatActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        Log.d(TAG,"这个按键的KeyCode是 "+keyCode);
+        if(keyCode == KeyEvent.KEYCODE_HOME){
+            Intent home = new Intent(AppListActivity.this,MainActivity.class);
+            startActivity(home);
+            finish();
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }
