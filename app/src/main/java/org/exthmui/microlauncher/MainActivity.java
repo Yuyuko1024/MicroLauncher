@@ -1,10 +1,9 @@
 package org.exthmui.microlauncher;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.media.session.MediaController;
-import android.media.session.MediaSessionManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -27,9 +26,8 @@ import java.util.Date;
 public class MainActivity extends AppCompatActivity {
     private final static String TAG = "ML_MainActivity";
     private final static String dateFormat = "yyyy年MM月dd日";
+    private final Calendar calendar = Calendar.getInstance();
     private String week;
-    private Calendar c = Calendar.getInstance();
-    private MediaSessionManager mMediaSessionManager;
     Class serviceManagerClass;
     Button menu,contact;
     TextView dateView,lunar;
@@ -40,14 +38,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mMediaSessionManager = (MediaSessionManager) getSystemService(Context.MEDIA_SESSION_SERVICE);
         if (Build.VERSION.SDK_INT>=21)
         {
             View decorView = getWindow().getDecorView();
             decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN|View.SYSTEM_UI_FLAG_LAYOUT_STABLE); //使背景图与状态栏融合到一起，这里需要在setcontentview前执行
             getWindow().setStatusBarColor(Color.TRANSPARENT);
         }
-        SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
         Date date = new Date(System.currentTimeMillis());
         dateView=findViewById(R.id.date_text);
         lunar=findViewById(R.id.lunar_cale);
@@ -61,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void printDayOfWeek() {
-        switch (c.get(Calendar.DAY_OF_WEEK)) {
+        switch (calendar.get(Calendar.DAY_OF_WEEK)) {
             case Calendar.SUNDAY:
                 week="周日";
                 break;
@@ -114,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
                startActivity(it);
                return true;}
             else if(keyCode == KeyEvent.KEYCODE_DPAD_DOWN){
-                String methodName = (Build.VERSION.SDK_INT <= 16) ? "expand" : "expandNotificationsPanel";
+                String methodName = "expandNotificationsPanel";
                 doInStatusBar(getApplicationContext(), methodName);
                 return true;}
             else if (keyCode == KeyEvent.KEYCODE_DPAD_UP){
@@ -157,7 +154,8 @@ public class MainActivity extends AppCompatActivity {
                            String.class);
                    IBinder retbinder = (IBinder) getService.invoke(
                            serviceManagerClass, "statusbar");
-                   Class statusBarClass = Class.forName(retbinder
+                    assert retbinder != null;
+                    Class statusBarClass = Class.forName(retbinder
                            .getInterfaceDescriptor());
                    Object statusBarObject = statusBarClass.getClasses()[0].getMethod(
                            "asInterface", IBinder.class).invoke(null,
@@ -175,9 +173,10 @@ public class MainActivity extends AppCompatActivity {
 
     private static void doInStatusBar(Context mContext, String methodName) {
         try {
-            Object service = mContext.getSystemService("statusbar");
+            @SuppressLint("WrongConstant") Object service = mContext.getSystemService("statusbar");
             Method expand = service.getClass().getMethod(methodName);
             expand.invoke(service);
+            Log.i(TAG,"");
         } catch (Exception e) {
             Log.e(TAG,"Expand NotificationPanel Error");
             e.printStackTrace();

@@ -79,22 +79,4 @@
             android:id="@+id/vol_alarm_text"
             android:layout_marginStart="8dp"/>
     </RelativeLayout>
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/vol_alarm">
-
-        <ImageButton
-            android:id="@+id/back_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@color/transpart"
-            app:srcCompat="@drawable/ic_back" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/back_btn"
-            android:text="@string/back"
-            android:layout_centerInParent="true"/>
-    </RelativeLayout>
 </RelativeLayout>

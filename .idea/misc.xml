@@ -3,7 +3,11 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/Maribel/Desktop/MicroLauncher/app/src/main/res/layout-v21/app_list_item.xml" value="0.536" />
         <entry key="..\:/Users/Maribel/Desktop/MicroLauncher/app/src/main/res/layout/activity_main.xml" value="0.21784420289855072" />
+        <entry key="..\:/Users/Maribel/Desktop/MicroLauncher/app/src/main/res/layout/app_list_activity.xml" value="0.24947916666666667" />
+        <entry key="..\:/Users/Maribel/Desktop/MicroLauncher/app/src/main/res/layout/app_list_item.xml" value="0.536" />
+        <entry key="..\:/Users/Maribel/Desktop/MicroLauncher/app/src/main/res/layout/volume_dialog.xml" value="0.24947916666666667" />
       </map>
     </option>
   </component>

@@ -15,23 +15,23 @@
         android:layout_below="@id/app_list"
         android:background="@color/transpart">
 
-        <Button
+        <TextView
             android:id="@+id/app_menu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@color/transpart"
             android:text="@string/app_menu_string"
-            android:textColor="@color/white"
-            android:textSize="22sp" />
+            android:textColor="@color/black"
+            android:textSize="32sp" />
 
-        <Button
+        <TextView
             android:id="@+id/app_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:background="@color/transpart"
             android:text="@string/back"
-            android:textColor="@color/white"
-            android:textSize="22sp" />
+            android:textColor="@color/black"
+            android:textSize="32sp" />
     </RelativeLayout>
 </LinearLayout>

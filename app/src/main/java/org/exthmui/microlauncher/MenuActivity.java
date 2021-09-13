@@ -19,7 +19,7 @@ public class MenuActivity extends AppCompatActivity {
     private ListView menu_view;
     private final static int[] title = {R.string.menu_app, R.string.menu_set_wallpaper,R.string.menu_volume_dash,R.string.menu_settings_system,R.string.menu_settings_launcher,R.string.menu_start,R.string.menu_about_me};
     private final static int[] summary = {R.string.menu_app_sum,R.string.menu_set_wallpaper_sum,R.string.menu_volume_sum,R.string.menu_settings_system_sum,R.string.menu_settings_launcher_sum,R.string.menu_start_sum,R.string.menu_about_sum};
-    private int[] icon = {R.drawable.ic_apps,R.drawable.ic_wallpaper,R.drawable.ic_volume,R.drawable.ic_settings_system,R.drawable.ic_settings_launcher,R.drawable.ic_start,R.drawable.ic_home};
+    private final int[] icon = {R.drawable.ic_apps,R.drawable.ic_wallpaper,R.drawable.ic_volume,R.drawable.ic_settings_system,R.drawable.ic_settings_launcher,R.drawable.ic_start,R.drawable.ic_home};
     Intent it = new Intent();
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="org.exthmui.microlauncher">
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.EXPAND_STATUS_BAR"/>
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"
+        tools:ignore="QueryAllPackagesPermission" />
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -12,7 +15,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MicroLauncher">
-        <activity android:name=".MainActivity" android:theme="@style/TranslucentActivity">
+        <activity android:name=".MainActivity" android:theme="@style/TranslucentActivity" android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.HOME" />
@@ -22,6 +25,7 @@
         </activity>
         <activity android:name=".VolumeChanger"
             android:label="@string/volume_changer"
+            android:launchMode="singleTask"
             android:theme="@style/Theme.MicroLauncher"/>
         <activity android:name=".MenuActivity"
             android:label="@string/menu_title"

@@ -6,11 +6,14 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,7 +27,7 @@ import java.util.List;
 public class AppListActivity extends AppCompatActivity {
     private RecyclerView mAppRecyclerView;
     private List<Application> mApplicationList;
-    Button menu,back;
+    TextView menu,back;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -104,10 +107,18 @@ public class AppListActivity extends AppCompatActivity {
                 startActivity(i);
                 break;
             case R.id.menu_about_phone:
-                Intent ia = new Intent();
-                ia.setClassName("com.android.settings",
+                if (Build.VERSION.SDK_INT >= 28){
+                    Log.e("Device Info","Device SDK="+Build.VERSION.SDK_INT);
+                    Intent ia = new Intent();
+                    ia.setClassName("com.android.settings",
+                            "com.android.settings.Settings$MyDeviceInfoActivity");
+                    startActivity(ia);
+                }else{
+                    Log.e("Device Info","Device SDK="+Build.VERSION.SDK_INT);
+                    Intent ia = new Intent();
+                    ia.setClassName("com.android.settings",
                         "com.android.settings.Settings$DeviceInfoSettingsActivity");
-                startActivity(ia);
+                    startActivity(ia);}
                 break;
         }
         return super.onOptionsItemSelected(item);

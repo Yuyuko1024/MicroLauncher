@@ -4,7 +4,6 @@ import android.content.Context;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -13,7 +12,6 @@ import androidx.appcompat.app.AppCompatActivity;
 public class VolumeChanger extends AppCompatActivity {
     TextView media,ring,alarm;
     SeekBar media_sek,ring_sek,alarm_sek;
-    ImageButton back_btn;
     private AudioManager mAudioManager;
     private int maxVolume, currentVolume;
     @Override
@@ -26,8 +24,6 @@ public class VolumeChanger extends AppCompatActivity {
         media_sek=findViewById(R.id.vol_media_seek);
         ring_sek=findViewById(R.id.vol_ring_seek);
         alarm_sek=findViewById(R.id.vol_alarm_seek);
-        back_btn=findViewById(R.id.back_btn);
-        back_btn.setOnClickListener(new BackClick());
         //获取系统的Audio管理者
         media_ctrl();
         ring_ctrl();
@@ -134,12 +130,5 @@ public class VolumeChanger extends AppCompatActivity {
                 // TODO Auto-generated method stub
             }
         });
-    }
-
-    class BackClick implements View.OnClickListener{
-        @Override
-        public void onClick(View v) {
-            finish();
-        }
     }
 }
