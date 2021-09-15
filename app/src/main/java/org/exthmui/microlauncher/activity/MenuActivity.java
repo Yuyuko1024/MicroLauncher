@@ -17,6 +17,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import org.exthmui.microlauncher.R;
 
+import es.dmoral.toasty.Toasty;
+
 public class MenuActivity extends AppCompatActivity {
     private ListView menu_view;
     private final static int[] title = {R.string.menu_app, R.string.menu_set_wallpaper,R.string.menu_volume_dash,R.string.menu_settings_system,R.string.menu_settings_launcher,R.string.menu_start,R.string.menu_about_me};
@@ -108,6 +110,17 @@ public class MenuActivity extends AppCompatActivity {
                     it.setClassName("com.android.settings",
                             "com.android.settings.Settings");
                     startActivity(it);
+                    break;
+                case 4:
+                    Toasty.info(MenuActivity.this,R.string.what,Toast.LENGTH_LONG,true).show();
+                    break;
+                case 5:
+                    Toasty.info(MenuActivity.this,R.string.what,Toast.LENGTH_LONG,true).show();
+                    break;
+                case 6:
+                    Intent about_it = new Intent(MenuActivity.this, AboutActivity.class);
+                    about_it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(about_it);
                     break;
             }
         }

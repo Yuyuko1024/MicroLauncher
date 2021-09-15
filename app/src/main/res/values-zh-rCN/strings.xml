@@ -37,4 +37,13 @@
     <string name="app_menu_info">应用信息</string>
     <string name="app_menu_manage">应用管理</string>
     <string name="menu_about_phone">关于手机</string>
+    <string name="current_volume">当前音量：</string>
+    <string name="admin_summary">需要管理员权限才能锁定手机</string>
+    <string name="admin_label">微型启动器-锁定手机</string>
+    <string name="error_not_support_recent_app">出错：Android内部原因不支持打开多任务界面</string>
+    <string name="what">你在期待什么？XD</string>
+    <string name="version">版本：1.0_th06</string>
+    <string name="connect_us">和我联系~</string>
+    <string name="about_desc">多么棒的幻想乡！\\n 一个简单的适用于带有DPad的Android手机的启动器。</string>
+    <string name="easter_egg_string">多么棒的幻想乡！</string>
 </resources>

@@ -1,6 +1,8 @@
 package org.exthmui.microlauncher.activity;
 
 import android.annotation.SuppressLint;
+import android.app.admin.DevicePolicyManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -16,11 +18,13 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import org.exthmui.microlauncher.R;
+import org.exthmui.microlauncher.misc.AdminReceive;
 import org.exthmui.microlauncher.misc.ChineseCale;
 
 import java.lang.reflect.InvocationTargetException;
@@ -29,11 +33,16 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import es.dmoral.toasty.Toasty;
+
 public class MainActivity extends AppCompatActivity {
     private final static String TAG = "ML_MainActivity";
     private final static String dateFormat = "yyyy年MM月dd日";
+    private final static int ENABLE_ADMIN = 1;
+    private final static int SUCCESS = -1;
     private final Calendar calendar = Calendar.getInstance();
     private String week;
+    private ComponentName mAdminName = null;
     Class serviceManagerClass;
     Button menu,contact;
     TextView dateView,lunar;
@@ -49,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
             decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN|View.SYSTEM_UI_FLAG_LAYOUT_STABLE); //使背景图与状态栏融合到一起，这里需要在setcontentview前执行
             getWindow().setStatusBarColor(Color.TRANSPARENT);
         }
+        mAdminName = new ComponentName(this, AdminReceive.class);
         @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
         Date date = new Date(System.currentTimeMillis());
         dateView=findViewById(R.id.date_text);
@@ -162,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
                Intent vol_it = new Intent(MainActivity.this, VolumeChanger.class);
                startActivity(vol_it);
                return true;}*/
-            else if (keyCode == KeyEvent.KEYCODE_STAR) {
+            else if (keyCode == KeyEvent.KEYCODE_1) {
                Log.d(TAG,"打开最近任务界面");
                 try {
                    serviceManagerClass = Class.forName("android.os.ServiceManager");
@@ -181,8 +191,20 @@ public class MainActivity extends AppCompatActivity {
                    clearAll.invoke(statusBarObject);
                } catch (ClassNotFoundException | IllegalArgumentException | NoSuchMethodException | IllegalAccessException | InvocationTargetException | RemoteException e) {
                    e.printStackTrace();
+                   Toasty.error(this,R.string.error_not_support_recent_app,Toast.LENGTH_LONG,true).show();
                }
                return true;}
+            else if(keyCode == KeyEvent.KEYCODE_STAR){
+               DevicePolicyManager mDPM = (DevicePolicyManager)getSystemService(Context.DEVICE_POLICY_SERVICE);
+               if(!mDPM.isAdminActive(mAdminName)){
+                   showAdminGrant();
+               }
+               if(mDPM.isAdminActive(mAdminName)){
+                   mDPM.lockNow();
+               }else{
+                   Log.e(TAG,"Lock phone error!");
+               }
+           }
         return false;
     }
 
@@ -219,6 +241,13 @@ public class MainActivity extends AppCompatActivity {
         intent.setData(Uri.parse("tel://10010"));
         ResolveInfo info = pm.resolveActivity(intent,PackageManager.MATCH_DEFAULT_ONLY);
         Log.e(TAG,"getDefaultActivity info=" + info + ";pkgName = " + info.activityInfo.packageName);
+    }
+
+    private void showAdminGrant(){
+        Intent grant_it = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
+        grant_it.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN,mAdminName);
+        grant_it.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION,R.string.admin_summary);
+        startActivityForResult(grant_it,ENABLE_ADMIN);
     }
 
 }

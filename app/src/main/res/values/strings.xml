@@ -37,4 +37,14 @@
     <string name="app_menu_info">App Info</string>
     <string name="app_menu_manage">App Manage</string>
     <string name="menu_about_phone">About phone</string>
+    <string name="current_volume">Current Volume :</string>
+    <string name="admin_summary">Admin Privilege is need to lock the phone</string>
+    <string name="admin_label">MicroLauncher - Lock Phone</string>
+    <string name="error_not_support_recent_app">Error: Not support for launch Recent App view</string>
+    <string name="what">What are you looking forward to? XD</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="version">Version: 1.0_th06</string>
+    <string name="connect_us">Connect with us</string>
+    <string name="about_desc">Wow such a good Gensokyo! \\n a simple Launcher for DPad Android Phone.</string>
+    <string name="easter_egg_string">Such a good Gensokyo!</string>
 </resources>
