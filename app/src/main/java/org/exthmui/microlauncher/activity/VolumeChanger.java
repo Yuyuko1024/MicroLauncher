@@ -1,21 +1,30 @@
 package org.exthmui.microlauncher.activity;
 
+import android.app.admin.DevicePolicyManager;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.media.AudioManager;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import org.exthmui.microlauncher.R;
+
+import es.dmoral.toasty.Toasty;
 
 public class VolumeChanger extends AppCompatActivity {
     TextView media,ring,alarm;
     SeekBar media_sek,ring_sek,alarm_sek;
     private AudioManager mAudioManager;
     private int maxVolume, currentVolume;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -133,4 +142,14 @@ public class VolumeChanger extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode == KeyEvent.KEYCODE_1){
+            DevicePolicyManager mDPM = (DevicePolicyManager)getSystemService(Context.DEVICE_POLICY_SERVICE);
+            mDPM.lockNow();
+            }
+        return super.onKeyDown(keyCode,event);
+    }
+
 }

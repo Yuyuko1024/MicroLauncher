@@ -39,10 +39,10 @@ public class MainActivity extends AppCompatActivity {
     private final static String TAG = "ML_MainActivity";
     private final static String dateFormat = "yyyy年MM月dd日";
     private final static int ENABLE_ADMIN = 1;
-    private final static int SUCCESS = -1;
     private final Calendar calendar = Calendar.getInstance();
     private String week;
     private ComponentName mAdminName = null;
+    private DevicePolicyManager mDPM ;
     Class serviceManagerClass;
     Button menu,contact;
     TextView dateView,lunar;
@@ -59,6 +59,10 @@ public class MainActivity extends AppCompatActivity {
             getWindow().setStatusBarColor(Color.TRANSPARENT);
         }
         mAdminName = new ComponentName(this, AdminReceive.class);
+        mDPM = (DevicePolicyManager)getSystemService(Context.DEVICE_POLICY_SERVICE);
+        if(!mDPM.isAdminActive(mAdminName)){
+            showAdminGrant();
+        }
         @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
         Date date = new Date(System.currentTimeMillis());
         dateView=findViewById(R.id.date_text);
@@ -172,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
                Intent vol_it = new Intent(MainActivity.this, VolumeChanger.class);
                startActivity(vol_it);
                return true;}*/
-            else if (keyCode == KeyEvent.KEYCODE_1) {
+            else if (keyCode == KeyEvent.KEYCODE_2) {
                Log.d(TAG,"打开最近任务界面");
                 try {
                    serviceManagerClass = Class.forName("android.os.ServiceManager");
@@ -194,17 +198,14 @@ public class MainActivity extends AppCompatActivity {
                    Toasty.error(this,R.string.error_not_support_recent_app,Toast.LENGTH_LONG,true).show();
                }
                return true;}
-            else if(keyCode == KeyEvent.KEYCODE_STAR){
-               DevicePolicyManager mDPM = (DevicePolicyManager)getSystemService(Context.DEVICE_POLICY_SERVICE);
-               if(!mDPM.isAdminActive(mAdminName)){
-                   showAdminGrant();
-               }
+            else if(keyCode == KeyEvent.KEYCODE_1){
                if(mDPM.isAdminActive(mAdminName)){
                    mDPM.lockNow();
                }else{
+                   Toasty.error(this,R.string.error_lock_phone,Toast.LENGTH_LONG,true).show();
                    Log.e(TAG,"Lock phone error!");
                }
-           }
+           return true;}
         return false;
     }
 

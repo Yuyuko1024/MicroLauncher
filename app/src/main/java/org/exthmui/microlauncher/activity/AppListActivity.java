@@ -1,5 +1,8 @@
 package org.exthmui.microlauncher.activity;
 
+import android.app.admin.DevicePolicyManager;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
@@ -21,9 +24,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.exthmui.microlauncher.R;
 import org.exthmui.microlauncher.adapter.AppAdapter;
 import org.exthmui.microlauncher.misc.Application;
-import org.exthmui.microlauncher.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +34,7 @@ import java.util.List;
 public class AppListActivity extends AppCompatActivity {
     private RecyclerView mAppRecyclerView;
     private List<Application> mApplicationList;
-    private final static String TAG = "MenuActivity";
+    private final static String TAG = "AppListActivity";
     TextView menu,back;
 
     @Override
@@ -137,6 +140,11 @@ public class AppListActivity extends AppCompatActivity {
             startActivity(home);
             finish();
         }
-        return super.onKeyDown(keyCode, event);
+        else if(keyCode == KeyEvent.KEYCODE_1){
+            DevicePolicyManager mDPM = (DevicePolicyManager)getSystemService(Context.DEVICE_POLICY_SERVICE);
+            mDPM.lockNow();
+            }
+        return super.onKeyDown(keyCode,event);
     }
+
 }

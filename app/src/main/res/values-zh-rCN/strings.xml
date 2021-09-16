@@ -46,4 +46,5 @@
     <string name="connect_us">和我联系~</string>
     <string name="about_desc">多么棒的幻想乡！\\n 一个简单的适用于带有DPad的Android手机的启动器。</string>
     <string name="easter_egg_string">多么棒的幻想乡！</string>
+    <string name="error_lock_phone">错误：无法锁定手机！</string>
 </resources>

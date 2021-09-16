@@ -47,4 +47,5 @@
     <string name="connect_us">Connect with us</string>
     <string name="about_desc">Wow such a good Gensokyo! \\n a simple Launcher for DPad Android Phone.</string>
     <string name="easter_egg_string">Such a good Gensokyo!</string>
+    <string name="error_lock_phone">Error: Lock phone error!</string>
 </resources>

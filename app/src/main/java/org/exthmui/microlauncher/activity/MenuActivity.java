@@ -1,8 +1,11 @@
 package org.exthmui.microlauncher.activity;
 
+import android.app.admin.DevicePolicyManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -124,5 +127,14 @@ public class MenuActivity extends AppCompatActivity {
                     break;
             }
         }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode == KeyEvent.KEYCODE_1){
+            DevicePolicyManager mDPM = (DevicePolicyManager)getSystemService(Context.DEVICE_POLICY_SERVICE);
+            mDPM.lockNow();
+            }
+        return super.onKeyDown(keyCode, event);
     }
 }
