@@ -16,6 +16,7 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -52,6 +53,8 @@ public class AppListActivity extends AppCompatActivity {
         public void onClick(View v) {
             if(v == back) {
                 finish();
+            }else if(v == menu){
+                showMenu(menu);
             }
         }
     }
@@ -86,6 +89,40 @@ public class AppListActivity extends AppCompatActivity {
         this.mAppRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 //      设置适配器
         this.mAppRecyclerView.setAdapter(new AppAdapter(this.mApplicationList, 0));
+    }
+
+    private void showMenu(View view){
+        PopupMenu popupMenu = new PopupMenu(this,view);
+        popupMenu.getMenuInflater().inflate(R.menu.app_option,popupMenu.getMenu());
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()){
+                    case R.id.menu_app_manage:
+                        Intent i = new Intent();
+                        i.setClassName("com.android.settings",
+                                "com.android.settings.applications.ManageApplications");
+                        startActivity(i);
+                        break;
+                    case R.id.menu_about_phone:
+                        if (Build.VERSION.SDK_INT >= 28){
+                            Log.e("Device Info","Device SDK="+Build.VERSION.SDK_INT);
+                            Intent ia = new Intent();
+                            ia.setClassName("com.android.settings",
+                                    "com.android.settings.Settings$MyDeviceInfoActivity");
+                            startActivity(ia);
+                        }else{
+                            Log.e("Device Info","Device SDK="+Build.VERSION.SDK_INT);
+                            Intent ia = new Intent();
+                            ia.setClassName("com.android.settings",
+                                    "com.android.settings.Settings$DeviceInfoSettingsActivity");
+                            startActivity(ia);}
+                        break;
+                }
+                return false;
+            }
+        });
+        popupMenu.show();
     }
 
     @Override
@@ -135,12 +172,7 @@ public class AppListActivity extends AppCompatActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         Log.d(TAG,"这个按键的KeyCode是 "+keyCode);
-        if(keyCode == KeyEvent.KEYCODE_HOME){
-            Intent home = new Intent(AppListActivity.this, MainActivity.class);
-            startActivity(home);
-            finish();
-        }
-        else if(keyCode == KeyEvent.KEYCODE_1){
+        if(keyCode == KeyEvent.KEYCODE_STAR){
             DevicePolicyManager mDPM = (DevicePolicyManager)getSystemService(Context.DEVICE_POLICY_SERVICE);
             mDPM.lockNow();
             }

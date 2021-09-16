@@ -1,6 +1,7 @@
 package org.exthmui.microlauncher.activity;
 
 import android.annotation.SuppressLint;
+import android.app.ActivityManager;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
@@ -165,6 +166,7 @@ public class MainActivity extends AppCompatActivity {
            //突然想起来得把音量控制面板绑定到#键上
            else if (keyCode == KeyEvent.KEYCODE_POUND ){
                Intent vol_it = new Intent(MainActivity.this, VolumeChanger.class);
+               vol_it.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
                startActivity(vol_it);
                return true;}
            //暂时先不用这里
@@ -176,29 +178,37 @@ public class MainActivity extends AppCompatActivity {
                Intent vol_it = new Intent(MainActivity.this, VolumeChanger.class);
                startActivity(vol_it);
                return true;}*/
-            else if (keyCode == KeyEvent.KEYCODE_2) {
+            else if (keyCode == KeyEvent.KEYCODE_0) {
                Log.d(TAG,"打开最近任务界面");
-                try {
-                   serviceManagerClass = Class.forName("android.os.ServiceManager");
-                   Method getService = serviceManagerClass.getMethod("getService",
-                           String.class);
-                   IBinder retbinder = (IBinder) getService.invoke(
-                           serviceManagerClass, "statusbar");
-                    assert retbinder != null;
-                    Class statusBarClass = Class.forName(retbinder
-                           .getInterfaceDescriptor());
-                   Object statusBarObject = statusBarClass.getClasses()[0].getMethod(
-                           "asInterface", IBinder.class).invoke(null,
-                           new Object[] { retbinder });
-                   Method clearAll = statusBarClass.getMethod("toggleRecentApps");
-                   clearAll.setAccessible(true);
-                   clearAll.invoke(statusBarObject);
-               } catch (ClassNotFoundException | IllegalArgumentException | NoSuchMethodException | IllegalAccessException | InvocationTargetException | RemoteException e) {
+               Log.d(TAG,"当前设备SDK是："+Build.VERSION.SDK_INT);
+               /*if(Build.VERSION.SDK_INT>=28) {
+                   try {
+                       Intent it = new Intent();
+                       it.setAction("android.intent.action.QUICKSTEP_SERVICE");
+                       it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                       startActivity(it);
+               } catch (Exception e) {
                    e.printStackTrace();
-                   Toasty.error(this,R.string.error_not_support_recent_app,Toast.LENGTH_LONG,true).show();
+                   Toasty.error(this, R.string.error_not_support_recent_app, Toast.LENGTH_LONG, true).show();
                }
+               }else{*/
+                   try {
+                       serviceManagerClass = Class.forName("android.os.ServiceManager");
+                       Method getService = serviceManagerClass.getMethod("getService", String.class);
+                       IBinder retbinder = (IBinder) getService.invoke(serviceManagerClass, "statusbar");
+                       assert retbinder != null;
+                       Class statusBarClass = Class.forName(retbinder.getInterfaceDescriptor());
+                       Object statusBarObject = statusBarClass.getClasses()[0].getMethod("asInterface", IBinder.class).invoke(null, new Object[]{retbinder});
+                       Method clearAll = statusBarClass.getMethod("toggleRecentApps");
+                       clearAll.setAccessible(true);
+                       clearAll.invoke(statusBarObject);
+                   } catch (ClassNotFoundException | IllegalArgumentException | NoSuchMethodException | IllegalAccessException | InvocationTargetException | RemoteException e) {
+                       e.printStackTrace();
+                       Toasty.error(this, R.string.error_not_support_recent_app, Toast.LENGTH_LONG, true).show();
+                   }
+               //}
                return true;}
-            else if(keyCode == KeyEvent.KEYCODE_1){
+            else if(keyCode == KeyEvent.KEYCODE_STAR){
                if(mDPM.isAdminActive(mAdminName)){
                    mDPM.lockNow();
                }else{

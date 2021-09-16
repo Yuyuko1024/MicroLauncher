@@ -38,7 +38,7 @@
     <string name="app_menu_manage">App Manage</string>
     <string name="menu_about_phone">About phone</string>
     <string name="current_volume">Current Volume :</string>
-    <string name="admin_summary">Admin Privilege is need to lock the phone</string>
+    <string name="admin_summary">MicroLauncher needs administrator privileges to set the * key to lock the phone</string>
     <string name="admin_label">MicroLauncher - Lock Phone</string>
     <string name="error_not_support_recent_app">Error: Not support for launch Recent App view</string>
     <string name="what">What are you looking forward to? XD</string>
