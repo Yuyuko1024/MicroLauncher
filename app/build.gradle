@@ -11,8 +11,8 @@ android {
         applicationId "org.exthmui.microlauncher"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 10000
-        versionName "1.0_th06"
+        versionCode 11000
+        versionName "1.0_th07"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
