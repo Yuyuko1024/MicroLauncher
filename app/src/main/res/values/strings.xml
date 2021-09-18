@@ -21,7 +21,7 @@
     <string name="menu_settings_system_sum">Setup your device</string>
     <string name="menu_start_sum">Let me know !</string>
     <string name="menu_volume_sum">Change device volume</string>
-    <string name="menu_settings_launcher_sum">Developing…XD</string>
+    <string name="menu_settings_launcher_sum">Setup your launcher</string>
     <string name="menu_about_sum">About this launcher</string>
     <string name="menu_title">Menu</string>
     <string name="choose_wallpaper">Choose a picture you like as the wallpaper of your device!</string>
@@ -48,4 +48,21 @@
     <string name="about_desc">Wow such a good Gensokyo! \\n a simple Launcher for DPad Android Phone.</string>
     <string name="easter_egg_string">Such a good Gensokyo!</string>
     <string name="error_lock_phone">Error: Lock phone error!</string>
+    <string name="preference_main_category">Main Screen Settings</string>
+    <string name="preference_main_lunar">Enable Chinese Lunar</string>
+    <string name="clock_locate_left_up">Left up</string>
+    <string name="clock_locate_right_up">Right up</string>
+    <string name="clock_locate_left_down">Left down</string>
+    <string name="clock_locate_right_down">Right down</string>
+    <string name="clock_locate_custon">Custom locate</string>
+    <string name="clock_locate_title">Clock locate</string>
+    <string name="preference_main_recent">Enable Android recent apps shortcut key</string>
+    <string name="preference_main_recent_category">Press \"0\" key to switch apps, this feature is not available after Android 9</string>
+    <string name="preference_main_clock_size">Clock size</string>
+    <string name="default_clock_size" translatable="false">58</string>
+    <string name="preference_main_enable_lockscreen">Enable lock screen feature</string>
+    <string name="preference_main_enable_lockscreen_category">This feature need device admin permission</string>
+    <string name="preference_main_default_launcher">Change default apps</string>
+    <string name="preference_func_category">Function settings</string>
+    <string name="warn_recent_disable">Recent Apps key is disabled.</string>
 </resources>

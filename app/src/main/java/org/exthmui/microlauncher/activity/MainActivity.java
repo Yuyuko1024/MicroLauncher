@@ -1,11 +1,11 @@
 package org.exthmui.microlauncher.activity;
 
 import android.annotation.SuppressLint;
-import android.app.ActivityManager;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Color;
@@ -14,10 +14,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RelativeLayout;
+import android.widget.TextClock;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,7 +39,7 @@ import java.util.Date;
 
 import es.dmoral.toasty.Toasty;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
     private final static String TAG = "ML_MainActivity";
     private final static String dateFormat = "yyyy年MM月dd日";
     private final static int ENABLE_ADMIN = 1;
@@ -44,9 +47,13 @@ public class MainActivity extends AppCompatActivity {
     private String week;
     private ComponentName mAdminName = null;
     private DevicePolicyManager mDPM ;
+    private boolean lock_enable = true;
+    private boolean recent_enable = true;
     Class serviceManagerClass;
     Button menu,contact;
     TextView dateView,lunar;
+    RelativeLayout clock;
+    TextClock text_clock;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -68,6 +75,8 @@ public class MainActivity extends AppCompatActivity {
         Date date = new Date(System.currentTimeMillis());
         dateView=findViewById(R.id.date_text);
         lunar=findViewById(R.id.lunar_cale);
+        clock=findViewById(R.id.clock);
+        text_clock=findViewById(R.id.text_clock);
         printDayOfWeek();
         dateView.setText(sdf.format(date)+" "+week);
         lunar.setText(getDayLunar());
@@ -75,33 +84,110 @@ public class MainActivity extends AppCompatActivity {
         contact=findViewById(R.id.contact);
         contact.setOnClickListener(new mClick());
         menu.setOnClickListener(new mClick());
+        loadSettings();
     }
 
-    private void printDayOfWeek() {
-        switch (calendar.get(Calendar.DAY_OF_WEEK)) {
-            case Calendar.SUNDAY:
-                week="周日";
+    private void loadSettings(){
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
+        Boolean lunar_isEnable= (sharedPreferences.getBoolean("switch_preference_lunar",true));
+        if(lunar_isEnable){
+            lunar.setVisibility(View.VISIBLE);
+        }else{
+            lunar.setVisibility(View.INVISIBLE);
+        }
+        Boolean lock_isEnabled = (sharedPreferences.getBoolean("preference_main_lockscreen",true));
+        if(lock_isEnabled){
+            lock_enable=true;
+        }else{
+            lock_enable=false;
+        }
+        String clock_locate = (sharedPreferences.getString("list_preference_clock_locate","reimu"));
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(clock.getLayoutParams());
+        switch (clock_locate){
+            case "reimu":
+                params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+                params.addRule(RelativeLayout.ALIGN_PARENT_START);
+                clock.setLayoutParams(params);
                 break;
-            case Calendar.MONDAY:
-                week="周一";
+            case "marisa":
+                params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+                params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+                clock.setLayoutParams(params);
                 break;
-            case Calendar.TUESDAY:
-                week="周二";
+            case "renko":
+                params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+                clock.setLayoutParams(params);
                 break;
-            case Calendar.WEDNESDAY:
-                week="周三";
+            case "maribel":
+                params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+                clock.setLayoutParams(params);
                 break;
-            case Calendar.THURSDAY:
-                week="周四";
+        }
+        String clock_size = (sharedPreferences.getString("list_preference_clock_size","58"));
+        text_clock.setTextSize(Float.parseFloat(clock_size));
+        Boolean recent_isEnabled = (sharedPreferences.getBoolean("switch_preference_recent_apps",true));
+        if(recent_isEnabled){
+            recent_enable=true;
+        }else{
+            recent_enable=false;
+        }
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if(key.equals("switch_preference_lunar")){
+            Boolean lunar_isEnable= (sharedPreferences.getBoolean("switch_preference_lunar",true));
+            if(lunar_isEnable){
+                lunar.setVisibility(View.VISIBLE);
+            }else{
+                lunar.setVisibility(View.INVISIBLE);
+            }
+        }else if(key.equals("preference_main_lockscreen")){
+            Boolean lock_isEnabled = (sharedPreferences.getBoolean("preference_main_lockscreen",true));
+            if(lock_isEnabled){
+                lock_enable=true;
+            }else{
+                lock_enable=false;
+            }
+        }else if(key.equals("list_preference_clock_locate")){
+            String clock_locate = (sharedPreferences.getString("list_preference_clock_locate","reimu"));
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(clock.getLayoutParams());
+            switch (clock_locate){
+                case "reimu":
+                    params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+                    params.addRule(RelativeLayout.ALIGN_PARENT_START);
+                    clock.setLayoutParams(params);
                 break;
-            case Calendar.FRIDAY:
-                week="周五";
+                case "marisa":
+                    params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+                    params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+                    clock.setLayoutParams(params);
                 break;
-            case Calendar.SATURDAY:
-                week="周六";
+                case "renko":
+                    params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                    params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+                    clock.setLayoutParams(params);
                 break;
-            default:
+                case "maribel":
+                    params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                    params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+                    clock.setLayoutParams(params);
                 break;
+            }
+        }else if(key.equals("list_preference_clock_size")){
+            String clock_size = (sharedPreferences.getString("list_preference_clock_size","58"));
+            text_clock.setTextSize(Float.parseFloat(clock_size));
+        }else if(key.equals("switch_preference_recent_apps")){
+            Boolean recent_isEnabled = (sharedPreferences.getBoolean("switch_preference_recent_apps",true));
+            if(recent_isEnabled){
+                recent_enable=true;
+            }else{
+                recent_enable=false;
+            }
+
         }
     }
 
@@ -192,6 +278,7 @@ public class MainActivity extends AppCompatActivity {
                    Toasty.error(this, R.string.error_not_support_recent_app, Toast.LENGTH_LONG, true).show();
                }
                }else{*/
+               if(recent_enable) {
                    try {
                        serviceManagerClass = Class.forName("android.os.ServiceManager");
                        Method getService = serviceManagerClass.getMethod("getService", String.class);
@@ -206,14 +293,20 @@ public class MainActivity extends AppCompatActivity {
                        e.printStackTrace();
                        Toasty.error(this, R.string.error_not_support_recent_app, Toast.LENGTH_LONG, true).show();
                    }
+               }else{
+                   Log.d(TAG,"Recent is disabled.");
+               }
                //}
                return true;}
             else if(keyCode == KeyEvent.KEYCODE_STAR){
+               if(lock_enable){
                if(mDPM.isAdminActive(mAdminName)){
                    mDPM.lockNow();
                }else{
                    Toasty.error(this,R.string.error_lock_phone,Toast.LENGTH_LONG,true).show();
                    Log.e(TAG,"Lock phone error!");
+               }}else{
+                   Log.d(TAG,"Lock screen is disabled");
                }
            return true;}
         return false;
@@ -260,5 +353,35 @@ public class MainActivity extends AppCompatActivity {
         grant_it.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION,R.string.admin_summary);
         startActivityForResult(grant_it,ENABLE_ADMIN);
     }
+
+    private void printDayOfWeek() {
+        switch (calendar.get(Calendar.DAY_OF_WEEK)) {
+            case Calendar.SUNDAY:
+                week="周日";
+                break;
+            case Calendar.MONDAY:
+                week="周一";
+                break;
+            case Calendar.TUESDAY:
+                week="周二";
+                break;
+            case Calendar.WEDNESDAY:
+                week="周三";
+                break;
+            case Calendar.THURSDAY:
+                week="周四";
+                break;
+            case Calendar.FRIDAY:
+                week="周五";
+                break;
+            case Calendar.SATURDAY:
+                week="周六";
+                break;
+            default:
+                break;
+        }
+    }
+
+
 
 }

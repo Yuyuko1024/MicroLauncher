@@ -22,7 +22,7 @@
     <string name="menu_settings_system_sum">打开系统设置</string>
     <string name="menu_start_sum">让我看看！</string>
     <string name="menu_volume_sum">修改设备音量</string>
-    <string name="menu_settings_launcher_sum">开发中…qwq</string>
+    <string name="menu_settings_launcher_sum">设置你的桌面</string>
     <string name="menu_about_sum">关于这个桌面</string>
     <string name="menu_title">功能表</string>
     <string name="choose_wallpaper">选择一张你喜欢的图片作为设备的壁纸吧！</string>
@@ -47,4 +47,20 @@
     <string name="about_desc">多么棒的幻想乡！\\n 一个简单的适用于带有DPad的Android手机的启动器。</string>
     <string name="easter_egg_string">多么棒的幻想乡！</string>
     <string name="error_lock_phone">错误：无法锁定手机！</string>
+    <string name="preference_main_category">主界面设置</string>
+    <string name="preference_main_lunar">启用农历显示</string>
+    <string name="clock_locate_left_up">左上角</string>
+    <string name="clock_locate_right_up">右上角</string>
+    <string name="clock_locate_left_down">左下角</string>
+    <string name="clock_locate_right_down">右下角</string>
+    <string name="clock_locate_custon">自定义位置</string>
+    <string name="clock_locate_title">主页时钟位置</string>
+    <string name="preference_main_recent">启用最近任务快捷键</string>
+    <string name="preference_main_recent_category">按“0”键在最近App里切换，该功能在Android 9以后不可用。</string>
+    <string name="preference_main_clock_size">时钟字体大小</string>
+    <string name="preference_main_enable_lockscreen">启用一键锁屏</string>
+    <string name="preference_main_enable_lockscreen_category">该功能需要管理员权限</string>
+    <string name="preference_main_default_launcher">修改默认应用</string>
+    <string name="preference_func_category">功能设置</string>
+    <string name="warn_recent_disable">最近任务快捷键已禁用。</string>
 </resources>

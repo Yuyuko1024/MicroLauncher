@@ -23,6 +23,7 @@
         <activity
             android:name=".activity.MainActivity"
             android:theme="@style/TranslucentActivity"
+            android:excludeFromRecents="true"
             tools:ignore="IntentFilterExportedReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -40,14 +41,22 @@
             android:name=".activity.MenuActivity"
             android:label="@string/menu_title"
             android:launchMode="singleInstance"
+            android:excludeFromRecents="true"
             android:theme="@style/Theme.MicroLauncher" />
         <activity
             android:name=".activity.AppListActivity"
             android:label="@string/app_list_title"
+            android:excludeFromRecents="true"
             android:theme="@style/Theme.MicroLauncher" />
         <activity
             android:name=".activity.AboutActivity"
             android:label="@string/menu_about_sum"
+            android:excludeFromRecents="true"
+            android:theme="@style/Theme.MicroLauncher" />
+        <activity
+            android:name=".activity.SettingsActivity"
+            android:label="@string/menu_settings_launcher"
+            android:excludeFromRecents="true"
             android:theme="@style/Theme.MicroLauncher" />
         <receiver
             android:name=".misc.AdminReceive"

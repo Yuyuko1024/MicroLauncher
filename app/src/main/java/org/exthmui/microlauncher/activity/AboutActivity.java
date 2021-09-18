@@ -1,11 +1,15 @@
 package org.exthmui.microlauncher.activity;
 
 import android.app.admin.DevicePolicyManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Toast;
@@ -18,14 +22,16 @@ import es.dmoral.toasty.Toasty;
 import mehdi.sakout.aboutpage.AboutPage;
 import mehdi.sakout.aboutpage.Element;
 
-public class AboutActivity extends AppCompatActivity {
+public class AboutActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener{
     private static final int DELAY_TIMER_MILLIS = 500;
     private static final int ACTIVITY_TRIGGER_COUNT = 3;
     private final long[] mHits = new long[ACTIVITY_TRIGGER_COUNT];
+    private boolean lock_enable = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        loadSettings();
         View aboutPage = new AboutPage(this)
                 .isRTL(false)
                 .setDescription(getString(R.string.about_desc).replace("\\n","\n"))
@@ -64,8 +70,35 @@ public class AboutActivity extends AppCompatActivity {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if(keyCode == KeyEvent.KEYCODE_STAR){
             DevicePolicyManager mDPM = (DevicePolicyManager)getSystemService(Context.DEVICE_POLICY_SERVICE);
-            mDPM.lockNow();
+            if(lock_enable){
+                    mDPM.lockNow();
+            }else{
+                Log.d("TAG","Lock screen is disabled");
+            }
         }
         return super.onKeyDown(keyCode,event);
+    }
+
+    private void loadSettings(){
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
+        Boolean lock_isEnabled = (sharedPreferences.getBoolean("preference_main_lockscreen",true));
+        if(lock_isEnabled){
+            lock_enable=true;
+        }else{
+            lock_enable=false;
+        }
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if(key.equals("preference_main_lockscreen")){
+            Boolean lock_isEnabled = (sharedPreferences.getBoolean("preference_main_lockscreen",true));
+            if(lock_isEnabled){
+                lock_enable=true;
+            }else{
+                lock_enable=false;
+            }
+        }
     }
 }

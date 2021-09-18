@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:textColor="#00838F"
+        android:title="@string/preference_main_category"
+        android:key="preference_main">
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="switch_preference_lunar"
+            android:title="@string/preference_main_lunar" />
+        <ListPreference
+            android:defaultValue="reimu"
+            android:entries="@array/clock_locate_entries"
+            android:entryValues="@array/clock_locate_values"
+            android:key="list_preference_clock_locate"
+            android:title="@string/clock_locate_title" />
+
+        <ListPreference
+            android:defaultValue="14"
+            android:entries="@array/clock_size_entries"
+            android:entryValues="@array/clock_size_entries"
+            android:key="list_preference_clock_size"
+            android:title="@string/preference_main_clock_size" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/preference_func_category"
+        android:key="preference_func">
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="switch_preference_recent_apps"
+            android:summary="@string/preference_main_recent_category"
+            android:title="@string/preference_main_recent" />
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="preference_main_lockscreen"
+            android:summary="@string/preference_main_enable_lockscreen_category"
+            android:title="@string/preference_main_enable_lockscreen" />
+        <Preference
+            android:key="preference_main_default_launcher"
+            android:title="@string/preference_main_default_launcher">
+            <intent android:action="android.settings.MANAGE_DEFAULT_APPS_SETTINGS" />
+        </Preference>
+    </PreferenceCategory>
+</PreferenceScreen>

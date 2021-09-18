@@ -1,10 +1,14 @@
 package org.exthmui.microlauncher.activity;
 
 import android.app.admin.DevicePolicyManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,12 +26,14 @@ import org.exthmui.microlauncher.R;
 
 import es.dmoral.toasty.Toasty;
 
-public class MenuActivity extends AppCompatActivity {
+public class MenuActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener{
     private ListView menu_view;
     private final static int[] title = {R.string.menu_app, R.string.menu_set_wallpaper,R.string.menu_volume_dash,R.string.menu_settings_system,R.string.menu_settings_launcher,R.string.menu_start,R.string.menu_about_me};
     private final static int[] summary = {R.string.menu_app_sum,R.string.menu_set_wallpaper_sum,R.string.menu_volume_sum,R.string.menu_settings_system_sum,R.string.menu_settings_launcher_sum,R.string.menu_start_sum,R.string.menu_about_sum};
     private final int[] icon = {R.drawable.ic_apps,R.drawable.ic_wallpaper,R.drawable.ic_volume,R.drawable.ic_settings_system,R.drawable.ic_settings_launcher,R.drawable.ic_start,R.drawable.ic_home};
     Intent it = new Intent();
+    private ComponentName mAdminName = null;
+    private boolean lock_enable = true;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,7 +44,32 @@ public class MenuActivity extends AppCompatActivity {
         //设置Adapter
         menu_view.setAdapter(mAdapter);
         menu_view.setOnItemClickListener(new mItemClick());
+        loadSettings();
     }
+
+    private void loadSettings(){
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
+        Boolean lock_isEnabled = (sharedPreferences.getBoolean("preference_main_lockscreen",true));
+        if(lock_isEnabled == true){
+            lock_enable=true;
+        }else{
+            lock_enable=false;
+        }
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if(key.equals("preference_main_lockscreen")){
+            Boolean lock_isEnabled = (sharedPreferences.getBoolean("preference_main_lockscreen",true));
+            if(lock_isEnabled == true){
+                lock_enable=true;
+            }else{
+                lock_enable=false;
+            }
+        }
+    }
+
     //创建一个类继承BaseAdapter
     class MyBaseAdapter extends BaseAdapter {
         //得到item的总数
@@ -115,7 +146,9 @@ public class MenuActivity extends AppCompatActivity {
                     startActivity(it);
                     break;
                 case 4:
-                    Toasty.info(MenuActivity.this,R.string.what,Toast.LENGTH_LONG,true).show();
+                    //Toasty.info(MenuActivity.this,R.string.what,Toast.LENGTH_LONG,true).show();
+                    Intent menu_it = new Intent(MenuActivity.this, SettingsActivity.class);
+                    startActivity(menu_it);
                     break;
                 case 5:
                     Toasty.info(MenuActivity.this,R.string.what,Toast.LENGTH_LONG,true).show();
@@ -133,7 +166,13 @@ public class MenuActivity extends AppCompatActivity {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if(keyCode == KeyEvent.KEYCODE_STAR){
             DevicePolicyManager mDPM = (DevicePolicyManager)getSystemService(Context.DEVICE_POLICY_SERVICE);
-            mDPM.lockNow();
+            if(lock_enable == true) {
+                if (lock_enable == true) {
+                    mDPM.lockNow();
+                } else {
+                    Log.d("TAG", "Lock screen is disabled");
+                }
+            }
             }
         return super.onKeyDown(keyCode, event);
     }

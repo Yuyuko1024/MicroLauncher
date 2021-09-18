@@ -4,6 +4,7 @@ import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
@@ -11,6 +12,7 @@ import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -18,6 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -32,10 +35,13 @@ import org.exthmui.microlauncher.misc.Application;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AppListActivity extends AppCompatActivity {
+import es.dmoral.toasty.Toasty;
+
+public class AppListActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
     private RecyclerView mAppRecyclerView;
     private List<Application> mApplicationList;
     private final static String TAG = "AppListActivity";
+    private boolean lock_enable = true;
     TextView menu,back;
 
     @Override
@@ -47,6 +53,7 @@ public class AppListActivity extends AppCompatActivity {
         back.setOnClickListener(new funClick());
         menu.setOnClickListener(new funClick());
         loadApp();
+        loadSettings();
     }
     class funClick implements View.OnClickListener{
         @Override
@@ -58,6 +65,29 @@ public class AppListActivity extends AppCompatActivity {
             }
         }
     }
+    private void loadSettings(){
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
+        Boolean lock_isEnabled = (sharedPreferences.getBoolean("preference_main_lockscreen",true));
+        if(lock_isEnabled){
+            lock_enable=true;
+        }else{
+            lock_enable=false;
+        }
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if(key.equals("preference_main_lockscreen")){
+            Boolean lock_isEnabled = (sharedPreferences.getBoolean("preference_main_lockscreen",true));
+            if(lock_isEnabled){
+                lock_enable=true;
+            }else{
+                lock_enable=false;
+            }
+        }
+    }
+
     private void loadApp() {
         PackageManager packageManager = getPackageManager();
         Application application;
@@ -174,8 +204,13 @@ public class AppListActivity extends AppCompatActivity {
         Log.d(TAG,"这个按键的KeyCode是 "+keyCode);
         if(keyCode == KeyEvent.KEYCODE_STAR){
             DevicePolicyManager mDPM = (DevicePolicyManager)getSystemService(Context.DEVICE_POLICY_SERVICE);
-            mDPM.lockNow();
+                if (lock_enable) {
+                    mDPM.lockNow();
+                } else {
+                    Log.d("TAG", "Lock screen is disabled");
+                }
             }
+
         return super.onKeyDown(keyCode,event);
     }
 
