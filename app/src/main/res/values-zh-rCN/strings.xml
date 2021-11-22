@@ -42,7 +42,7 @@
     <string name="admin_label">微型启动器-锁定手机</string>
     <string name="error_not_support_recent_app">出错：Android内部原因不支持打开多任务界面</string>
     <string name="what">你在期待什么？XD</string>
-    <string name="version">版本：1.0_th06</string>
+    <string name="version">版本：</string>
     <string name="connect_us">和我联系~</string>
     <string name="about_desc">多么棒的幻想乡！\\n 一个简单的适用于带有DPad的Android手机的启动器。</string>
     <string name="easter_egg_string">多么棒的幻想乡！</string>
@@ -63,4 +63,5 @@
     <string name="preference_main_default_launcher">修改默认应用</string>
     <string name="preference_func_category">功能设置</string>
     <string name="warn_recent_disable">最近任务快捷键已禁用。</string>
+    <string name="preference_admin_settings">设备管理设置</string>
 </resources>

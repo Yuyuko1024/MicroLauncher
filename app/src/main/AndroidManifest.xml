@@ -24,6 +24,7 @@
             android:name=".activity.MainActivity"
             android:theme="@style/TranslucentActivity"
             android:excludeFromRecents="true"
+            android:exported="true"
             tools:ignore="IntentFilterExportedReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -62,6 +63,7 @@
             android:name=".misc.AdminReceive"
             android:label="@string/admin_label"
             android:description="@string/admin_summary"
+            android:exported="true"
             android:permission="android.permission.BIND_DEVICE_ADMIN">
             <meta-data
                 android:name="android.app.device_admin"

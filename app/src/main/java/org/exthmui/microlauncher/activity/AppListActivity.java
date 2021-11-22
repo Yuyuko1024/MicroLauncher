@@ -28,6 +28,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.exthmui.microlauncher.BuildConfig;
 import org.exthmui.microlauncher.R;
 import org.exthmui.microlauncher.adapter.AppAdapter;
 import org.exthmui.microlauncher.misc.Application;
@@ -111,7 +112,10 @@ public class AppListActivity extends AppCompatActivity implements SharedPreferen
             isSystemApp = (applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 1;
             appIntent = new Intent().setClassName(activityInfo.packageName, activityInfo.name);
             application = new Application(appIcon, appLabel, isSystemApp, appIntent);
-            this.mApplicationList.add(application);
+            Log.e(TAG, String.valueOf(appLabel));
+            if(appLabel!=getString(R.string.app_name)){
+                this.mApplicationList.add(application);
+            }
         }
 
         this.mAppRecyclerView = findViewById(R.id.app_list);
@@ -210,6 +214,10 @@ public class AppListActivity extends AppCompatActivity implements SharedPreferen
                     Log.d("TAG", "Lock screen is disabled");
                 }
             }
+        if(keyCode == KeyEvent.KEYCODE_HOME){
+            finish();
+            return true;
+        }
 
         return super.onKeyDown(keyCode,event);
     }

@@ -18,7 +18,7 @@
             android:title="@string/clock_locate_title" />
 
         <ListPreference
-            android:defaultValue="14"
+            android:defaultValue="56"
             android:entries="@array/clock_size_entries"
             android:entryValues="@array/clock_size_entries"
             android:key="list_preference_clock_size"
@@ -37,6 +37,12 @@
             android:key="preference_main_lockscreen"
             android:summary="@string/preference_main_enable_lockscreen_category"
             android:title="@string/preference_main_enable_lockscreen" />
+        <Preference
+            android:key="preference_main_admin_settings"
+            android:title="@string/preference_admin_settings">
+            <intent android:targetPackage="com.android.settings"
+                android:targetClass="com.android.settings.DeviceAdminSettings"/>
+        </Preference>
         <Preference
             android:key="preference_main_default_launcher"
             android:title="@string/preference_main_default_launcher">

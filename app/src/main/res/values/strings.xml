@@ -43,7 +43,7 @@
     <string name="error_not_support_recent_app">Error: Not support for launch Recent App view</string>
     <string name="what">What are you looking forward to? XD</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="version">Version: 1.0_th06</string>
+    <string name="version">"Version: "</string>
     <string name="connect_us">Connect with us</string>
     <string name="about_desc">Wow such a good Gensokyo! \\n a simple Launcher for DPad Android Phone.</string>
     <string name="easter_egg_string">Such a good Gensokyo!</string>
@@ -65,4 +65,5 @@
     <string name="preference_main_default_launcher">Change default apps</string>
     <string name="preference_func_category">Function settings</string>
     <string name="warn_recent_disable">Recent Apps key is disabled.</string>
+    <string name="preference_admin_settings">Admin settings</string>
 </resources>

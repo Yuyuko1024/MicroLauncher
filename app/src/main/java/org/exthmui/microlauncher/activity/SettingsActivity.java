@@ -1,12 +1,15 @@
 package org.exthmui.microlauncher.activity;
 
+import android.app.admin.DevicePolicyManager;
+import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NavUtils;
 
 import org.exthmui.microlauncher.R;
 
@@ -22,14 +25,11 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        // When the home button is pressed, take the user back to the MainActivity
-        if (id == android.R.id.home) {
-            //NavUtils.navigateUpFromSameTask(this);
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode == KeyEvent.KEYCODE_HOME){
             finish();
+            return true;
         }
-        return super.onOptionsItemSelected(item);
+        return super.onKeyDown(keyCode,event);
     }
-
 }

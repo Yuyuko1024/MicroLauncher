@@ -4,15 +4,14 @@ plugins {
 
 android {
     android.defaultConfig.vectorDrawables.useSupportLibrary = true
-    compileSdkVersion 30
-    buildToolsVersion "30.0.3"
+    compileSdk 31
 
     defaultConfig {
         applicationId "org.exthmui.microlauncher"
         minSdkVersion 21
-        targetSdkVersion 30
-        versionCode 11000
-        versionName "1.0_th07"
+        targetSdkVersion 31
+        versionCode 12000
+        versionName "1.0_th08"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

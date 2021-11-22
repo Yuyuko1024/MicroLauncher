@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import org.exthmui.microlauncher.BuildConfig;
 import org.exthmui.microlauncher.R;
 
 import es.dmoral.toasty.Toasty;
@@ -48,7 +49,7 @@ public class AboutActivity extends AppCompatActivity implements SharedPreference
 
     Element versionElement(){
         Element versionElement = new Element();
-        final String version =getString(R.string.version);
+        final String version = getString(R.string.version)+BuildConfig.VERSION_NAME;
         versionElement.setTitle(version);
         versionElement.setOnClickListener(v -> {
             arrayCopy();

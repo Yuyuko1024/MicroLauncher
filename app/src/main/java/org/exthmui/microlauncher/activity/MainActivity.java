@@ -16,9 +16,12 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextClock;
 import android.widget.TextView;
@@ -52,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     Class serviceManagerClass;
     Button menu,contact;
     TextView dateView,lunar;
-    RelativeLayout clock;
+    LinearLayout clock;
     TextClock text_clock;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -76,6 +79,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         dateView=findViewById(R.id.date_text);
         lunar=findViewById(R.id.lunar_cale);
         clock=findViewById(R.id.clock);
+
         text_clock=findViewById(R.id.text_clock);
         printDayOfWeek();
         dateView.setText(sdf.format(date)+" "+week);
@@ -84,6 +88,11 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         contact=findViewById(R.id.contact);
         contact.setOnClickListener(new mClick());
         menu.setOnClickListener(new mClick());
+        clock.post(() -> {
+            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) clock.getLayoutParams();
+            params.bottomMargin = menu.getHeight();
+            clock.setLayoutParams(params);
+        });
         loadSettings();
     }
 
@@ -96,44 +105,35 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         }else{
             lunar.setVisibility(View.INVISIBLE);
         }
-        Boolean lock_isEnabled = (sharedPreferences.getBoolean("preference_main_lockscreen",true));
-        if(lock_isEnabled){
-            lock_enable=true;
-        }else{
-            lock_enable=false;
-        }
+        lock_enable= sharedPreferences.getBoolean("preference_main_lockscreen",true);
         String clock_locate = (sharedPreferences.getString("list_preference_clock_locate","reimu"));
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(clock.getLayoutParams());
-        switch (clock_locate){
-            case "reimu":
-                params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-                params.addRule(RelativeLayout.ALIGN_PARENT_START);
-                clock.setLayoutParams(params);
-                break;
-            case "marisa":
-                params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-                params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-                clock.setLayoutParams(params);
-                break;
-            case "renko":
-                params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-                params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-                clock.setLayoutParams(params);
-                break;
-            case "maribel":
-                params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-                params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-                clock.setLayoutParams(params);
-                break;
-        }
+        setClockLocate(clock_locate);
         String clock_size = (sharedPreferences.getString("list_preference_clock_size","58"));
         text_clock.setTextSize(Float.parseFloat(clock_size));
-        Boolean recent_isEnabled = (sharedPreferences.getBoolean("switch_preference_recent_apps",true));
-        if(recent_isEnabled){
-            recent_enable=true;
-        }else{
-            recent_enable=false;
+        recent_enable= sharedPreferences.getBoolean("switch_preference_recent_apps",true);
+    }
+
+    private void setClockLocate(String clockLocate) {
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) clock.getLayoutParams();
+        switch (clockLocate){
+            case "reimu":
+                clock.setGravity(Gravity.START);
+                params.gravity = Gravity.START | Gravity.TOP;
+                break;
+            case "marisa":
+                clock.setGravity(Gravity.START);
+                params.gravity = Gravity.START | Gravity.BOTTOM;
+                break;
+            case "renko":
+                clock.setGravity(Gravity.END);
+                params.gravity = Gravity.END | Gravity.TOP;
+                break;
+            case "maribel":
+                clock.setGravity(Gravity.END);
+                params.gravity = Gravity.END | Gravity.BOTTOM;
+                break;
         }
+        clock.setLayoutParams(params);
     }
 
     @Override
@@ -146,48 +146,16 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                 lunar.setVisibility(View.INVISIBLE);
             }
         }else if(key.equals("preference_main_lockscreen")){
-            Boolean lock_isEnabled = (sharedPreferences.getBoolean("preference_main_lockscreen",true));
-            if(lock_isEnabled){
-                lock_enable=true;
-            }else{
-                lock_enable=false;
-            }
+            lock_enable = (sharedPreferences.getBoolean("preference_main_lockscreen",true));
         }else if(key.equals("list_preference_clock_locate")){
             String clock_locate = (sharedPreferences.getString("list_preference_clock_locate","reimu"));
-            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(clock.getLayoutParams());
-            switch (clock_locate){
-                case "reimu":
-                    params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-                    params.addRule(RelativeLayout.ALIGN_PARENT_START);
-                    clock.setLayoutParams(params);
-                break;
-                case "marisa":
-                    params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-                    params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-                    clock.setLayoutParams(params);
-                break;
-                case "renko":
-                    params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-                    params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-                    clock.setLayoutParams(params);
-                break;
-                case "maribel":
-                    params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-                    params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-                    clock.setLayoutParams(params);
-                break;
-            }
+            setClockLocate(clock_locate);
         }else if(key.equals("list_preference_clock_size")){
             String clock_size = (sharedPreferences.getString("list_preference_clock_size","58"));
             text_clock.setTextSize(Float.parseFloat(clock_size));
         }else if(key.equals("switch_preference_recent_apps")){
-            Boolean recent_isEnabled = (sharedPreferences.getBoolean("switch_preference_recent_apps",true));
-            if(recent_isEnabled){
-                recent_enable=true;
-            }else{
-                recent_enable=false;
-            }
-
+            //after
+            recent_enable = sharedPreferences.getBoolean("switch_preference_recent_apps",true);
         }
     }
 
@@ -233,7 +201,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             else if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
                Intent it = new Intent();
                it.setAction("android.intent.action.MAIN");
-               it.addCategory("android.intent.category.APP_MUSIC");
+               it.addCategory("android.intent.category.APP_BROWSER");
                it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                startActivity(it);
                 Log.d(TAG,"5,4,3,2,1,三倍ice cream!!!!!");
