@@ -7,19 +7,18 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/app_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_weight="1"/>
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/app_list"
         android:background="@color/transpart">
 
         <TextView
             android:id="@+id/app_menu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@color/transpart"
+            android:focusable="false"
             android:text="@string/app_menu_string"
             android:textColor="@color/black"
             android:textSize="32sp" />
@@ -29,7 +28,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:background="@color/transpart"
+            android:focusable="false"
             android:text="@string/back"
             android:textColor="@color/black"
             android:textSize="32sp" />
