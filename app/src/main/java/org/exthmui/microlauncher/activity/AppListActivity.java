@@ -96,6 +96,7 @@ public class AppListActivity extends AppCompatActivity implements SharedPreferen
         Intent intent = new Intent().setAction(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER);
         ActivityInfo activityInfo;
         ApplicationInfo applicationInfo;
+        String pkgName;
         Drawable appIcon;
         CharSequence appLabel;
         boolean isSystemApp;
@@ -111,7 +112,8 @@ public class AppListActivity extends AppCompatActivity implements SharedPreferen
             appLabel = activityInfo.loadLabel(packageManager);
             isSystemApp = (applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 1;
             appIntent = new Intent().setClassName(activityInfo.packageName, activityInfo.name);
-            application = new Application(appIcon, appLabel, isSystemApp, appIntent);
+            pkgName = activityInfo.packageName;
+            application = new Application(appIcon, appLabel, isSystemApp, appIntent, pkgName);
             Log.e(TAG, String.valueOf(appLabel));
             if(appLabel!=getString(R.string.app_name)){
                 this.mApplicationList.add(application);
@@ -157,17 +159,6 @@ public class AppListActivity extends AppCompatActivity implements SharedPreferen
             }
         });
         popupMenu.show();
-    }
-
-    @Override
-    public boolean onContextItemSelected(@NonNull MenuItem item) {
-        //Toast.makeText(this,item.getTitle(),Toast.LENGTH_SHORT).show();
-        switch (item.getItemId()){
-            case 0:
-                //TODO: Need implement method
-                break;
-        }
-        return super.onContextItemSelected(item);
     }
 
     @Override

@@ -1,9 +1,14 @@
 package org.exthmui.microlauncher.adapter;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.provider.Settings;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -12,6 +17,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.snackbar.Snackbar;
 
 import org.exthmui.microlauncher.misc.Application;
 import org.exthmui.microlauncher.R;
@@ -28,28 +35,22 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ApplicationViewH
      * @param applicationList: 类型为Application的List集
      * @param layoutMode:      0，线性；1：网格
      */
-    public AppAdapter(List<Application> applicationList, int layoutMode) {
+    public AppAdapter(List<Application> applicationList, int layoutMode ) {
         this.mApplicationList = applicationList;
         this.mLayoutMode = layoutMode;
     }
-
-    public static int getPosition() {
-        return mPosition;
-    }
-
-    
 
     @NonNull
     @Override
     public ApplicationViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         switch (this.mLayoutMode) {
             case 0:
-                this.mItemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.app_list_item,parent, false);
+                mItemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.app_list_item,parent, false);
                 break;
             case 1:
                 break;
         }
-        return new ApplicationViewHolder(this.mItemView);
+        return new ApplicationViewHolder(mItemView,this.mApplicationList);
     }
 
     @Override
@@ -71,14 +72,16 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ApplicationViewH
 //      设置长按监听事件
         holder.mTextButton.setOnLongClickListener(v -> {
             mPosition = holder.getAdapterPosition();
-            String tip = application.isSystemApp() ? "这是系统应用" : "这是用户应用";
-            Toast.makeText(v.getContext(), tip, Toast.LENGTH_SHORT).show();
+            Log.e("Adapter","mPosition="+mPosition);
+            //String tip = application.isSystemApp() ? "这是系统应用" : "这是用户应用";
+            //Toast.makeText(v.getContext(), tip, Toast.LENGTH_SHORT).show();
             return false;
         });
         holder.itemView.setOnLongClickListener(v -> {
             mPosition = holder.getAdapterPosition();
-            String tip = application.isSystemApp() ? "这是系统应用" : "这是用户应用";
-            Toast.makeText(v.getContext(), tip, Toast.LENGTH_SHORT).show();
+            Log.e("Adapter","mPosition="+mPosition);
+            //String tip = application.isSystemApp() ? "这是系统应用" : "这是用户应用";
+            //Toast.makeText(v.getContext(), tip, Toast.LENGTH_SHORT).show();
             return false;
         });
 
@@ -90,15 +93,17 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ApplicationViewH
         return mApplicationList == null ? 0 : mApplicationList.size();
     }
 
-    public static class ApplicationViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
+    public static class ApplicationViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener {
 
         private ImageView mAppIconView;
         private Button mTextButton;
+        private List<Application> mApplicationList;
 
-        public ApplicationViewHolder(@NonNull View view) {
+        public ApplicationViewHolder(@NonNull View view,List<Application> applicationList) {
             super(view);
             this.mAppIconView = view.findViewById(R.id.app_icon);
             this.mTextButton = view.findViewById(R.id.app_title);
+            this.mApplicationList = applicationList;
             view.setOnCreateContextMenuListener(this);
         }
 
@@ -109,7 +114,49 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ApplicationViewH
             menu.add(0, 1, Menu.NONE,  R.string.app_menu_uninstall);
             menu.add(0, 2, Menu.NONE,  R.string.app_menu_info);
             menu.add(0, 3, Menu.NONE,  R.string.app_menu_manage);
+            MenuItem item1 = menu.findItem(0);
+            MenuItem item2 = menu.findItem(1);
+            MenuItem item3 = menu.findItem(2);
+            MenuItem item4 = menu.findItem(3);
+            item1.setOnMenuItemClickListener(this);
+            item2.setOnMenuItemClickListener(this);
+            item3.setOnMenuItemClickListener(this);
+            item4.setOnMenuItemClickListener(this);
         }
+
+        @Override
+        public boolean onMenuItemClick(MenuItem item) {
+            Application application = this.mApplicationList.get(mPosition);
+            switch (item.getItemId()){
+                case 0:
+                    mItemView.getContext().startActivity(application.getAppIntent());
+                    break;
+                case 1:
+                    if(application.isSystemApp()){
+                        Snackbar.make(itemView,R.string.this_is_system_app,Snackbar.LENGTH_SHORT).show();
+                    }else{
+                        Uri uri = Uri.fromParts("package", application.getPkgName(), null);
+                        Intent intent = new Intent(Intent.ACTION_DELETE, uri);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        mItemView.getContext().startActivity(intent);
+                    }
+                    break;
+                case 2:
+                    Intent intent = new Intent();
+                    intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                    intent.setData(Uri.fromParts("package", application.getPkgName(), null));
+                    mItemView.getContext().startActivity(intent);
+                    break;
+                case 3:
+                    Intent i = new Intent();
+                    i.setClassName("com.android.settings",
+                            "com.android.settings.applications.ManageApplications");
+                    mItemView.getContext().startActivity(i);
+                    break;
+            }
+            return false;
+        }
+
     }
 
 }

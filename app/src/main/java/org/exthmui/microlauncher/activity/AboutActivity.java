@@ -11,9 +11,11 @@ import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import org.exthmui.microlauncher.BuildConfig;
@@ -45,6 +47,10 @@ public class AboutActivity extends AppCompatActivity implements SharedPreference
                 .create();
 
         setContentView(aboutPage);
+        ActionBar actionBar = this.getSupportActionBar();
+        if(actionBar != null){
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
     }
 
     Element versionElement(){
@@ -78,6 +84,17 @@ public class AboutActivity extends AppCompatActivity implements SharedPreference
             }
         }
         return super.onKeyDown(keyCode,event);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        // When the home button is pressed, take the user back to the MainActivity
+        if (id == android.R.id.home) {
+            //NavUtils.navigateUpFromSameTask(this);
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void loadSettings(){
