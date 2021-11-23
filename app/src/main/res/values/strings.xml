@@ -68,4 +68,6 @@
     <string name="preference_admin_settings">Admin settings</string>
     <string name="this_is_system_app">This is System app, cannot uninstall !</string>
     <string name="refreshing_pkg_list">Refreshing App List...</string>
+    <string name="preference_carrier">Enable carrier name display</string>
+    <string name="default_carrier">Genso Telecom</string>
 </resources>

@@ -66,4 +66,6 @@
     <string name="preference_admin_settings">设备管理设置</string>
     <string name="this_is_system_app">这是系统应用，无法卸载！</string>
     <string name="refreshing_pkg_list">刷新应用列表...</string>
+    <string name="preference_carrier">启用运营商名称显示</string>
+    <string name="default_carrier">幻想乡电信</string>
 </resources>

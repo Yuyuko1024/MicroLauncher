@@ -28,4 +28,13 @@
         android:text="@string/default_lunar"
         android:textColor="@color/white"
         android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/carrier_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/default_carrier"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:textSize="16sp" />
 </LinearLayout>

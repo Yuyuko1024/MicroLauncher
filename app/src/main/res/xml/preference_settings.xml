@@ -10,6 +10,10 @@
             android:defaultValue="true"
             android:key="switch_preference_lunar"
             android:title="@string/preference_main_lunar" />
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="switch_preference_carrier_name"
+            android:title="@string/preference_carrier"/>
         <ListPreference
             android:defaultValue="reimu"
             android:entries="@array/clock_locate_entries"

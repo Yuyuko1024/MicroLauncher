@@ -15,14 +15,13 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextClock;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -52,9 +51,10 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     private DevicePolicyManager mDPM ;
     private boolean lock_enable = true;
     private boolean recent_enable = true;
+    private boolean carrier_enable = true;
     Class serviceManagerClass;
     Button menu,contact;
-    TextView dateView,lunar;
+    TextView dateView,lunar,carrier_name;
     LinearLayout clock;
     TextClock text_clock;
 
@@ -63,12 +63,9 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        if (Build.VERSION.SDK_INT>=21)
-        {
-            View decorView = getWindow().getDecorView();
-            decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN|View.SYSTEM_UI_FLAG_LAYOUT_STABLE); //使背景图与状态栏融合到一起，这里需要在setcontentview前执行
-            getWindow().setStatusBarColor(Color.TRANSPARENT);
-        }
+        View decorView = getWindow().getDecorView();
+        decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN|View.SYSTEM_UI_FLAG_LAYOUT_STABLE); //使背景图与状态栏融合到一起，这里需要在setcontentview前执行
+        getWindow().setStatusBarColor(Color.TRANSPARENT);
         mAdminName = new ComponentName(this, AdminReceive.class);
         mDPM = (DevicePolicyManager)getSystemService(Context.DEVICE_POLICY_SERVICE);
         if(!mDPM.isAdminActive(mAdminName)){
@@ -79,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         dateView=findViewById(R.id.date_text);
         lunar=findViewById(R.id.lunar_cale);
         clock=findViewById(R.id.clock);
-
+        carrier_name=findViewById(R.id.carrier_name);
         text_clock=findViewById(R.id.text_clock);
         printDayOfWeek();
         dateView.setText(sdf.format(date)+" "+week);
@@ -93,13 +90,14 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             params.bottomMargin = menu.getHeight();
             clock.setLayoutParams(params);
         });
+        Log.e(TAG,"Carrier Name is "+getCarrierName(getApplicationContext()));
         loadSettings();
     }
 
     private void loadSettings(){
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
-        Boolean lunar_isEnable= (sharedPreferences.getBoolean("switch_preference_lunar",true));
+        boolean lunar_isEnable= (sharedPreferences.getBoolean("switch_preference_lunar",true));
         if(lunar_isEnable){
             lunar.setVisibility(View.VISIBLE);
         }else{
@@ -111,6 +109,13 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         String clock_size = (sharedPreferences.getString("list_preference_clock_size","58"));
         text_clock.setTextSize(Float.parseFloat(clock_size));
         recent_enable= sharedPreferences.getBoolean("switch_preference_recent_apps",true);
+        carrier_enable = sharedPreferences.getBoolean("switch_preference_carrier_name",true);
+        if(carrier_enable){
+            carrier_name.setVisibility(View.VISIBLE);
+            carrier_name.setText(getCarrierName(getApplicationContext()));
+        }else{
+            carrier_name.setVisibility(View.INVISIBLE);
+        }
     }
 
     private void setClockLocate(String clockLocate) {
@@ -136,26 +141,46 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         clock.setLayoutParams(params);
     }
 
+    public static String getCarrierName(Context context){
+        TelephonyManager teleMgr  = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+        return teleMgr.getSimOperatorName();
+    }
+
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if(key.equals("switch_preference_lunar")){
-            Boolean lunar_isEnable= (sharedPreferences.getBoolean("switch_preference_lunar",true));
-            if(lunar_isEnable){
-                lunar.setVisibility(View.VISIBLE);
-            }else{
-                lunar.setVisibility(View.INVISIBLE);
-            }
-        }else if(key.equals("preference_main_lockscreen")){
-            lock_enable = (sharedPreferences.getBoolean("preference_main_lockscreen",true));
-        }else if(key.equals("list_preference_clock_locate")){
-            String clock_locate = (sharedPreferences.getString("list_preference_clock_locate","reimu"));
-            setClockLocate(clock_locate);
-        }else if(key.equals("list_preference_clock_size")){
-            String clock_size = (sharedPreferences.getString("list_preference_clock_size","58"));
-            text_clock.setTextSize(Float.parseFloat(clock_size));
-        }else if(key.equals("switch_preference_recent_apps")){
-            //after
-            recent_enable = sharedPreferences.getBoolean("switch_preference_recent_apps",true);
+        switch (key) {
+            case "switch_preference_lunar":
+                boolean lunar_isEnable = (sharedPreferences.getBoolean("switch_preference_lunar", true));
+                if (lunar_isEnable) {
+                    lunar.setVisibility(View.VISIBLE);
+                } else {
+                    lunar.setVisibility(View.INVISIBLE);
+                }
+                break;
+            case "preference_main_lockscreen":
+                lock_enable = (sharedPreferences.getBoolean("preference_main_lockscreen", true));
+                break;
+            case "list_preference_clock_locate":
+                String clock_locate = (sharedPreferences.getString("list_preference_clock_locate", "reimu"));
+                setClockLocate(clock_locate);
+                break;
+            case "list_preference_clock_size":
+                String clock_size = (sharedPreferences.getString("list_preference_clock_size", "58"));
+                text_clock.setTextSize(Float.parseFloat(clock_size));
+                break;
+            case "switch_preference_recent_apps":
+                //after
+                recent_enable = sharedPreferences.getBoolean("switch_preference_recent_apps", true);
+                break;
+            case  "switch_preference_carrier_name":
+                carrier_enable = sharedPreferences.getBoolean("switch_preference_carrier_name",true);
+                if(carrier_enable){
+                    carrier_name.setVisibility(View.VISIBLE);
+                    carrier_name.setText(getCarrierName(getApplicationContext()));
+                }else{
+                    carrier_name.setVisibility(View.INVISIBLE);
+                }
+                break;
         }
     }
 
