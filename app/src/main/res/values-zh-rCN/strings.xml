@@ -65,4 +65,5 @@
     <string name="warn_recent_disable">最近任务快捷键已禁用。</string>
     <string name="preference_admin_settings">设备管理设置</string>
     <string name="this_is_system_app">这是系统应用，无法卸载！</string>
+    <string name="refreshing_pkg_list">刷新应用列表...</string>
 </resources>

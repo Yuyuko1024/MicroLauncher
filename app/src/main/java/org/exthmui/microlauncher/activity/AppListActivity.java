@@ -1,9 +1,10 @@
 package org.exthmui.microlauncher.activity;
 
 import android.app.admin.DevicePolicyManager;
-import android.content.ComponentName;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
@@ -20,7 +21,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.PopupMenu;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -28,7 +28,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.exthmui.microlauncher.BuildConfig;
 import org.exthmui.microlauncher.R;
 import org.exthmui.microlauncher.adapter.AppAdapter;
 import org.exthmui.microlauncher.misc.Application;
@@ -43,7 +42,10 @@ public class AppListActivity extends AppCompatActivity implements SharedPreferen
     private List<Application> mApplicationList;
     private final static String TAG = "AppListActivity";
     private boolean lock_enable = true;
+    private IntentFilter intentFilter;
+    private PkgDelReceiver mPkgDelReceiver;
     TextView menu,back;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -55,7 +57,27 @@ public class AppListActivity extends AppCompatActivity implements SharedPreferen
         menu.setOnClickListener(new funClick());
         loadApp();
         loadSettings();
+        receiveSyscast();
     }
+
+    private void receiveSyscast(){
+        intentFilter = new IntentFilter();
+        intentFilter.addAction("android.intent.action.PACKAGE_ADDED");
+        intentFilter.addAction("android.intent.action.PACKAGE_REMOVED");
+        intentFilter.addDataScheme("package");
+        mPkgDelReceiver = new PkgDelReceiver();
+        registerReceiver(mPkgDelReceiver,intentFilter);
+    }
+
+    class PkgDelReceiver extends BroadcastReceiver{
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.e(TAG,"detect package change...");
+            Toasty.info(context,R.string.refreshing_pkg_list,Toasty.LENGTH_LONG).show();
+            loadApp();
+        }
+    }
+
     class funClick implements View.OnClickListener{
         @Override
         public void onClick(View v) {
@@ -213,4 +235,9 @@ public class AppListActivity extends AppCompatActivity implements SharedPreferen
         return super.onKeyDown(keyCode,event);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(mPkgDelReceiver);
+    }
 }
