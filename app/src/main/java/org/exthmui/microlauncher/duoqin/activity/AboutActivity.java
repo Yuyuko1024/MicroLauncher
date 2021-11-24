@@ -1,7 +1,6 @@
-package org.exthmui.microlauncher.activity;
+package org.exthmui.microlauncher.duoqin.activity;
 
 import android.app.admin.DevicePolicyManager;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -18,8 +17,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
-import org.exthmui.microlauncher.BuildConfig;
-import org.exthmui.microlauncher.R;
+import org.exthmui.microlauncher.duoqin.BuildConfig;
+import org.exthmui.microlauncher.duoqin.R;
 
 import es.dmoral.toasty.Toasty;
 import mehdi.sakout.aboutpage.AboutPage;

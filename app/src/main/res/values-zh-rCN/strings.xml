@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">微  型  启  动  器</string>
+    <string name="app_name">微型启动器多亲版</string>
     <string name="menu">功能表</string>
     <string name="contact">通讯录</string>
     <string name="power_btn">电源</string>
@@ -27,8 +27,6 @@
     <string name="menu_title">功能表</string>
     <string name="choose_wallpaper">选择一张你喜欢的图片作为设备的壁纸吧！</string>
     <string name="back">返回</string>
-    <string name="title">未在播放</string>
-    <string name="singer">未在播放</string>
     <string name="default_app_title">应用标题</string>
     <string name="app_list_title">应用程序列表</string>
     <string name="app_menu_string">菜单</string>
@@ -38,13 +36,10 @@
     <string name="app_menu_manage">应用管理</string>
     <string name="menu_about_phone">关于手机</string>
     <string name="current_volume">当前音量：</string>
-    <string name="admin_summary">微型启动器需要管理员权限才能设定*键锁定手机</string>
-    <string name="admin_label">微型启动器-锁定手机</string>
-    <string name="error_not_support_recent_app">出错：Android内部原因不支持打开多任务界面</string>
     <string name="what">你在期待什么？XD</string>
     <string name="version">版本：</string>
     <string name="connect_us">和我联系~</string>
-    <string name="about_desc">多么棒的幻想乡！\\n 一个简单的适用于带有DPad的Android手机的启动器。</string>
+    <string name="about_desc">多么棒的幻想乡！\\n 一个简单的适用于带有DPad的Android手机的启动器。 \\n 多亲F21Pro/Pro+版</string>
     <string name="easter_egg_string">多么棒的幻想乡！</string>
     <string name="error_lock_phone">错误：无法锁定手机！</string>
     <string name="preference_main_category">主界面设置</string>
@@ -55,11 +50,7 @@
     <string name="clock_locate_right_down">右下角</string>
     <string name="clock_locate_custon">自定义位置</string>
     <string name="clock_locate_title">主页时钟位置</string>
-    <string name="preference_main_recent">启用最近任务快捷键</string>
-    <string name="preference_main_recent_category">按“0”键在最近App里切换，该功能在Android 9以后不可用。</string>
     <string name="preference_main_clock_size">时钟字体大小</string>
-    <string name="preference_main_enable_lockscreen">启用一键锁屏</string>
-    <string name="preference_main_enable_lockscreen_category">该功能需要管理员权限</string>
     <string name="preference_main_default_launcher">修改默认应用</string>
     <string name="preference_func_category">功能设置</string>
     <string name="warn_recent_disable">最近任务快捷键已禁用。</string>
@@ -68,4 +59,12 @@
     <string name="refreshing_pkg_list">刷新应用列表...</string>
     <string name="preference_carrier">启用运营商名称显示</string>
     <string name="default_carrier">幻想乡电信</string>
+    <string name="preference_main_enable_ai_category">启用此功能后，*键将绑定为小爱键</string>
+    <string name="preference_main_enable_ai">启用小爱键</string>
+    <string name="preference_enable_dial">启用拨号盘</string>
+    <string name="preference_dial_summary">可在主界面按任意数字键打开拨号盘</string>
+    <string name="preference_pound_func_title">选择 # 键功能</string>
+    <string name="pound_func_volume">音量面板</string>
+    <string name="pound_func_torch">手电筒</string>
+    <string name="permission_denied">看起来某项权限遭到拒绝，我们无法提供这个功能</string>
 </resources>

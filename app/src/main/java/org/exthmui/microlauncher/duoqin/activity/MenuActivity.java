@@ -1,4 +1,4 @@
-package org.exthmui.microlauncher.activity;
+package org.exthmui.microlauncher.duoqin.activity;
 
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
@@ -22,7 +22,7 @@ import android.widget.Toast;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
-import org.exthmui.microlauncher.R;
+import org.exthmui.microlauncher.duoqin.R;
 
 import es.dmoral.toasty.Toasty;
 

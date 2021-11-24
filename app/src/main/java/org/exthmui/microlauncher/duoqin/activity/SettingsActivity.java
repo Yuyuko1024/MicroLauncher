@@ -1,4 +1,4 @@
-package org.exthmui.microlauncher.activity;
+package org.exthmui.microlauncher.duoqin.activity;
 
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -8,9 +8,10 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
-import org.exthmui.microlauncher.R;
+import org.exthmui.microlauncher.duoqin.R;
 
 public class SettingsActivity extends AppCompatActivity {
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -1,4 +1,4 @@
-package org.exthmui.microlauncher.misc;
+package org.exthmui.microlauncher.duoqin.misc;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;

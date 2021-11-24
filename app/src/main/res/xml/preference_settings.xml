@@ -30,23 +30,22 @@
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/preference_func_category"
         android:key="preference_func">
-
         <SwitchPreference
             android:defaultValue="true"
-            android:key="switch_preference_recent_apps"
-            android:summary="@string/preference_main_recent_category"
-            android:title="@string/preference_main_recent" />
+            android:key="preference_main_xiaoai_ai"
+            android:summary="@string/preference_main_enable_ai_category"
+            android:title="@string/preference_main_enable_ai" />
         <SwitchPreference
             android:defaultValue="true"
-            android:key="preference_main_lockscreen"
-            android:summary="@string/preference_main_enable_lockscreen_category"
-            android:title="@string/preference_main_enable_lockscreen" />
-        <Preference
-            android:key="preference_main_admin_settings"
-            android:title="@string/preference_admin_settings">
-            <intent android:targetPackage="com.android.settings"
-                android:targetClass="com.android.settings.DeviceAdminSettings"/>
-        </Preference>
+            android:key="preference_dial_pad"
+            android:summary="@string/preference_dial_summary"
+            android:title="@string/preference_enable_dial"/>
+        <ListPreference
+            android:defaultValue="volume"
+            android:title="@string/preference_pound_func_title"
+            android:entries="@array/pound_func_entries"
+            android:entryValues="@array/pound_func_values"
+            android:key="preference_pound_func"/>
         <Preference
             android:key="preference_main_default_launcher"
             android:title="@string/preference_main_default_launcher">

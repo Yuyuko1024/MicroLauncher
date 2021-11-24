@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="clock_locate_entries" translatable="false">
+    <string-array name="clock_locate_entries">
         <item>@string/clock_locate_left_up</item>
         <item>@string/clock_locate_left_down</item>
         <item>@string/clock_locate_right_up</item>
@@ -12,6 +12,16 @@
         <item>marisa</item>
         <item>renko</item>
         <item>maribel</item>
+    </string-array>
+
+    <string-array name="pound_func_entries">
+        <item>@string/pound_func_volume</item>
+        <item>@string/pound_func_torch</item>
+    </string-array>
+
+    <string-array name="pound_func_values" translatable="false">
+        <item>volume</item>
+        <item>torch</item>
     </string-array>
 
     <string-array name="clock_size_entries" translatable="false">

@@ -1,7 +1,6 @@
-package org.exthmui.microlauncher.adapter;
+package org.exthmui.microlauncher.duoqin.adapter;
 
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.provider.Settings;
 import android.util.Log;
@@ -13,15 +12,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.snackbar.Snackbar;
 
-import org.exthmui.microlauncher.misc.Application;
-import org.exthmui.microlauncher.R;
+import org.exthmui.microlauncher.duoqin.misc.Application;
+import org.exthmui.microlauncher.duoqin.R;
 
 import java.util.List;
 

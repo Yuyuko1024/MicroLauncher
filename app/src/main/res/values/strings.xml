@@ -27,8 +27,6 @@
     <string name="choose_wallpaper">Choose a picture you like as the wallpaper of your device!</string>
     <string name="back">Back</string>
     <string name="default_volume" translatable="false">0</string>
-    <string name="singer">Not playing</string>
-    <string name="title">Not playing</string>
     <string name="default_app_title">App Title</string>
     <string name="app_list_title">App List</string>
     <string name="app_menu_string">Menu</string>
@@ -38,14 +36,10 @@
     <string name="app_menu_manage">App Manage</string>
     <string name="menu_about_phone">About phone</string>
     <string name="current_volume">Current Volume :</string>
-    <string name="admin_summary">MicroLauncher needs administrator privileges to set the * key to lock the phone</string>
-    <string name="admin_label">MicroLauncher - Lock Phone</string>
-    <string name="error_not_support_recent_app">Error: Not support for launch Recent App view</string>
     <string name="what">What are you looking forward to? XD</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="version">"Version: "</string>
     <string name="connect_us">Connect with us</string>
-    <string name="about_desc">Wow such a good Gensokyo! \\n a simple Launcher for DPad Android Phone.</string>
+    <string name="about_desc">Wow such a good Gensokyo! \\n a simple Launcher for DPad Android Phone. \\n DuoQin Version</string>
     <string name="easter_egg_string">Such a good Gensokyo!</string>
     <string name="error_lock_phone">Error: Lock phone error!</string>
     <string name="preference_main_category">Main Screen Settings</string>
@@ -56,18 +50,22 @@
     <string name="clock_locate_right_down">Right down</string>
     <string name="clock_locate_custon">Custom locate</string>
     <string name="clock_locate_title">Clock locate</string>
-    <string name="preference_main_recent">Enable Android recent apps shortcut key</string>
-    <string name="preference_main_recent_category">Press \"0\" key to switch apps, this feature is not available after Android 9</string>
     <string name="preference_main_clock_size">Clock size</string>
     <string name="default_clock_size" translatable="false">58</string>
-    <string name="preference_main_enable_lockscreen">Enable lock screen feature</string>
-    <string name="preference_main_enable_lockscreen_category">This feature need device admin permission</string>
     <string name="preference_main_default_launcher">Change default apps</string>
     <string name="preference_func_category">Function settings</string>
     <string name="warn_recent_disable">Recent Apps key is disabled.</string>
     <string name="preference_admin_settings">Admin settings</string>
     <string name="this_is_system_app">This is System app, cannot uninstall !</string>
-    <string name="refreshing_pkg_list">Refreshing App List...</string>
+    <string name="refreshing_pkg_list">Refreshing App List…</string>
     <string name="preference_carrier">Enable carrier name display</string>
     <string name="default_carrier">Genso Telecom</string>
+    <string name="preference_main_enable_ai_category">When this function is enabled, press the * key will launch XiaoAi AI</string>
+    <string name="preference_main_enable_ai">Enable AI key</string>
+    <string name="preference_enable_dial">Enable Dial Pad</string>
+    <string name="preference_dial_summary">Enable DialPad mode</string>
+    <string name="preference_pound_func_title">Choose Pound key function</string>
+    <string name="pound_func_volume">Volume Panel</string>
+    <string name="pound_func_torch">Torch</string>
+    <string name="permission_denied">It seems that a permission has been denied and we cannot provide this function</string>
 </resources>

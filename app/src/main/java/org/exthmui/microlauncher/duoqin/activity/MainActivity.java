@@ -1,19 +1,16 @@
-package org.exthmui.microlauncher.activity;
+package org.exthmui.microlauncher.duoqin.activity;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.admin.DevicePolicyManager;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.graphics.Color;
-import android.net.Uri;
+import android.hardware.camera2.CameraAccessException;
+import android.hardware.camera2.CameraManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.IBinder;
-import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -24,16 +21,15 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextClock;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
-import org.exthmui.microlauncher.R;
-import org.exthmui.microlauncher.misc.AdminReceive;
-import org.exthmui.microlauncher.misc.ChineseCale;
+import org.exthmui.microlauncher.duoqin.R;
+import org.exthmui.microlauncher.duoqin.misc.ChineseCale;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -44,15 +40,15 @@ import es.dmoral.toasty.Toasty;
 public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
     private final static String TAG = "ML_MainActivity";
     private final static String dateFormat = "yyyy年MM月dd日";
-    private final static int ENABLE_ADMIN = 1;
     private final Calendar calendar = Calendar.getInstance();
     private String week;
-    private ComponentName mAdminName = null;
-    private DevicePolicyManager mDPM ;
-    private boolean lock_enable = true;
-    private boolean recent_enable = true;
+    private static final int grant_int=1;
     private boolean carrier_enable = true;
-    Class serviceManagerClass;
+    private boolean xiaoai_enable = true;
+    private boolean dialpad_enable = true;
+    private boolean torch = false;
+    private CameraManager manager;
+    String pound_func;
     Button menu,contact;
     TextView dateView,lunar,carrier_name;
     LinearLayout clock;
@@ -66,11 +62,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         View decorView = getWindow().getDecorView();
         decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN|View.SYSTEM_UI_FLAG_LAYOUT_STABLE); //使背景图与状态栏融合到一起，这里需要在setcontentview前执行
         getWindow().setStatusBarColor(Color.TRANSPARENT);
-        mAdminName = new ComponentName(this, AdminReceive.class);
-        mDPM = (DevicePolicyManager)getSystemService(Context.DEVICE_POLICY_SERVICE);
-        if(!mDPM.isAdminActive(mAdminName)){
-            showAdminGrant();
-        }
         @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
         Date date = new Date(System.currentTimeMillis());
         dateView=findViewById(R.id.date_text);
@@ -85,6 +76,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         contact=findViewById(R.id.contact);
         contact.setOnClickListener(new mClick());
         menu.setOnClickListener(new mClick());
+        GrantPermissions();
         clock.post(() -> {
             LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) clock.getLayoutParams();
             params.bottomMargin = menu.getHeight();
@@ -92,6 +84,14 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         });
         Log.e(TAG,"Carrier Name is "+getCarrierName(getApplicationContext()));
         loadSettings();
+    }
+
+    private void GrantPermissions(){
+        if(PackageManager.PERMISSION_GRANTED == ContextCompat.checkSelfPermission(this,android.Manifest.permission.CAMERA)){
+        }else{
+            String[] perms = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA};
+            ActivityCompat.requestPermissions(this, perms,grant_int);
+        }
     }
 
     private void loadSettings(){
@@ -103,13 +103,14 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         }else{
             lunar.setVisibility(View.INVISIBLE);
         }
-        lock_enable= sharedPreferences.getBoolean("preference_main_lockscreen",true);
         String clock_locate = (sharedPreferences.getString("list_preference_clock_locate","reimu"));
         setClockLocate(clock_locate);
+        pound_func = (sharedPreferences.getString("preference_pound_func","volume"));
         String clock_size = (sharedPreferences.getString("list_preference_clock_size","58"));
         text_clock.setTextSize(Float.parseFloat(clock_size));
-        recent_enable= sharedPreferences.getBoolean("switch_preference_recent_apps",true);
         carrier_enable = sharedPreferences.getBoolean("switch_preference_carrier_name",true);
+        xiaoai_enable = sharedPreferences.getBoolean("preference_main_xiaoai_ai",true);
+        dialpad_enable = sharedPreferences.getBoolean("preference_dial_pad",true);
         if(carrier_enable){
             carrier_name.setVisibility(View.VISIBLE);
             carrier_name.setText(getCarrierName(getApplicationContext()));
@@ -157,9 +158,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                     lunar.setVisibility(View.INVISIBLE);
                 }
                 break;
-            case "preference_main_lockscreen":
-                lock_enable = (sharedPreferences.getBoolean("preference_main_lockscreen", true));
-                break;
             case "list_preference_clock_locate":
                 String clock_locate = (sharedPreferences.getString("list_preference_clock_locate", "reimu"));
                 setClockLocate(clock_locate);
@@ -167,10 +165,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             case "list_preference_clock_size":
                 String clock_size = (sharedPreferences.getString("list_preference_clock_size", "58"));
                 text_clock.setTextSize(Float.parseFloat(clock_size));
-                break;
-            case "switch_preference_recent_apps":
-                //after
-                recent_enable = sharedPreferences.getBoolean("switch_preference_recent_apps", true);
                 break;
             case  "switch_preference_carrier_name":
                 carrier_enable = sharedPreferences.getBoolean("switch_preference_carrier_name",true);
@@ -180,6 +174,15 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                 }else{
                     carrier_name.setVisibility(View.INVISIBLE);
                 }
+                break;
+            case "preference_main_xiaoai_ai":
+                xiaoai_enable = sharedPreferences.getBoolean("preference_main_xiaoai_ai",true);
+                break;
+            case "preference_dial_pad":
+                dialpad_enable = sharedPreferences.getBoolean("preference_dial_pad",true);
+                break;
+            case "preference_pound_func":
+                pound_func = sharedPreferences.getString("preference_pound_func","volume");
                 break;
         }
     }
@@ -202,6 +205,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             }
         }
     }
+    @RequiresApi(api = Build.VERSION_CODES.M)
     public boolean onKeyDown(int keyCode, KeyEvent event)
     {
         Log.d(TAG,"这个按键的KeyCode是 "+keyCode);
@@ -244,63 +248,50 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                return true;}
            //突然想起来得把音量控制面板绑定到#键上
            else if (keyCode == KeyEvent.KEYCODE_POUND ){
-               Intent vol_it = new Intent(MainActivity.this, VolumeChanger.class);
-               vol_it.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
-               startActivity(vol_it);
-               return true;}
-           //暂时先不用这里
-            /*else if (keyCode == KeyEvent.KEYCODE_1 ){
-                Intent vol_it = new Intent(MainActivity.this, VolumeChanger.class);
-                startActivity(vol_it);
-           return true;}
-           else if (keyCode == KeyEvent.KEYCODE_3 ){
-               Intent vol_it = new Intent(MainActivity.this, VolumeChanger.class);
-               startActivity(vol_it);
-               return true;}*/
-            else if (keyCode == KeyEvent.KEYCODE_0) {
-               Log.d(TAG,"打开最近任务界面");
-               Log.d(TAG,"当前设备SDK是："+Build.VERSION.SDK_INT);
-               /*if(Build.VERSION.SDK_INT>=28) {
-                   try {
-                       Intent it = new Intent();
-                       it.setAction("android.intent.action.QUICKSTEP_SERVICE");
-                       it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                       startActivity(it);
-               } catch (Exception e) {
-                   e.printStackTrace();
-                   Toasty.error(this, R.string.error_not_support_recent_app, Toast.LENGTH_LONG, true).show();
-               }
-               }else{*/
-               if(recent_enable) {
-                   try {
-                       serviceManagerClass = Class.forName("android.os.ServiceManager");
-                       Method getService = serviceManagerClass.getMethod("getService", String.class);
-                       IBinder retbinder = (IBinder) getService.invoke(serviceManagerClass, "statusbar");
-                       assert retbinder != null;
-                       Class statusBarClass = Class.forName(retbinder.getInterfaceDescriptor());
-                       Object statusBarObject = statusBarClass.getClasses()[0].getMethod("asInterface", IBinder.class).invoke(null, new Object[]{retbinder});
-                       Method clearAll = statusBarClass.getMethod("toggleRecentApps");
-                       clearAll.setAccessible(true);
-                       clearAll.invoke(statusBarObject);
-                   } catch (ClassNotFoundException | IllegalArgumentException | NoSuchMethodException | IllegalAccessException | InvocationTargetException | RemoteException e) {
-                       e.printStackTrace();
-                       Toasty.error(this, R.string.error_not_support_recent_app, Toast.LENGTH_LONG, true).show();
+               if(pound_func.equals("volume")){
+                   Intent vol_it = new Intent(MainActivity.this, VolumeChanger.class);
+                   vol_it.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+                   startActivity(vol_it);
+               }else{
+                   if(PackageManager.PERMISSION_GRANTED == ContextCompat.checkSelfPermission(this,android.Manifest.permission.CAMERA)){
+                       if(torch){
+                           try {
+                               manager = (CameraManager) getApplicationContext().getSystemService(Context.CAMERA_SERVICE);
+                               manager.setTorchMode("0", true);// "0"是主闪光灯
+                           } catch (CameraAccessException e) {
+                               e.printStackTrace();
+                           }
+                           torch=false;
+                       }else{
+                           try {
+                               manager = (CameraManager) getApplicationContext().getSystemService(Context.CAMERA_SERVICE);
+                               manager.setTorchMode("0", false);
+                               manager = null;
+                           } catch (Exception e) {
+                               e.printStackTrace();
+                           }
+                           torch=true;
+                       }
+                   }else{
+                       Toasty.error(this,R.string.permission_denied,Toasty.LENGTH_LONG).show();
                    }
-               }else{
-                   Log.d(TAG,"Recent is disabled.");
                }
-               //}
                return true;}
-            else if(keyCode == KeyEvent.KEYCODE_STAR){
-               if(lock_enable){
-               if(mDPM.isAdminActive(mAdminName)){
-                   mDPM.lockNow();
-               }else{
-                   Toasty.error(this,R.string.error_lock_phone,Toast.LENGTH_LONG,true).show();
-                   Log.e(TAG,"Lock phone error!");
-               }}else{
-                   Log.d(TAG,"Lock screen is disabled");
+           else if(keyCode >=7 && keyCode <= 16){
+               if(dialpad_enable){
+                   Intent it = new Intent();
+                   it.setClassName("com.android.dialer","com.duoqin.dialer.DialpadActivity");
+                   it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                   startActivity(it);
                }
+           }
+            else if(keyCode == KeyEvent.KEYCODE_STAR){
+                if(xiaoai_enable){
+                    Intent ai_intent = new Intent();
+                    ai_intent.setClassName("com.duoqin.ai","com.duoqin.ai.MainActivity");
+                    ai_intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(ai_intent);
+                }
            return true;}
         return false;
     }
@@ -330,21 +321,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         String lunarGanZhi = lunarCalender.cyclical(year,month,day);
         String lunarString = lunarCalender.getLunarString(year, month, day);
         return "农历"+"  "+lunarGanZhi+lunarAnimal+" "+lunarString;
-    }
-
-    public void ifHasDefaultActivity(){
-        PackageManager pm = getPackageManager();
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setData(Uri.parse("tel://10010"));
-        ResolveInfo info = pm.resolveActivity(intent,PackageManager.MATCH_DEFAULT_ONLY);
-        Log.e(TAG,"getDefaultActivity info=" + info + ";pkgName = " + info.activityInfo.packageName);
-    }
-
-    private void showAdminGrant(){
-        Intent grant_it = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
-        grant_it.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN,mAdminName);
-        grant_it.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION,R.string.admin_summary);
-        startActivityForResult(grant_it,ENABLE_ADMIN);
     }
 
     private void printDayOfWeek() {

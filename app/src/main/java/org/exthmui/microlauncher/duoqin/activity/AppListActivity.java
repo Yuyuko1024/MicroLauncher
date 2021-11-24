@@ -1,4 +1,4 @@
-package org.exthmui.microlauncher.activity;
+package org.exthmui.microlauncher.duoqin.activity;
 
 import android.app.admin.DevicePolicyManager;
 import android.content.BroadcastReceiver;
@@ -28,9 +28,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.exthmui.microlauncher.R;
-import org.exthmui.microlauncher.adapter.AppAdapter;
-import org.exthmui.microlauncher.misc.Application;
+import org.exthmui.microlauncher.duoqin.R;
+import org.exthmui.microlauncher.duoqin.adapter.AppAdapter;
+import org.exthmui.microlauncher.duoqin.misc.Application;
 
 import java.util.ArrayList;
 import java.util.List;

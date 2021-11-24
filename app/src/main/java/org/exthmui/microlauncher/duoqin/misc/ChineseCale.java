@@ -1,4 +1,4 @@
-package org.exthmui.microlauncher.misc;
+package org.exthmui.microlauncher.duoqin.misc;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

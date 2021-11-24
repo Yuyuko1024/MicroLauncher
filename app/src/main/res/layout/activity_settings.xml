@@ -8,6 +8,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/settings_fragments"
-        android:name="org.exthmui.microlauncher.preference.SettingsFragments" />
+        android:name="org.exthmui.microlauncher.duoqin.preference.SettingsFragments" />
 
 </LinearLayout>
