@@ -205,19 +205,24 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             }
         }
     }
+
+    public boolean onKeyUp(int keyCode, KeyEvent event){
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            //ifHasDefaultActivity();
+            Intent it = new Intent();
+            it.setAction("android.intent.action.MAIN");
+            it.addCategory("android.intent.category.APP_CONTACTS");
+            it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(it);
+            return true;}
+        return false;
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.M)
     public boolean onKeyDown(int keyCode, KeyEvent event)
     {
         Log.d(TAG,"这个按键的KeyCode是 "+keyCode);
-           if (keyCode == KeyEvent.KEYCODE_BACK) {
-               //ifHasDefaultActivity();
-               Intent it = new Intent();
-               it.setAction("android.intent.action.MAIN");
-               it.addCategory("android.intent.category.APP_CONTACTS");
-               it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-               startActivity(it);
-               return true;}
-            else if(keyCode == KeyEvent.KEYCODE_DPAD_DOWN){
+           if(keyCode == KeyEvent.KEYCODE_DPAD_DOWN){
                 String methodName = "expandNotificationsPanel";
                 doInStatusBar(getApplicationContext(), methodName);
                 return true;}
