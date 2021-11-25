@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.hardware.camera2.CameraAccessException;
@@ -34,6 +35,7 @@ import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import es.dmoral.toasty.Toasty;
 
@@ -48,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     private boolean dialpad_enable = true;
     private boolean torch = false;
     private CameraManager manager;
+    private PackageManager pm;
     String pound_func;
     Button menu,contact;
     TextView dateView,lunar,carrier_name;
@@ -71,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         text_clock=findViewById(R.id.text_clock);
         printDayOfWeek();
         dateView.setText(sdf.format(date)+" "+week);
+        pm=this.getPackageManager();
         lunar.setText(getDayLunar());
         menu=findViewById(R.id.menu);
         contact=findViewById(R.id.contact);
@@ -84,6 +88,17 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         });
         Log.e(TAG,"Carrier Name is "+getCarrierName(getApplicationContext()));
         loadSettings();
+    }
+
+    private boolean isPkgExist(String PkgName){
+        pm=getApplicationContext().getPackageManager();
+        List<PackageInfo> pkgInfo = pm.getInstalledPackages(0);
+        for(int i=0;i<pkgInfo.size();i++){
+            if(pkgInfo.get(i).packageName.equalsIgnoreCase(PkgName)){
+                return true;
+            }
+        }
+        return false;
     }
 
     private void GrantPermissions(){
@@ -292,10 +307,19 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
            }
             else if(keyCode == KeyEvent.KEYCODE_STAR){
                 if(xiaoai_enable){
-                    Intent ai_intent = new Intent();
-                    ai_intent.setClassName("com.duoqin.ai","com.duoqin.ai.MainActivity");
-                    ai_intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(ai_intent);
+                    if(isPkgExist("com.duoqin.ai")){
+                        try{
+                            Intent ai_intent = new Intent();
+                            ai_intent.setClassName("com.duoqin.ai","com.duoqin.ai.MainActivity");
+                            ai_intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(ai_intent);
+                        }catch (Exception e){
+                            e.printStackTrace();
+                            Toasty.error(getApplicationContext(),R.string.err_pkg_not_found,Toasty.LENGTH_LONG).show();
+                        }
+                    }else{
+                        Toasty.error(getApplicationContext(),R.string.err_pkg_not_found,Toasty.LENGTH_LONG).show();
+                    }
                 }
            return true;}
         return false;

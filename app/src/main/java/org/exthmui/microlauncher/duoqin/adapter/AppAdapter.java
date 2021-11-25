@@ -10,8 +10,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -43,9 +43,10 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ApplicationViewH
     public ApplicationViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         switch (this.mLayoutMode) {
             case 0:
-                mItemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.app_list_item,parent, false);
+                mItemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.app_list_item_linear,parent, false);
                 break;
             case 1:
+                mItemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.app_list_item_grid,parent, false);
                 break;
         }
         return new ApplicationViewHolder(mItemView,this.mApplicationList);
@@ -55,10 +56,10 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ApplicationViewH
     public void onBindViewHolder(@NonNull ApplicationViewHolder holder, int position) {
         Application application = this.mApplicationList.get(position);
         holder.mAppIconView.setImageDrawable(application.getAppIcon());
-        holder.mTextButton.setText(application.getAppLabel());
+        holder.mText.setText(application.getAppLabel());
 
 //      设置单击监听事件
-        holder.mTextButton.setOnClickListener(v -> {
+        holder.mText.setOnClickListener(v -> {
             application.getAppIntent().addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             v.getContext().startActivity(application.getAppIntent());
         });
@@ -68,7 +69,7 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ApplicationViewH
         });
 
 //      设置长按监听事件
-        holder.mTextButton.setOnLongClickListener(v -> {
+        holder.mText.setOnLongClickListener(v -> {
             mPosition = holder.getAdapterPosition();
             Log.e("Adapter","mPosition="+mPosition);
             //String tip = application.isSystemApp() ? "这是系统应用" : "这是用户应用";
@@ -94,20 +95,20 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ApplicationViewH
     public static class ApplicationViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener {
 
         private ImageView mAppIconView;
-        private Button mTextButton;
+        private TextView mText;
         private List<Application> mApplicationList;
 
         public ApplicationViewHolder(@NonNull View view,List<Application> applicationList) {
             super(view);
             this.mAppIconView = view.findViewById(R.id.app_icon);
-            this.mTextButton = view.findViewById(R.id.app_title);
+            this.mText = view.findViewById(R.id.app_title);
             this.mApplicationList = applicationList;
             view.setOnCreateContextMenuListener(this);
         }
 
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-            menu.setHeaderTitle(this.mTextButton.getText());
+            menu.setHeaderTitle(this.mText.getText());
             menu.add(0, 0, Menu.NONE, R.string.app_menu_open);
             menu.add(0, 1, Menu.NONE,  R.string.app_menu_uninstall);
             menu.add(0, 2, Menu.NONE,  R.string.app_menu_info);

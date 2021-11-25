@@ -18,19 +18,21 @@
             android:id="@+id/app_menu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="14dp"
             android:focusable="false"
             android:text="@string/app_menu_string"
-            android:textColor="@color/black"
-            android:textSize="32sp" />
+            android:textColor="#9E9E9E"
+            android:textSize="24sp" />
 
         <TextView
             android:id="@+id/app_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
+            android:layout_marginEnd="14dp"
             android:focusable="false"
             android:text="@string/back"
-            android:textColor="@color/black"
-            android:textSize="32sp" />
+            android:textColor="#9E9E9E"
+            android:textSize="24sp" />
     </RelativeLayout>
 </LinearLayout>

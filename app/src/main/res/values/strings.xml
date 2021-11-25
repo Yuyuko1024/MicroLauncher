@@ -68,4 +68,5 @@
     <string name="pound_func_volume">Volume Panel</string>
     <string name="pound_func_torch">Torch</string>
     <string name="permission_denied">It seems that a permission has been denied and we cannot provide this function</string>
+    <string name="err_pkg_not_found">Cannot found app, are you uninstalled the app or disabled the app?</string>
 </resources>

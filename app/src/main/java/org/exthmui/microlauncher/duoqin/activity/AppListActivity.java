@@ -25,6 +25,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -144,9 +145,9 @@ public class AppListActivity extends AppCompatActivity implements SharedPreferen
 
         this.mAppRecyclerView = findViewById(R.id.app_list);
 //      设置布局管理器
-        this.mAppRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        this.mAppRecyclerView.setLayoutManager(new GridLayoutManager(this,3));
 //      设置适配器
-        this.mAppRecyclerView.setAdapter(new AppAdapter(this.mApplicationList, 0));
+        this.mAppRecyclerView.setAdapter(new AppAdapter(this.mApplicationList, 1));
     }
 
     private void showMenu(View view){

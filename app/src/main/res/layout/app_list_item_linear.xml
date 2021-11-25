@@ -12,14 +12,13 @@
         android:layout_centerVertical="true"
         android:src="@mipmap/ic_launcher" />
 
-    <Button
-        android:id="@+id/app_title"
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:id="@+id/app_title"
         android:layout_centerInParent="true"
-        android:layout_marginStart="36dp"
         android:layout_toEndOf="@id/app_icon"
-        android:backgroundTint="@color/no_color"
+        android:layout_marginStart="36dp"
         android:text="@string/default_app_title"
         android:textColor="@color/black" />
 

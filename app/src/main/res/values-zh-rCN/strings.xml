@@ -67,4 +67,5 @@
     <string name="pound_func_volume">音量面板</string>
     <string name="pound_func_torch">手电筒</string>
     <string name="permission_denied">看起来某项权限遭到拒绝，我们无法提供这个功能</string>
+    <string name="err_pkg_not_found">找不到可以启动的程序。您是否已卸载该软件包或者禁用了它？</string>
 </resources>
