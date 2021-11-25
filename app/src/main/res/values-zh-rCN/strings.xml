@@ -10,21 +10,19 @@
     <string name="vol_alarm_title">闹钟音量</string>
     <string name="volume_changer">音量面板</string>
     <string name="default_lunar">农历  正月初一</string>
-    <string name="menu_app">应用程序</string>
     <string name="menu_set_wallpaper">设置壁纸</string>
     <string name="menu_settings_system">系统设置</string>
     <string name="menu_start">如何使用该桌面？</string>
     <string name="menu_volume_dash">音量面板</string>
     <string name="menu_settings_launcher">桌面设置</string>
     <string name="menu_about_me">关于</string>
-    <string name="menu_app_sum">打开应用程序列表</string>
     <string name="menu_set_wallpaper_sum">美化设备</string>
     <string name="menu_settings_system_sum">打开系统设置</string>
     <string name="menu_start_sum">让我看看！</string>
     <string name="menu_volume_sum">修改设备音量</string>
     <string name="menu_settings_launcher_sum">设置你的桌面</string>
     <string name="menu_about_sum">关于这个桌面</string>
-    <string name="menu_title">功能表</string>
+    <string name="menu_title">桌面选项</string>
     <string name="choose_wallpaper">选择一张你喜欢的图片作为设备的壁纸吧！</string>
     <string name="back">返回</string>
     <string name="default_app_title">应用标题</string>
@@ -68,4 +66,9 @@
     <string name="pound_func_torch">手电筒</string>
     <string name="permission_denied">看起来某项权限遭到拒绝，我们无法提供这个功能</string>
     <string name="err_pkg_not_found">找不到可以启动的程序。您是否已卸载该软件包或者禁用了它？</string>
+    <string name="content_desc_app_icon">应用图标</string>
+    <string name="preference_app_list">应用列表样式</string>
+    <string name="app_style_list">列表</string>
+    <string name="app_style_grid">表格</string>
+    <string name="loading">正在载入应用...</string>
 </resources>

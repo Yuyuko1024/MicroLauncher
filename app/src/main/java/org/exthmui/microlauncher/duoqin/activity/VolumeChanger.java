@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -16,7 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import org.exthmui.microlauncher.duoqin.R;
 
 public class VolumeChanger extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener{
-    TextView media,ring,alarm;
+    TextView media,ring,alarm,back;
     SeekBar media_sek,ring_sek,alarm_sek;
     private AudioManager mAudioManager;
     private int maxVolume, currentVolume;
@@ -29,9 +30,16 @@ public class VolumeChanger extends AppCompatActivity implements SharedPreference
         media=findViewById(R.id.vol_media_text);
         ring=findViewById(R.id.vol_ring_text);
         alarm=findViewById(R.id.vol_alarm_text);
+        back=findViewById(R.id.volume_back);
         media_sek=findViewById(R.id.vol_media_seek);
         ring_sek=findViewById(R.id.vol_ring_seek);
         alarm_sek=findViewById(R.id.vol_alarm_seek);
+        back.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         loadSettings();
         //获取系统的Audio管理者
         media_ctrl();

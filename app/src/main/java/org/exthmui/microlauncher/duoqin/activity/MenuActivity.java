@@ -1,15 +1,9 @@
 package org.exthmui.microlauncher.duoqin.activity;
 
-import android.app.admin.DevicePolicyManager;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.util.Log;
-import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -20,55 +14,56 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import org.exthmui.microlauncher.duoqin.R;
 
 import es.dmoral.toasty.Toasty;
 
-public class MenuActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener{
+public class MenuActivity extends AppCompatActivity{
     private ListView menu_view;
-    private final static int[] title = {R.string.menu_app, R.string.menu_set_wallpaper,R.string.menu_volume_dash,R.string.menu_settings_system,R.string.menu_settings_launcher,R.string.menu_start,R.string.menu_about_me};
-    private final static int[] summary = {R.string.menu_app_sum,R.string.menu_set_wallpaper_sum,R.string.menu_volume_sum,R.string.menu_settings_system_sum,R.string.menu_settings_launcher_sum,R.string.menu_start_sum,R.string.menu_about_sum};
-    private final int[] icon = {R.drawable.ic_apps,R.drawable.ic_wallpaper,R.drawable.ic_volume,R.drawable.ic_settings_system,R.drawable.ic_settings_launcher,R.drawable.ic_start,R.drawable.ic_home};
+    private final static int[] title = { R.string.menu_set_wallpaper,R.string.menu_settings_system,R.string.menu_settings_launcher,R.string.menu_start,R.string.menu_about_me};
+    private final static int[] summary = {R.string.menu_set_wallpaper_sum,R.string.menu_settings_system_sum,R.string.menu_settings_launcher_sum,R.string.menu_start_sum,R.string.menu_about_sum};
+    private final int[] icon = {R.drawable.ic_wallpaper,R.drawable.ic_settings_system,R.drawable.ic_settings_launcher,R.drawable.ic_start,R.drawable.ic_home};
     Intent it = new Intent();
-    private ComponentName mAdminName = null;
-    private boolean lock_enable = true;
+    TextView back;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.menu_view);
         menu_view=findViewById(R.id.menu_list);
+        back=findViewById(R.id.menu_back);
         //创建一个Adapter的实例
         MyBaseAdapter mAdapter = new MyBaseAdapter();
         //设置Adapter
         menu_view.setAdapter(mAdapter);
         menu_view.setOnItemClickListener(new mItemClick());
-        loadSettings();
-    }
-
-    private void loadSettings(){
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
-        Boolean lock_isEnabled = (sharedPreferences.getBoolean("preference_main_lockscreen",true));
-        if(lock_isEnabled == true){
-            lock_enable=true;
-        }else{
-            lock_enable=false;
+        ActionBar actionBar = this.getSupportActionBar();
+        if(actionBar != null){
+            actionBar.setDisplayHomeAsUpEnabled(true);
         }
+        back.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if(key.equals("preference_main_lockscreen")){
-            Boolean lock_isEnabled = (sharedPreferences.getBoolean("preference_main_lockscreen",true));
-            if(lock_isEnabled == true){
-                lock_enable=true;
-            }else{
-                lock_enable=false;
-            }
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        // When the home button is pressed, take the user back to the MainActivity
+        if (id == android.R.id.home) {
+            //NavUtils.navigateUpFromSameTask(this);
+            finish();
         }
+        return super.onOptionsItemSelected(item);
     }
+
+
+
 
     //创建一个类继承BaseAdapter
     class MyBaseAdapter extends BaseAdapter {
@@ -125,55 +120,31 @@ public class MenuActivity extends AppCompatActivity implements SharedPreferences
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             switch (Math.toIntExact(id)){
                 case 0:
-                    //TODO:App List
-                    Intent app_it= new Intent(MenuActivity.this, AppListActivity.class);
-                    startActivity(app_it);
-                    break;
-                case 1:
                     Toast.makeText(MenuActivity.this,R.string.choose_wallpaper,Toast.LENGTH_LONG).show();
                     final Intent pickWallpaper = new Intent(Intent.ACTION_SET_WALLPAPER);
                     Intent chooser = Intent.createChooser(pickWallpaper,"选择一个壁纸设置...\nSetup wallpaper...");
                     //发送设置壁纸的请求
                     startActivity(chooser);
                     break;
-                case 2:
-                    Intent vol_it = new Intent(MenuActivity.this, VolumeChanger.class);
-                    startActivity(vol_it);
-                    break;
-                case 3:
+                case 1:
                     it.setClassName("com.android.settings",
                             "com.android.settings.Settings");
                     startActivity(it);
                     break;
-                case 4:
+                case 2:
                     //Toasty.info(MenuActivity.this,R.string.what,Toast.LENGTH_LONG,true).show();
                     Intent menu_it = new Intent(MenuActivity.this, SettingsActivity.class);
                     startActivity(menu_it);
                     break;
-                case 5:
+                case 3:
                     Toasty.info(MenuActivity.this,R.string.what,Toast.LENGTH_LONG,true).show();
                     break;
-                case 6:
+                case 4:
                     Intent about_it = new Intent(MenuActivity.this, AboutActivity.class);
                     about_it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(about_it);
                     break;
             }
         }
-    }
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if(keyCode == KeyEvent.KEYCODE_STAR){
-            DevicePolicyManager mDPM = (DevicePolicyManager)getSystemService(Context.DEVICE_POLICY_SERVICE);
-            if(lock_enable == true) {
-                if (lock_enable == true) {
-                    mDPM.lockNow();
-                } else {
-                    Log.d("TAG", "Lock screen is disabled");
-                }
-            }
-            }
-        return super.onKeyDown(keyCode, event);
     }
 }

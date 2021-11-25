@@ -10,8 +10,8 @@ android {
         applicationId "org.exthmui.microlauncher.duoqin"
         minSdkVersion 21
         targetSdkVersion 31
-        versionCode 16000
-        versionName "1.0_th10"
+        versionCode 18000
+        versionName "1.0_th11"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -29,7 +29,6 @@ android {
 }
 
 dependencies {
-
     implementation 'androidx.appcompat:appcompat:1.4.0'
     implementation 'com.google.android.material:material:1.4.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.2'

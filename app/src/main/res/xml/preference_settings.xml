@@ -27,6 +27,12 @@
             android:entryValues="@array/clock_size_entries"
             android:key="list_preference_clock_size"
             android:title="@string/preference_main_clock_size" />
+        <ListPreference
+            android:defaultValue="grid"
+            android:entries="@array/app_list_entries"
+            android:entryValues="@array/app_list_values"
+            android:key="app_list_func"
+            android:title="@string/preference_app_list"/>
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/preference_func_category"
         android:key="preference_func">

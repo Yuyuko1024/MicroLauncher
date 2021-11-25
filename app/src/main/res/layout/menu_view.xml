@@ -4,6 +4,23 @@
     android:layout_height="match_parent">
         <ListView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/menu_list" />
+            android:layout_height="0dp"
+            android:id="@+id/menu_list"
+            android:layout_weight="1"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/transpart">
+
+                <TextView
+                    android:id="@+id/menu_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="14dp"
+                    android:focusable="false"
+                    android:text="@string/back"
+                    android:textColor="#9E9E9E"
+                    android:textSize="24sp" />
+        </RelativeLayout>
 </LinearLayout>

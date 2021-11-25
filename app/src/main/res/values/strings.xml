@@ -9,14 +9,12 @@
     <string name="vol_alarm_title">Alarm Volume</string>
     <string name="volume_changer">Volume Changer</string>
     <string name="default_lunar">" "</string>
-    <string name="menu_app">Application</string>
     <string name="menu_set_wallpaper">Set Wallpaper</string>
     <string name="menu_settings_system">System Settings</string>
     <string name="menu_start">How to use?</string>
     <string name="menu_volume_dash">Volume Changer</string>
     <string name="menu_settings_launcher">Launcher Settings</string>
     <string name="menu_about_me">About</string>
-    <string name="menu_app_sum">App List</string>
     <string name="menu_set_wallpaper_sum">Beautify your device</string>
     <string name="menu_settings_system_sum">Setup your device</string>
     <string name="menu_start_sum">Let me know !</string>
@@ -69,4 +67,9 @@
     <string name="pound_func_torch">Torch</string>
     <string name="permission_denied">It seems that a permission has been denied and we cannot provide this function</string>
     <string name="err_pkg_not_found">Cannot found app, are you uninstalled the app or disabled the app?</string>
+    <string name="content_desc_app_icon">App Icon</string>
+    <string name="preference_app_list">App list style</string>
+    <string name="app_style_list">List</string>
+    <string name="app_style_grid">Grid</string>
+    <string name="loading">Loading...</string>
 </resources>

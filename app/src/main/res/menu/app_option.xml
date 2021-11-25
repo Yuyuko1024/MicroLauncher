@@ -6,6 +6,14 @@
         android:title="@string/app_menu_manage"
         app:showAsAction="never" />
     <item
+        android:id="@+id/menu_volume_changer"
+        android:title="@string/menu_volume_dash"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/menu_launcher_option"
+        android:title="@string/menu_title"
+        app:showAsAction="never"/>
+    <item
         android:id="@+id/menu_about_phone"
         android:title="@string/menu_about_phone"
         app:showAsAction="never"/>

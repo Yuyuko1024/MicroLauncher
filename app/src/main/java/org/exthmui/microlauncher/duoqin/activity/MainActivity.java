@@ -2,6 +2,7 @@ package org.exthmui.microlauncher.duoqin.activity;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -28,6 +29,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.google.android.material.snackbar.Snackbar;
+
 import org.exthmui.microlauncher.duoqin.R;
 import org.exthmui.microlauncher.duoqin.misc.ChineseCale;
 
@@ -36,6 +39,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import es.dmoral.toasty.Toasty;
 
@@ -88,17 +93,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         });
         Log.e(TAG,"Carrier Name is "+getCarrierName(getApplicationContext()));
         loadSettings();
-    }
-
-    private boolean isPkgExist(String PkgName){
-        pm=getApplicationContext().getPackageManager();
-        List<PackageInfo> pkgInfo = pm.getInstalledPackages(0);
-        for(int i=0;i<pkgInfo.size();i++){
-            if(pkgInfo.get(i).packageName.equalsIgnoreCase(PkgName)){
-                return true;
-            }
-        }
-        return false;
     }
 
     private void GrantPermissions(){
@@ -214,7 +208,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                     startActivity(i);
                     break;
                 case R.id.menu:
-                    Intent menu_it = new Intent(MainActivity.this, MenuActivity.class);
+                    Intent menu_it = new Intent(MainActivity.this, AppListActivity.class);
                     startActivity(menu_it);
                     break;
             }
@@ -263,8 +257,15 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                startActivity(it);
            return true;}
            else if (keyCode == KeyEvent.KEYCODE_MENU ){
-               Intent menu_it = new Intent(MainActivity.this, MenuActivity.class);
-               startActivity(menu_it);
+               Snackbar.make(dateView,R.string.loading,Snackbar.LENGTH_SHORT).show();
+               Timer timer = new Timer();
+               timer.schedule(new TimerTask() {
+                   @Override
+                   public void run() {
+                       Intent menu_it = new Intent(MainActivity.this, AppListActivity.class);
+                       startActivity(menu_it);
+                   }
+               },500); // 延时0.5秒，不加延时的话应用列表的菜单误触我很难顶啊QAQ
                return true;}
            //突然想起来得把音量控制面板绑定到#键上
            else if (keyCode == KeyEvent.KEYCODE_POUND ){
@@ -307,17 +308,13 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
            }
             else if(keyCode == KeyEvent.KEYCODE_STAR){
                 if(xiaoai_enable){
-                    if(isPkgExist("com.duoqin.ai")){
-                        try{
-                            Intent ai_intent = new Intent();
-                            ai_intent.setClassName("com.duoqin.ai","com.duoqin.ai.MainActivity");
-                            ai_intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(ai_intent);
-                        }catch (Exception e){
-                            e.printStackTrace();
-                            Toasty.error(getApplicationContext(),R.string.err_pkg_not_found,Toasty.LENGTH_LONG).show();
-                        }
-                    }else{
+                    try{
+                        Intent ai_intent = new Intent();
+                        ai_intent.setClassName("com.duoqin.ai","com.duoqin.ai.MainActivity");
+                        ai_intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(ai_intent);
+                    }catch (Exception e){
+                        e.printStackTrace();
                         Toasty.error(getApplicationContext(),R.string.err_pkg_not_found,Toasty.LENGTH_LONG).show();
                     }
                 }

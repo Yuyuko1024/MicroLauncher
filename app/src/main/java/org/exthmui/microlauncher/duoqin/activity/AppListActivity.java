@@ -38,15 +38,14 @@ import java.util.List;
 
 import es.dmoral.toasty.Toasty;
 
-public class AppListActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class AppListActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener{
     private RecyclerView mAppRecyclerView;
     private List<Application> mApplicationList;
     private final static String TAG = "AppListActivity";
-    private boolean lock_enable = true;
     private IntentFilter intentFilter;
     private PkgDelReceiver mPkgDelReceiver;
     TextView menu,back;
-
+    String app_list_style;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -56,9 +55,20 @@ public class AppListActivity extends AppCompatActivity implements SharedPreferen
         back=findViewById(R.id.app_back);
         back.setOnClickListener(new funClick());
         menu.setOnClickListener(new funClick());
-        loadApp();
         loadSettings();
+        loadApp();
         receiveSyscast();
+    }
+
+
+    private void loadSettings(){
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        app_list_style=sharedPreferences.getString("app_list_func","grid");
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        app_list_style=sharedPreferences.getString("app_list_func","grid");
     }
 
     private void receiveSyscast(){
@@ -86,28 +96,6 @@ public class AppListActivity extends AppCompatActivity implements SharedPreferen
                 finish();
             }else if(v == menu){
                 showMenu(menu);
-            }
-        }
-    }
-    private void loadSettings(){
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
-        Boolean lock_isEnabled = (sharedPreferences.getBoolean("preference_main_lockscreen",true));
-        if(lock_isEnabled){
-            lock_enable=true;
-        }else{
-            lock_enable=false;
-        }
-    }
-
-    @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if(key.equals("preference_main_lockscreen")){
-            Boolean lock_isEnabled = (sharedPreferences.getBoolean("preference_main_lockscreen",true));
-            if(lock_isEnabled){
-                lock_enable=true;
-            }else{
-                lock_enable=false;
             }
         }
     }
@@ -142,12 +130,16 @@ public class AppListActivity extends AppCompatActivity implements SharedPreferen
                 this.mApplicationList.add(application);
             }
         }
-
         this.mAppRecyclerView = findViewById(R.id.app_list);
-//      设置布局管理器
-        this.mAppRecyclerView.setLayoutManager(new GridLayoutManager(this,3));
-//      设置适配器
-        this.mAppRecyclerView.setAdapter(new AppAdapter(this.mApplicationList, 1));
+        if(app_list_style.equals("grid")){
+            //      设置布局管理器
+            this.mAppRecyclerView.setLayoutManager(new GridLayoutManager(this,3));
+            //      设置适配器
+            this.mAppRecyclerView.setAdapter(new AppAdapter(this.mApplicationList, 1));
+        }else{
+            this.mAppRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+            this.mAppRecyclerView.setAdapter(new AppAdapter(this.mApplicationList, 0));
+        }
     }
 
     private void showMenu(View view){
@@ -176,6 +168,15 @@ public class AppListActivity extends AppCompatActivity implements SharedPreferen
                             ia.setClassName("com.android.settings",
                                     "com.android.settings.Settings$DeviceInfoSettingsActivity");
                             startActivity(ia);}
+                        break;
+                    case R.id.menu_launcher_option:
+                        Intent menu = new Intent(AppListActivity.this, MenuActivity.class);
+                        startActivity(menu);
+                        finish();
+                        break;
+                    case R.id.menu_volume_changer:
+                        Intent vol_it = new Intent(AppListActivity.this, VolumeChanger.class);
+                        startActivity(vol_it);
                         break;
                 }
                 return false;
@@ -213,27 +214,17 @@ public class AppListActivity extends AppCompatActivity implements SharedPreferen
                         "com.android.settings.Settings$DeviceInfoSettingsActivity");
                     startActivity(ia);}
                 break;
+            case R.id.menu_launcher_option:
+                Intent menu = new Intent(AppListActivity.this, MenuActivity.class);
+                startActivity(menu);
+                finish();
+                break;
+            case R.id.menu_volume_changer:
+                Intent vol_it = new Intent(AppListActivity.this, VolumeChanger.class);
+                startActivity(vol_it);
+                break;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        Log.d(TAG,"这个按键的KeyCode是 "+keyCode);
-        if(keyCode == KeyEvent.KEYCODE_STAR){
-            DevicePolicyManager mDPM = (DevicePolicyManager)getSystemService(Context.DEVICE_POLICY_SERVICE);
-                if (lock_enable) {
-                    mDPM.lockNow();
-                } else {
-                    Log.d("TAG", "Lock screen is disabled");
-                }
-            }
-        if(keyCode == KeyEvent.KEYCODE_HOME){
-            finish();
-            return true;
-        }
-
-        return super.onKeyDown(keyCode,event);
     }
 
     @Override

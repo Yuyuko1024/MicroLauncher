@@ -2,7 +2,8 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="64dp">
+    android:layout_height="64dp"
+    android:background="?android:attr/selectableItemBackground">
 
     <ImageView
         android:id="@+id/app_icon"
@@ -10,7 +11,8 @@
         android:layout_height="48dp"
         android:layout_marginStart="32dp"
         android:layout_centerVertical="true"
-        android:src="@mipmap/ic_launcher" />
+        android:src="@mipmap/ic_launcher"
+        android:contentDescription="@string/content_desc_app_icon" />
 
     <TextView
         android:id="@+id/app_title"
@@ -20,7 +22,6 @@
         android:layout_marginStart="36dp"
         android:layout_toEndOf="@id/app_icon"
         android:backgroundTint="@color/no_color"
-        android:text="@string/default_app_title"
-        android:textColor="@color/black" />
+        android:text="@string/default_app_title" />
 
 </RelativeLayout>

@@ -24,6 +24,16 @@
         <item>torch</item>
     </string-array>
 
+    <string-array name="app_list_entries">
+        <item>@string/app_style_list</item>
+        <item>@string/app_style_grid</item>
+    </string-array>
+
+    <string-array name="app_list_values" translatable="false">
+        <item>list</item>
+        <item>grid</item>
+    </string-array>
+
     <string-array name="clock_size_entries" translatable="false">
         <item>32</item>
         <item>34</item>
