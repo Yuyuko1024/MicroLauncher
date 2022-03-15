@@ -5,13 +5,11 @@ import android.os.Build;
 import android.os.Bundle;
 
 import androidx.preference.ListPreference;
-import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceGroup;
 
 import org.exthmui.microlauncher.duoqin.R;
 
-import java.util.Arrays;
 import java.util.Objects;
 
 public class SettingsFragments extends PreferenceFragmentCompat implements
@@ -22,12 +20,10 @@ public class SettingsFragments extends PreferenceFragmentCompat implements
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         addPreferencesFromResource(R.xml.preference_settings);
-        SharedPreferences sharedPreferences = getPreferenceScreen().getSharedPreferences();
     }
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        Preference preference = findPreference(key);
         clock_size.setSummary(clock_size.getValue());
         clock_locate.setSummary(clock_locate.getEntry());
         pound_func.setSummary(pound_func.getEntry());

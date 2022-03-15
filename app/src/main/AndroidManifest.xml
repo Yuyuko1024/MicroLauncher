@@ -7,10 +7,12 @@
     <uses-permission android:name="android.permission.EXPAND_STATUS_BAR" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
-    <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES"/>
+    <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" />
     <uses-permission android:name="android.permission.FLASHLIGHT" />
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" tools:ignore="QueryAllPackagesPermission" />
+    <uses-permission
+        android:name="android.permission.QUERY_ALL_PACKAGES"
+        tools:ignore="QueryAllPackagesPermission" />
 
     <application
         android:allowBackup="true"
@@ -21,13 +23,20 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MicroLauncher"
         tools:targetApi="lollipop">
+        <service
+            android:process=":restart"
+            android:name=".service.KillSelfSrv"
+            android:enabled="true"
+            android:exported="false"/>
+
         <activity
             android:name=".activity.MainActivity"
-            android:theme="@style/TranslucentActivity"
             android:excludeFromRecents="true"
-            android:exported="true">
+            android:exported="true"
+            android:theme="@style/TranslucentActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.HOME" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -35,31 +44,48 @@
         </activity>
         <activity
             android:name=".activity.VolumeChanger"
+            android:exported="true"
             android:label="@string/volume_changer"
             android:launchMode="singleInstance"
             android:theme="@style/Theme.MicroLauncher" />
         <activity
             android:name=".activity.MenuActivity"
-            android:label="@string/menu_title"
-            android:icon="@drawable/launcher_option"
-            android:launchMode="singleInstance"
             android:excludeFromRecents="true"
+            android:exported="true"
+            android:icon="@drawable/launcher_option"
+            android:label="@string/menu_title"
+            android:launchMode="singleInstance"
             android:theme="@style/Theme.MicroLauncher" />
         <activity
             android:name=".activity.AppListActivity"
-            android:label="@string/app_list_title"
             android:excludeFromRecents="true"
+            android:exported="true"
+            android:label="@string/app_list_title"
             android:theme="@style/Theme.MicroLauncher" />
         <activity
             android:name=".activity.AboutActivity"
-            android:label="@string/menu_about_sum"
             android:excludeFromRecents="true"
+            android:exported="true"
+            android:label="@string/menu_about_sum"
             android:theme="@style/Theme.MicroLauncher" />
         <activity
             android:name=".activity.SettingsActivity"
-            android:label="@string/menu_settings_launcher"
             android:excludeFromRecents="true"
+            android:exported="true"
+            android:label="@string/menu_settings_launcher"
             android:theme="@style/Theme.MicroLauncher" />
+        <activity
+            android:name=".activity.AppList3rdActivity"
+            android:excludeFromRecents="false"
+            android:exported="true"
+            android:icon="@drawable/toolbox"
+            android:label="@string/trd_apps"
+            android:theme="@style/Theme.MicroLauncher">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

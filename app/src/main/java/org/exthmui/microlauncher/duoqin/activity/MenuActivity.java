@@ -22,7 +22,6 @@ import org.exthmui.microlauncher.duoqin.R;
 import es.dmoral.toasty.Toasty;
 
 public class MenuActivity extends AppCompatActivity{
-    private ListView menu_view;
     private final static int[] title = { R.string.menu_set_wallpaper,R.string.menu_settings_system,R.string.menu_settings_launcher,R.string.menu_start,R.string.menu_about_me};
     private final static int[] summary = {R.string.menu_set_wallpaper_sum,R.string.menu_settings_system_sum,R.string.menu_settings_launcher_sum,R.string.menu_start_sum,R.string.menu_about_sum};
     private final int[] icon = {R.drawable.ic_wallpaper,R.drawable.ic_settings_system,R.drawable.ic_settings_launcher,R.drawable.ic_start,R.drawable.ic_home};
@@ -32,7 +31,7 @@ public class MenuActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.menu_view);
-        menu_view=findViewById(R.id.menu_list);
+        ListView menu_view = findViewById(R.id.menu_list);
         back=findViewById(R.id.menu_back);
         //创建一个Adapter的实例
         MyBaseAdapter mAdapter = new MyBaseAdapter();
@@ -43,12 +42,7 @@ public class MenuActivity extends AppCompatActivity{
         if(actionBar != null){
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-        back.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        back.setOnClickListener(v -> finish());
     }
 
     @Override
@@ -88,7 +82,7 @@ public class MenuActivity extends AppCompatActivity{
         //得到Item的View视图
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            ViewHolder holder = null;
+            ViewHolder holder;
             //使用了懒汉模式
             if(convertView == null){
                 //将list_item.xml文件找出来并转换成View对象

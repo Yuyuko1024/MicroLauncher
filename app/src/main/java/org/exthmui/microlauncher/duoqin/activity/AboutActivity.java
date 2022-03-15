@@ -12,7 +12,6 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
@@ -21,6 +20,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import org.exthmui.microlauncher.duoqin.BuildConfig;
 import org.exthmui.microlauncher.duoqin.R;
 
+import de.psdev.licensesdialog.LicensesDialog;
+import de.psdev.licensesdialog.licenses.ApacheSoftwareLicense20;
+import de.psdev.licensesdialog.licenses.GnuGeneralPublicLicense30;
+import de.psdev.licensesdialog.licenses.MITLicense;
+import de.psdev.licensesdialog.model.Notice;
+import de.psdev.licensesdialog.model.Notices;
 import es.dmoral.toasty.Toasty;
 import mehdi.sakout.aboutpage.AboutPage;
 import mehdi.sakout.aboutpage.Element;
@@ -40,10 +45,11 @@ public class AboutActivity extends AppCompatActivity implements SharedPreference
                 .setDescription(getString(R.string.about_desc).replace("\\n","\n"))
                 .setImage(R.drawable.ic_home)
                 .addItem(versionElement())
+                .addItem(opensourceLicense())
                 .addGroup(getString(R.string.connect_us))
                 .addEmail("dingwenxuan4@gmail.com")
                 .addWebsite("https://gitee.com/kira_rumia/MicroLauncher/")
-                .addGitHub("GoogleChinaCEO")
+                .addGitHub("Yuyuko1024")
                 .create();
 
         setContentView(aboutPage);
@@ -67,6 +73,23 @@ public class AboutActivity extends AppCompatActivity implements SharedPreference
             }
         });
         return versionElement;
+    }
+
+    Element opensourceLicense(){
+        Element opensourceLicense = new Element();
+        final String osl = getString(R.string.osl);
+        opensourceLicense.setTitle(osl);
+        opensourceLicense.setOnClickListener(v -> {
+            final Notices notices = new Notices();
+            notices.addNotice(new Notice("Toasty","https://github.com/GrenderG/Toasty","GrenderG",new GnuGeneralPublicLicense30()));
+            notices.addNotice(new Notice("android-about-page","https://github.com/medyo/android-about-page","medyo",new MITLicense()));
+            new LicensesDialog.Builder(this)
+                    .setNotices(notices)
+                    .setIncludeOwnLicense(true)
+                    .build()
+                    .show();
+        });
+        return opensourceLicense;
     }
 
     void arrayCopy() {
@@ -100,23 +123,15 @@ public class AboutActivity extends AppCompatActivity implements SharedPreference
     private void loadSettings(){
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
-        Boolean lock_isEnabled = (sharedPreferences.getBoolean("preference_main_lockscreen",true));
-        if(lock_isEnabled){
-            lock_enable=true;
-        }else{
-            lock_enable=false;
-        }
+        boolean lock_isEnabled = (sharedPreferences.getBoolean("preference_main_lockscreen",true));
+        lock_enable= lock_isEnabled;
     }
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if(key.equals("preference_main_lockscreen")){
-            Boolean lock_isEnabled = (sharedPreferences.getBoolean("preference_main_lockscreen",true));
-            if(lock_isEnabled){
-                lock_enable=true;
-            }else{
-                lock_enable=false;
-            }
+            boolean lock_isEnabled = (sharedPreferences.getBoolean("preference_main_lockscreen",true));
+            lock_enable= lock_isEnabled;
         }
     }
 }

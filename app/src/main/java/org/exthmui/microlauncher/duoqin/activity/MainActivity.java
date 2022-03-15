@@ -2,11 +2,9 @@ package org.exthmui.microlauncher.duoqin.activity;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.hardware.camera2.CameraAccessException;
@@ -19,7 +17,6 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextClock;
 import android.widget.TextView;
@@ -38,7 +35,6 @@ import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -55,34 +51,31 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     private boolean dialpad_enable = true;
     private boolean torch = false;
     private CameraManager manager;
-    private PackageManager pm;
     String pound_func;
-    Button menu,contact;
-    TextView dateView,lunar,carrier_name;
+    TextView dateView,menu,contact;
     LinearLayout clock;
     TextClock text_clock;
 
+    @SuppressLint("SetTextI18n")
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        showFirstLogcat();
+        checkDevice();
         View decorView = getWindow().getDecorView();
-        decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN|View.SYSTEM_UI_FLAG_LAYOUT_STABLE); //使背景图与状态栏融合到一起，这里需要在setcontentview前执行
+        decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE); //使背景图与状态栏融合到一起，这里需要在setcontentview前执行
         getWindow().setStatusBarColor(Color.TRANSPARENT);
         @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
         Date date = new Date(System.currentTimeMillis());
-        dateView=findViewById(R.id.date_text);
-        lunar=findViewById(R.id.lunar_cale);
-        clock=findViewById(R.id.clock);
-        carrier_name=findViewById(R.id.carrier_name);
-        text_clock=findViewById(R.id.text_clock);
+        dateView = findViewById(R.id.date_text);
+        clock = findViewById(R.id.clock);
+        text_clock = findViewById(R.id.text_clock);
         printDayOfWeek();
-        dateView.setText(sdf.format(date)+" "+week);
-        pm=this.getPackageManager();
-        lunar.setText(getDayLunar());
-        menu=findViewById(R.id.menu);
-        contact=findViewById(R.id.contact);
+        dateView.setText(sdf.format(date) + " " + week);
+        menu = findViewById(R.id.menu);
+        contact = findViewById(R.id.contact);
         contact.setOnClickListener(new mClick());
         menu.setOnClickListener(new mClick());
         GrantPermissions();
@@ -91,13 +84,12 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             params.bottomMargin = menu.getHeight();
             clock.setLayoutParams(params);
         });
-        Log.e(TAG,"Carrier Name is "+getCarrierName(getApplicationContext()));
+        Log.e(TAG, "Carrier Name is " + getCarrierName(getApplicationContext()));
         loadSettings();
     }
 
     private void GrantPermissions(){
-        if(PackageManager.PERMISSION_GRANTED == ContextCompat.checkSelfPermission(this,android.Manifest.permission.CAMERA)){
-        }else{
+        if(PackageManager.PERMISSION_GRANTED != ContextCompat.checkSelfPermission(this,android.Manifest.permission.CAMERA)){
             String[] perms = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA};
             ActivityCompat.requestPermissions(this, perms,grant_int);
         }
@@ -108,9 +100,17 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
         boolean lunar_isEnable= (sharedPreferences.getBoolean("switch_preference_lunar",true));
         if(lunar_isEnable){
-            lunar.setVisibility(View.VISIBLE);
+            Log.d(TAG, "Enable lunar");
+            removeItem("lunar");
+            TextView lunar = new TextView(this);
+            lunar.setTextColor(Color.WHITE);
+            lunar.setTextSize(14);
+            lunar.setId(R.id.lunar);
+            clock.addView(lunar, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            lunar.setText(getDayLunar());
         }else{
-            lunar.setVisibility(View.INVISIBLE);
+            Log.d(TAG, "Disable lunar");
+            removeItem("lunar");
         }
         String clock_locate = (sharedPreferences.getString("list_preference_clock_locate","reimu"));
         setClockLocate(clock_locate);
@@ -121,10 +121,17 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         xiaoai_enable = sharedPreferences.getBoolean("preference_main_xiaoai_ai",true);
         dialpad_enable = sharedPreferences.getBoolean("preference_dial_pad",true);
         if(carrier_enable){
-            carrier_name.setVisibility(View.VISIBLE);
+            Log.d(TAG, "Enable carrier name");
+            removeItem("carrier");
+            TextView carrier_name = new TextView(this);
+            carrier_name.setTextColor(Color.WHITE);
+            carrier_name.setTextSize(16);
+            carrier_name.setId(R.id.carrier_name);
+            clock.addView(carrier_name, LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT);
             carrier_name.setText(getCarrierName(getApplicationContext()));
         }else{
-            carrier_name.setVisibility(View.INVISIBLE);
+            Log.d(TAG, "Disable carrier name");
+            removeItem("carrier");
         }
     }
 
@@ -151,6 +158,13 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         clock.setLayoutParams(params);
     }
 
+    private void checkDevice(){
+        Log.d(TAG, "checkDevice: "+Build.BOARD);
+        if(Build.BOARD.equals("goldfish_x86")||Build.BOARD.equals("goldfish_x86_64")||Build.BOARD.equals("goldfish")){
+            Toasty.info(this,"非多亲设备，部分功能可能无法使用。",Toasty.LENGTH_SHORT).show();
+        }
+    }
+
     public static String getCarrierName(Context context){
         TelephonyManager teleMgr  = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
         return teleMgr.getSimOperatorName();
@@ -162,9 +176,17 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             case "switch_preference_lunar":
                 boolean lunar_isEnable = (sharedPreferences.getBoolean("switch_preference_lunar", true));
                 if (lunar_isEnable) {
-                    lunar.setVisibility(View.VISIBLE);
+                    Log.d(TAG, "Enable lunar");
+                    removeItem("lunar");
+                    TextView lunar = new TextView(this);
+                    lunar.setTextColor(Color.WHITE);
+                    lunar.setTextSize(14);
+                    lunar.setId(R.id.lunar);
+                    clock.addView(lunar, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                    lunar.setText(getDayLunar());
                 } else {
-                    lunar.setVisibility(View.INVISIBLE);
+                    Log.d(TAG, "Disable lunar");
+                    removeItem("lunar");
                 }
                 break;
             case "list_preference_clock_locate":
@@ -178,10 +200,17 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             case  "switch_preference_carrier_name":
                 carrier_enable = sharedPreferences.getBoolean("switch_preference_carrier_name",true);
                 if(carrier_enable){
-                    carrier_name.setVisibility(View.VISIBLE);
+                    Log.d(TAG,"Enable carrier name");
+                    removeItem("carrier");
+                    TextView carrier_name = new TextView(this);
+                    carrier_name.setTextColor(Color.WHITE);
+                    carrier_name.setTextSize(16);
+                    carrier_name.setId(R.id.carrier_name);
+                    clock.addView(carrier_name, LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT);
                     carrier_name.setText(getCarrierName(getApplicationContext()));
                 }else{
-                    carrier_name.setVisibility(View.INVISIBLE);
+                    Log.d(TAG,"Disable carrier name");
+                    removeItem("carrier");
                 }
                 break;
             case "preference_main_xiaoai_ai":
@@ -196,6 +225,23 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         }
     }
 
+    private void removeItem(String item){
+        if(item.equals("lunar")){
+            try{
+                clock.removeViewAt(R.id.lunar);
+            }catch (Exception e){
+                Log.e(TAG,"该控件或许已被移除");
+            }
+        }else if(item.equals("carrier")){
+            try{
+                clock.removeViewAt(R.id.carrier_name);
+            }catch (Exception e){
+                Log.e(TAG,"该控件或许已被移除");
+            }
+        }
+    }
+
+    @SuppressLint("NonConstantResourceId")
     class mClick implements View.OnClickListener{
         @Override
         public void onClick(View v) {
@@ -217,7 +263,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
     public boolean onKeyUp(int keyCode, KeyEvent event){
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            //ifHasDefaultActivity();
             Intent it = new Intent();
             it.setAction("android.intent.action.MAIN");
             it.addCategory("android.intent.category.APP_CONTACTS");
@@ -242,19 +287,27 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                 startActivity(it);
                 return true;}
             else if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
-               Intent it = new Intent();
-               it.setAction("android.intent.action.MAIN");
-               it.addCategory("android.intent.category.APP_BROWSER");
-               it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-               startActivity(it);
-                Log.d(TAG,"5,4,3,2,1,三倍ice cream!!!!!");
+                try{
+                    Intent it = new Intent();
+                    it.setAction("android.intent.action.MAIN");
+                    it.addCategory("android.intent.category.APP_BROWSER");
+                    it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(it);
+                    Log.d(TAG,"5,4,3,2,1,三倍ice cream!!!!!");
+                }catch (Exception e){
+                    Log.d(TAG,"没有找到系统浏览器或者系统浏览器被禁用");
+                }
            return true;}
             else if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT){
-               Intent it = new Intent();
-               it.setAction("android.intent.action.MAIN");
-               it.addCategory("android.intent.category.APP_MESSAGING");
-               it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-               startActivity(it);
+                try{
+                    Intent it = new Intent();
+                    it.setAction("android.intent.action.MAIN");
+                    it.addCategory("android.intent.category.APP_MESSAGING");
+                    it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(it);
+                }catch (Exception e){
+                    Log.d(TAG,"没有找到系统短信或者系统短信被禁用");
+                }
            return true;}
            else if (keyCode == KeyEvent.KEYCODE_MENU ){
                Snackbar.make(dateView,R.string.loading,Snackbar.LENGTH_SHORT).show();
@@ -300,10 +353,14 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                return true;}
            else if(keyCode >=7 && keyCode <= 16){
                if(dialpad_enable){
-                   Intent it = new Intent();
-                   it.setClassName("com.android.dialer","com.duoqin.dialer.DialpadActivity");
-                   it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                   startActivity(it);
+                   try{
+                       Intent it = new Intent();
+                       it.setClassName("com.android.dialer","com.duoqin.dialer.DialpadActivity");
+                       it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                       startActivity(it);
+                   }catch (Exception e){
+                       Log.e(TAG,"没有找到拨号盘");
+                   }
                }
            }
             else if(keyCode == KeyEvent.KEYCODE_STAR){
@@ -321,8 +378,9 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
            return true;}
         return false;
     }
-
-
+    /*
+    * 下拉通知栏
+    */
     private static void doInStatusBar(Context mContext, String methodName) {
         try {
             @SuppressLint("WrongConstant") Object service = mContext.getSystemService("statusbar");
@@ -377,6 +435,17 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         }
     }
 
-
-
+    void showFirstLogcat(){
+        Log.e(TAG, getPackageName()+" onCreate: Logcat start......");
+        Log.i(TAG, "===================================================");
+        Log.i(TAG, " ________ ___  ___  _____ ______   ________     \n");
+        Log.i(TAG, "|\\  _____\\\\  \\|\\  \\|\\   _ \\  _   \\|\\   __  \\    \n");
+        Log.i(TAG,"\\ \\  \\__/\\ \\  \\\\\\  \\ \\  \\\\\\__\\ \\  \\ \\  \\|\\  \\   \n");
+        Log.i(TAG," \\ \\   __\\\\ \\  \\\\\\  \\ \\  \\\\|__| \\  \\ \\  \\\\\\  \\  \n");
+        Log.i(TAG,"  \\ \\  \\_| \\ \\  \\\\\\  \\ \\  \\    \\ \\  \\ \\  \\\\\\  \\ \n");
+        Log.i(TAG,"   \\ \\__\\   \\ \\_______\\ \\__\\    \\ \\__\\ \\_______\\\n");
+        Log.i(TAG,"    \\|__|    \\|_______|\\|__|     \\|__|\\|_______|\n");
+        Log.i(TAG, "===================================================");
+        Log.e(TAG, " ᗜˬᗜ  Fumo enabled the Debug Mode.start to debugging~");
+    }
 }

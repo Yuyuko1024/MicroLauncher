@@ -37,7 +37,7 @@
     <string name="what">你在期待什么？XD</string>
     <string name="version">版本：</string>
     <string name="connect_us">和我联系~</string>
-    <string name="about_desc">多么棒的幻想乡！\\n 一个简单的适用于带有DPad的Android手机的启动器。 \\n 多亲F21Pro/Pro+版</string>
+    <string name="about_desc">一个简单的适用于带有DPad的Android手机的启动器。\\n \\n  部分图标来源:iconfont \\n \\n 多亲F21Pro/Pro+版</string>
     <string name="easter_egg_string">多么棒的幻想乡！</string>
     <string name="error_lock_phone">错误：无法锁定手机！</string>
     <string name="preference_main_category">主界面设置</string>
@@ -71,4 +71,20 @@
     <string name="app_style_list">列表</string>
     <string name="app_style_grid">表格</string>
     <string name="loading">正在载入应用...</string>
+    <string name="ok">确定</string>
+    <string name="simp_dialer">电话</string>
+    <string name="simp_msg">短信</string>
+    <string name="simp_contact">通讯录</string>
+    <string name="simp_media">多媒体</string>
+    <string name="simp_netsrv">网络服务</string>
+    <string name="simp_settings">设置</string>
+    <string name="simp_file">文件</string>
+    <string name="simp_tools">工具</string>
+    <string name="simp_callcenter">通话记录</string>
+    <string name="preference_app_list_category">应用程序列表</string>
+    <string name="preference_app_list_func">使用经典菜单样式</string>
+    <string name="preference_app_list_func_category">启用该选项将只显示系统应用，其他第三方应用将被隐藏</string>
+    <string name="err_string">出错了</string>
+    <string name="trd_apps">工具箱</string>
+    <string name="osl">开放源代码许可</string>
 </resources>

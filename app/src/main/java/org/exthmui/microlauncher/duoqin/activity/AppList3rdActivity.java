@@ -1,7 +1,6 @@
 package org.exthmui.microlauncher.duoqin.activity;
 
 import android.annotation.SuppressLint;
-import android.app.admin.DevicePolicyManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -16,7 +15,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -39,7 +37,7 @@ import java.util.List;
 
 import es.dmoral.toasty.Toasty;
 
-public class AppListActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener{
+public class AppList3rdActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener{
     private final static String TAG = "AppListActivity";
     private PkgDelReceiver mPkgDelReceiver;
     TextView menu,back;
@@ -57,17 +55,6 @@ public class AppListActivity extends AppCompatActivity implements SharedPreferen
         loadSettings();
         loadApp();
         receiveSyscast();
-        changeTitle(isSimpleList);
-    }
-
-    private void changeTitle(boolean isSimpleTitle){
-        if(isSimpleTitle){
-            setTitle(R.string.menu);
-            Log.d(TAG,"changeTitle true");
-        }else{
-            setTitle(R.string.app_list_title);
-            Log.d(TAG,"changeTitle false");
-        }
     }
 
     private void loadSettings(){
@@ -105,8 +92,6 @@ public class AppListActivity extends AppCompatActivity implements SharedPreferen
         public void onClick(View v) {
             if(v == back) {
                 finish();
-                Intent main_it=new Intent(AppListActivity.this,MainActivity.class);
-                startActivity(main_it);
             }else if(v == menu){
                 showMenu(menu);
             }
@@ -124,8 +109,9 @@ public class AppListActivity extends AppCompatActivity implements SharedPreferen
         Drawable appIcon;
         CharSequence appLabel;
         boolean isSystemApp;
-        List<ResolveInfo> resolveInfos = packageManager.queryIntentActivities(intent, 0);
         List<Application> mApplicationList = new ArrayList<>();
+
+        List<ResolveInfo> resolveInfos = packageManager.queryIntentActivities(intent, 0);
         for (ResolveInfo resolveInfo : resolveInfos) {
             activityInfo = resolveInfo.activityInfo;
             applicationInfo = activityInfo.applicationInfo;
@@ -136,18 +122,7 @@ public class AppListActivity extends AppCompatActivity implements SharedPreferen
             pkgName = activityInfo.packageName;
             application = new Application(appIcon, appLabel, isSystemApp, appIntent, pkgName);
             Log.e(TAG, String.valueOf(appLabel));
-            if(isSimpleList) {
-                if(appLabel!=getString(R.string.app_name) && isSystemApp ){
-                    mApplicationList.add(application);
-                }
-                if(appLabel == getString(R.string.trd_apps)){
-                    mApplicationList.add(application);
-                }
-            }else{
-                if(appLabel!=getString(R.string.app_name)&& appLabel!=getString(R.string.trd_apps)){
-                    mApplicationList.add(application);
-                }
-            }
+            if(appLabel!=getString(R.string.trd_apps) && appLabel!=getString(R.string.app_name) && !isSystemApp){ mApplicationList.add(application);}
         }
         RecyclerView mAppRecyclerView = findViewById(R.id.app_list);
         //如果是网格布局
@@ -189,12 +164,12 @@ public class AppListActivity extends AppCompatActivity implements SharedPreferen
                         startActivity(ia);}
                     break;
                 case R.id.menu_launcher_option:
-                    Intent menu = new Intent(AppListActivity.this, MenuActivity.class);
+                    Intent menu = new Intent(AppList3rdActivity.this, MenuActivity.class);
                     startActivity(menu);
                     finish();
                     break;
                 case R.id.menu_volume_changer:
-                    Intent vol_it = new Intent(AppListActivity.this, VolumeChanger.class);
+                    Intent vol_it = new Intent(AppList3rdActivity.this, VolumeChanger.class);
                     startActivity(vol_it);
                     break;
             }
@@ -234,12 +209,12 @@ public class AppListActivity extends AppCompatActivity implements SharedPreferen
                     startActivity(ia);}
                 break;
             case R.id.menu_launcher_option:
-                Intent menu = new Intent(AppListActivity.this, MenuActivity.class);
+                Intent menu = new Intent(AppList3rdActivity.this, MenuActivity.class);
                 startActivity(menu);
                 finish();
                 break;
             case R.id.menu_volume_changer:
-                Intent vol_it = new Intent(AppListActivity.this, VolumeChanger.class);
+                Intent vol_it = new Intent(AppList3rdActivity.this, VolumeChanger.class);
                 startActivity(vol_it);
                 break;
         }

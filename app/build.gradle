@@ -10,8 +10,8 @@ android {
         applicationId "org.exthmui.microlauncher.duoqin"
         minSdkVersion 21
         targetSdkVersion 31
-        versionCode 18000
-        versionName "1.0_th11"
+        versionCode 19000
+        versionName "1.0_th12"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -40,4 +40,5 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     implementation 'com.github.GrenderG:Toasty:1.5.2'
     implementation 'io.github.medyo:android-about-page:2.0.0'
+    implementation 'de.psdev.licensesdialog:licensesdialog:2.1.0'
 }

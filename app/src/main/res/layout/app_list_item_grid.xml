@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="128dp"
-    android:layout_height="128dp"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
     android:background="?android:attr/selectableItemBackground">
 
     <ImageView
@@ -10,8 +10,8 @@
         android:layout_height="48dp"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="24dp"
-        android:src="@mipmap/ic_launcher"
-        android:contentDescription="@string/content_desc_app_icon"/>
+        android:contentDescription="@string/content_desc_app_icon"
+        android:src="@mipmap/ic_launcher" />
 
     <TextView
         android:id="@+id/app_title"
@@ -19,7 +19,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/app_icon"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="4dp"
         android:ellipsize="marquee"
         android:focusable="false"
         android:maxWidth="88dp"
