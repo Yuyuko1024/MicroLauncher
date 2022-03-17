@@ -160,7 +160,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
     private void checkDevice(){
         Log.d(TAG, "checkDevice: "+Build.BOARD);
-        if(Build.BOARD.equals("goldfish_x86")||Build.BOARD.equals("goldfish_x86_64")||Build.BOARD.equals("goldfish")){
+        if(!Build.BOARD.equals("k61v1_64_bsp")){
             Toasty.info(this,"非多亲设备，部分功能可能无法使用。",Toasty.LENGTH_SHORT).show();
         }
     }
