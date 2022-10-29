@@ -85,6 +85,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".activity.KeyguardVerificationActivity"
+            android:excludeFromRecents="true"
+            android:exported="true"
+            android:label="@string/keyguard_title"
+            android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar" />
     </application>
 
 </manifest>

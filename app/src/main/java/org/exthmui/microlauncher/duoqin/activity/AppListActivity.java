@@ -137,14 +137,14 @@ public class AppListActivity extends AppCompatActivity implements SharedPreferen
             application = new Application(appIcon, appLabel, isSystemApp, appIntent, pkgName);
             Log.e(TAG, String.valueOf(appLabel));
             if(isSimpleList) {
-                if(appLabel!=getString(R.string.app_name) && isSystemApp ){
+                if(appLabel != getString(R.string.app_name) && isSystemApp ){
                     mApplicationList.add(application);
                 }
                 if(appLabel == getString(R.string.trd_apps)){
                     mApplicationList.add(application);
                 }
             }else{
-                if(appLabel!=getString(R.string.app_name)&& appLabel!=getString(R.string.trd_apps)){
+                if(appLabel != getString(R.string.app_name) && appLabel != getString(R.string.trd_apps)){
                     mApplicationList.add(application);
                 }
             }

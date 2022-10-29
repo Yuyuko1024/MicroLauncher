@@ -34,6 +34,29 @@
             android:key="app_list_func"
             android:title="@string/preference_app_list"/>
     </PreferenceCategory>
+    <!-- Security -->
+    <PreferenceCategory
+            android:textColor="#00838F"
+            android:title="@string/preference_security_category"
+            android:key="preference_security_category">
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="enable_toolbox_password"
+            android:title="@string/preference_toolbox_enable_pwd"
+            android:summary="@string/preference_toolbox_enable_pwd_summary"/>
+        <SwitchPreference
+            android:defaultValue="true"
+            android:enabled="false"
+            android:key="toolbox_password_use_keyguard"
+            android:title="@string/preference_toolbox_pwd_keyguard"
+            android:summary="@string/preference_toolbox_pwd_keyguard_summary"/>
+        <EditTextPreference
+            android:enabled="false"
+            android:key="toolbox_password_use_custom"
+            android:title="@string/preference_toolbox_pwd_custom"
+            android:summary="@string/preference_toolbox_pwd_custom_summary"/>
+    </PreferenceCategory>
+
     <PreferenceCategory
         android:textColor="#00838F"
         android:title="@string/preference_app_list_category"

@@ -70,7 +70,7 @@
     <string name="preference_app_list">应用列表样式</string>
     <string name="app_style_list">列表</string>
     <string name="app_style_grid">表格</string>
-    <string name="loading">正在载入应用...</string>
+    <string name="loading">正在载入应用…</string>
     <string name="ok">确定</string>
     <string name="simp_dialer">电话</string>
     <string name="simp_msg">短信</string>
@@ -88,4 +88,15 @@
     <string name="trd_apps">工具箱</string>
     <string name="osl">开放源代码许可</string>
     <string name="abort_msg_uninstall_self">你怎么想不开要卸载它？</string>
+    <string name="preference_toolbox_enable_pwd">启用工具箱密码</string>
+    <string name="preference_toolbox_enable_pwd_summary">启用后，进入工具箱会要求输入密码。</string>
+    <string name="keyguard_title">工具箱密码验证</string>
+    <string name="keyguard_description">请输入您的锁屏密码，以便使用工具箱功能。</string>
+    <string name="preference_security_category">安全</string>
+    <string name="preference_toolbox_pwd_keyguard">使用 Android 系统锁屏密码验证</string>
+    <string name="preference_toolbox_pwd_keyguard_summary">
+        启用后，桌面将使用系统的锁屏密码来验证合法性；禁用后，您便可以使用自定义密码。
+    </string>
+    <string name="preference_toolbox_pwd_custom">使用自定义密码</string>
+    <string name="preference_toolbox_pwd_custom_summary">可以设置自定义密码</string>
 </resources>

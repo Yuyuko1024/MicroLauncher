@@ -42,7 +42,8 @@ public class AppList3rdActivity extends AppCompatActivity implements SharedPrefe
     private PkgDelReceiver mPkgDelReceiver;
     TextView menu,back;
     String app_list_style;
-    boolean isSimpleList;
+    boolean isSimpleList,isEnablePwd,pwdUseKeyguard;
+    SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,21 +53,38 @@ public class AppList3rdActivity extends AppCompatActivity implements SharedPrefe
         back=findViewById(R.id.app_back);
         back.setOnClickListener(new funClick());
         menu.setOnClickListener(new funClick());
-        loadSettings();
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        loadSettings(sharedPreferences);
+        Intent start_it = getIntent();
+        boolean veri_success = start_it.getBooleanExtra("result",false);
+        if (!veri_success){
+            startVerification();
+            finish();
+        }
         loadApp();
         receiveSyscast();
     }
 
-    private void loadSettings(){
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        app_list_style=sharedPreferences.getString("app_list_func","grid");
-        isSimpleList=sharedPreferences.getBoolean("switch_preference_app_list_func",false);
+    private void startVerification(){
+        if (isEnablePwd){
+            if (pwdUseKeyguard){
+                Intent intent = new Intent(AppList3rdActivity.this, KeyguardVerificationActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            }
+        }
+    }
+
+    private void loadSettings(SharedPreferences sp){
+        app_list_style=sp.getString("app_list_func","grid");
+        isSimpleList=sp.getBoolean("switch_preference_app_list_func",false);
+        isEnablePwd=sp.getBoolean("enable_toolbox_password",false);
+        pwdUseKeyguard=sp.getBoolean("toolbox_password_use_keyguard",true);
     }
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        app_list_style=sharedPreferences.getString("app_list_func","grid");
-        isSimpleList=sharedPreferences.getBoolean("switch_preference_app_list_func",false);
+        loadSettings(sharedPreferences);
     }
 
     private void receiveSyscast(){

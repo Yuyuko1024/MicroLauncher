@@ -89,4 +89,16 @@
     <string name="trd_apps">Extra Toolbox</string>
     <string name="osl">Open Source License</string>
     <string name="abort_msg_uninstall_self">Uninstall myself,abort.</string>
+    <string name="preference_toolbox_enable_pwd">Enable Extra toolbox password</string>
+    <string name="preference_toolbox_enable_pwd_summary">When enabled, entering the toolbox will ask for a password.
+    </string>
+    <string name="keyguard_title">Extra Toolbox password authentication</string>
+    <string name="keyguard_description">Please enter your password and continue to open Extra Toolbox.</string>
+    <string name="preference_security_category">Security</string>
+    <string name="preference_toolbox_pwd_keyguard">Use Android keyguard authentication</string>
+    <string name="preference_toolbox_pwd_keyguard_summary">"If enabled, the desktop will uses the
+        system's screen-lock password for authentication. When disabled, you can use a custom password. "
+    </string>
+    <string name="preference_toolbox_pwd_custom">Use custom password</string>
+    <string name="preference_toolbox_pwd_custom_summary">You can set a custom password.</string>
 </resources>
