@@ -126,6 +126,7 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ApplicationViewH
         @Override
         public boolean onMenuItemClick(MenuItem item) {
             Application application = this.mApplicationList.get(mPosition);
+            Intent intent = new Intent();
             switch (item.getItemId()){
                 case 0:
                     mItemView.getContext().startActivity(application.getAppIntent());
@@ -135,22 +136,20 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ApplicationViewH
                         Snackbar.make(itemView,R.string.this_is_system_app,Snackbar.LENGTH_SHORT).show();
                     }else{
                         Uri uri = Uri.fromParts("package", application.getPkgName(), null);
-                        Intent intent = new Intent(Intent.ACTION_DELETE, uri);
+                        intent = new Intent(Intent.ACTION_DELETE, uri);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         mItemView.getContext().startActivity(intent);
                     }
                     break;
                 case 2:
-                    Intent intent = new Intent();
                     intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
                     intent.setData(Uri.fromParts("package", application.getPkgName(), null));
                     mItemView.getContext().startActivity(intent);
                     break;
                 case 3:
-                    Intent i = new Intent();
-                    i.setClassName("com.android.settings",
+                    intent.setClassName("com.android.settings",
                             "com.android.settings.applications.ManageApplications");
-                    mItemView.getContext().startActivity(i);
+                    mItemView.getContext().startActivity(intent);
                     break;
             }
             return false;
