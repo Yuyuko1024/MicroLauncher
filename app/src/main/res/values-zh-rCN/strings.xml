@@ -87,4 +87,5 @@
     <string name="err_string">出错了</string>
     <string name="trd_apps">工具箱</string>
     <string name="osl">开放源代码许可</string>
+    <string name="abort_msg_uninstall_self">你怎么想不开要卸载它？</string>
 </resources>

@@ -18,10 +18,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.snackbar.Snackbar;
 
+import es.dmoral.toasty.Toasty;
+import org.exthmui.microlauncher.duoqin.BuildConfig;
 import org.exthmui.microlauncher.duoqin.misc.Application;
 import org.exthmui.microlauncher.duoqin.R;
 
 import java.util.List;
+import java.util.Objects;
 
 public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ApplicationViewHolder> {
     private List<Application> mApplicationList;
@@ -136,9 +139,13 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ApplicationViewH
                         Snackbar.make(itemView,R.string.this_is_system_app,Snackbar.LENGTH_SHORT).show();
                     }else{
                         Uri uri = Uri.fromParts("package", application.getPkgName(), null);
-                        intent = new Intent(Intent.ACTION_DELETE, uri);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        mItemView.getContext().startActivity(intent);
+                        if (application.isAppSelf()){
+                            Toasty.error(mItemView.getContext(),R.string.abort_msg_uninstall_self, Toasty.LENGTH_LONG ).show();
+                        }else{
+                            intent = new Intent(Intent.ACTION_DELETE, uri);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            mItemView.getContext().startActivity(intent);
+                        }
                     }
                     break;
                 case 2:

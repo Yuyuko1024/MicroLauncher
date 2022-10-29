@@ -4,6 +4,9 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 
 import androidx.annotation.NonNull;
+import org.exthmui.microlauncher.duoqin.BuildConfig;
+
+import java.util.Objects;
 
 public class Application {
     private Drawable mAppIcon;              //App图标，Drawable类型
@@ -55,6 +58,13 @@ public class Application {
     }
 
     public String getPkgName() {return this.mPkgName;}
+
+    public boolean isAppSelf() {
+        if (Objects.equals(getPkgName(), BuildConfig.APPLICATION_ID)){
+            return true;
+        }
+        return false;
+    }
 
     //    toString()方法，可以自动生成
     @NonNull

@@ -88,4 +88,5 @@
     <string name="err_string">Error</string>
     <string name="trd_apps">Extra Toolbox</string>
     <string name="osl">Open Source License</string>
+    <string name="abort_msg_uninstall_self">Uninstall myself,abort.</string>
 </resources>
