@@ -142,23 +142,21 @@ public class AppList3rdActivity extends AppCompatActivity implements SharedPrefe
         PopupMenu popupMenu = new PopupMenu(this,view);
         popupMenu.getMenuInflater().inflate(R.menu.app_option,popupMenu.getMenu());
         popupMenu.setOnMenuItemClickListener(item -> {
+            Intent ia = new Intent();
             switch (item.getItemId()){
                 case R.id.menu_app_manage:
-                    Intent i = new Intent();
-                    i.setClassName("com.android.settings",
+                    ia.setClassName("com.android.settings",
                             "com.android.settings.applications.ManageApplications");
-                    startActivity(i);
+                    startActivity(ia);
                     break;
                 case R.id.menu_about_phone:
                     if (Build.VERSION.SDK_INT >= 28){
                         Log.e("Device Info","Device SDK="+Build.VERSION.SDK_INT);
-                        Intent ia = new Intent();
                         ia.setClassName("com.android.settings",
                                 "com.android.settings.Settings$MyDeviceInfoActivity");
                         startActivity(ia);
                     }else{
                         Log.e("Device Info","Device SDK="+Build.VERSION.SDK_INT);
-                        Intent ia = new Intent();
                         ia.setClassName("com.android.settings",
                                 "com.android.settings.Settings$DeviceInfoSettingsActivity");
                         startActivity(ia);}
