@@ -27,9 +27,9 @@ import java.util.List;
 import java.util.Objects;
 
 public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ApplicationViewHolder> {
-    private List<Application> mApplicationList;
+    private final List<Application> mApplicationList;
     private static View mItemView;
-    private int mLayoutMode;
+    private final int mLayoutMode;
     private static int mPosition = -1;
 
     /**
@@ -75,15 +75,11 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ApplicationViewH
         holder.mText.setOnLongClickListener(v -> {
             mPosition = holder.getAdapterPosition();
             Log.e("Adapter","mPosition="+mPosition);
-            //String tip = application.isSystemApp() ? "这是系统应用" : "这是用户应用";
-            //Toast.makeText(v.getContext(), tip, Toast.LENGTH_SHORT).show();
             return false;
         });
         holder.itemView.setOnLongClickListener(v -> {
             mPosition = holder.getAdapterPosition();
             Log.e("Adapter","mPosition="+mPosition);
-            //String tip = application.isSystemApp() ? "这是系统应用" : "这是用户应用";
-            //Toast.makeText(v.getContext(), tip, Toast.LENGTH_SHORT).show();
             return false;
         });
 
@@ -97,9 +93,9 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ApplicationViewH
 
     public static class ApplicationViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener {
 
-        private ImageView mAppIconView;
-        private TextView mText;
-        private List<Application> mApplicationList;
+        private final ImageView mAppIconView;
+        private final TextView mText;
+        private final List<Application> mApplicationList;
 
         public ApplicationViewHolder(@NonNull View view,List<Application> applicationList) {
             super(view);
