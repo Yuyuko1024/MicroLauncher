@@ -16,8 +16,10 @@ import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.button.MaterialButtonToggleGroup;
 import es.dmoral.toasty.Toasty;
 import org.exthmui.microlauncher.duoqin.R;
 
@@ -25,7 +27,9 @@ public class VolumeChanger extends AppCompatActivity implements SharedPreference
     TextView media,ring,alarm,back;
     SeekBar media_sek,ring_sek,alarm_sek;
     private AudioManager mAudioManager;
-    private int maxVolume, currentVolume;
+    private MaterialButtonToggleGroup mModeToggleView;
+    private NotificationManager notificationManager;
+    private int maxVolume, currentVolume, modeStatus;
     private boolean lock_enable = true;
 
     @Override
@@ -39,22 +43,62 @@ public class VolumeChanger extends AppCompatActivity implements SharedPreference
         media_sek=findViewById(R.id.vol_media_seek);
         ring_sek=findViewById(R.id.vol_ring_seek);
         alarm_sek=findViewById(R.id.vol_alarm_seek);
-        back.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        back.setOnClickListener(v -> finish());
         loadSettings();
         //获取系统的Audio管理者
         media_ctrl();
         ring_ctrl();
         alarm_ctrl();
         PermissionGrant();
+        initModeToggleView();
+        initModeEvent();
+    }
+
+    private void initModeToggleView() {
+        mModeToggleView = findViewById(R.id.mode_toggle_group);
+        Log.d("Mode", String.valueOf(modeStatus));
+        if (modeStatus == AudioManager.RINGER_MODE_NORMAL){
+            mModeToggleView.check(R.id.mode_normal);
+        } else if (modeStatus == AudioManager.RINGER_MODE_VIBRATE) {
+            mModeToggleView.check(R.id.mode_vibrate);
+        } else {
+            mModeToggleView.check(R.id.mode_dnd);
+        }
+    }
+
+    private void initModeEvent() {
+        mModeToggleView.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
+            switch (checkedId){
+                case R.id.mode_normal:
+                    mAudioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+                    //设置正常模式，媒体6，铃声和闹钟为4
+                    mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC,6,0);
+                    mAudioManager.setStreamVolume(AudioManager.STREAM_RING, 4, 0);
+                    mAudioManager.setStreamVolume(AudioManager.STREAM_ALARM, 4, 0);
+                    media_sek.setProgress(6);
+                    ring_sek.setProgress(4);
+                    alarm_sek.setProgress(4);
+                    break;
+                case R.id.mode_vibrate:
+                    mAudioManager.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
+                    //只设置铃声为0
+                    ring_sek.setProgress(0);
+                    break;
+                case R.id.mode_dnd:
+                    mAudioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+                    //将铃声，闹钟音量全部设为0
+                    mAudioManager.setStreamVolume(AudioManager.STREAM_RING, 0, 0);
+                    mAudioManager.setStreamVolume(AudioManager.STREAM_ALARM, 0, 0);
+                    ring_sek.setProgress(0);
+                    alarm_sek.setProgress(0);
+                    break;
+            }
+        });
     }
 
     private void PermissionGrant(){
-        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && !notificationManager.isNotificationPolicyAccessGranted()) {
             Toasty.info(getApplicationContext(),"请授予勿扰权限以用于开关勿扰权限",Toasty.LENGTH_LONG).show();
             startActivity(new Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS));
@@ -62,7 +106,6 @@ public class VolumeChanger extends AppCompatActivity implements SharedPreference
     }
 
     public void media_ctrl(){
-        mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         //最大音量
         maxVolume = mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
         //当前音量
@@ -98,7 +141,6 @@ public class VolumeChanger extends AppCompatActivity implements SharedPreference
         });
     }
     public void ring_ctrl(){
-        mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         //最大音量
         maxVolume = mAudioManager.getStreamMaxVolume(AudioManager.STREAM_RING);
         //当前音量
@@ -131,7 +173,6 @@ public class VolumeChanger extends AppCompatActivity implements SharedPreference
         });
     }
     public void alarm_ctrl(){
-        mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         //最大音量
         maxVolume = mAudioManager.getStreamMaxVolume(AudioManager.STREAM_ALARM);
         //当前音量
@@ -181,6 +222,7 @@ public class VolumeChanger extends AppCompatActivity implements SharedPreference
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
         lock_enable = (sharedPreferences.getBoolean("preference_main_lockscreen",true));
+        modeStatus = mAudioManager.getRingerMode();
     }
 
     @Override

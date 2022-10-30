@@ -1,38 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
-
+<RelativeLayout 
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="20dp"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"
+        android:padding="8dp"
         android:id="@+id/vol_media">
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/vol_media_title"
-        android:text="@string/vol_media_title"
-        android:layout_marginStart="8dp"/>
-
-        <SeekBar
-            android:id="@+id/vol_media_seek"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/vol_media_title"/>
-
         <TextView
-            android:id="@+id/vol_media_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/vol_media_seek"
-            android:layout_marginStart="8dp"
-            android:text="@string/default_volume"
-            android:textSize="16sp" />
+            android:id="@+id/vol_media_title"
+            android:text="@string/vol_media_title"
+            android:layout_marginStart="8dp"/>
+
+            <SeekBar
+                android:id="@+id/vol_media_seek"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/vol_media_title"/>
+
+            <TextView
+                android:id="@+id/vol_media_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/vol_media_seek"
+                android:layout_marginStart="8dp"
+                android:text="@string/default_volume"
+                android:textSize="16sp" />
     </RelativeLayout>
 
 
@@ -40,9 +39,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/vol_ring"
-        android:paddingTop="20dp"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"
+        android:padding="8dp"
         android:layout_below="@id/vol_media">
         <TextView
             android:layout_width="wrap_content"
@@ -67,39 +64,93 @@
 
 
     <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/vol_alarm"
-        android:paddingTop="20dp"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"
-        android:layout_below="@id/vol_ring">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/vol_alarm_title"
-            android:text="@string/vol_alarm_title"
-            android:layout_marginStart="8dp"/>
-        <SeekBar
-            android:id="@+id/vol_alarm_seek"
-            android:layout_below="@id/vol_alarm_title"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-        <TextView
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/vol_alarm_seek"
-            android:textSize="16sp"
-            android:text="@string/default_volume"
-            android:id="@+id/vol_alarm_text"
-            android:layout_marginStart="8dp"/>
+            android:id="@+id/vol_alarm"
+            android:padding="8dp"
+            android:layout_below="@id/vol_ring">
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/vol_alarm_title"
+                android:text="@string/vol_alarm_title"
+                android:layout_marginStart="8dp"/>
+        <SeekBar
+                android:id="@+id/vol_alarm_seek"
+                android:layout_below="@id/vol_alarm_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/vol_alarm_seek"
+                android:textSize="16sp"
+                android:text="@string/default_volume"
+                android:id="@+id/vol_alarm_text"
+                android:layout_marginStart="8dp"/>
     </RelativeLayout>
 
+    <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:layout_below="@id/vol_alarm" android:layout_marginTop="8dp" android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp" android:layout_marginBottom="8dp">
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="模式"
+                android:id="@+id/mode_title"/>
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/mode_title"
+                android:orientation="vertical">
+            <com.google.android.material.button.MaterialButtonToggleGroup
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:id="@+id/mode_toggle_group"
+                    app:singleSelection="true"
+                    app:selectionRequired="true"
+                    app:checkedButton="@id/mode_normal">
+                <com.google.android.material.button.MaterialButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:id="@+id/mode_normal"
+                        android:text="正常模式"/>
+                <com.google.android.material.button.MaterialButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:id="@+id/mode_vibrate"
+                        android:text="震动模式"/>
+                <com.google.android.material.button.MaterialButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:id="@+id/mode_dnd"
+                        android:text="勿扰模式"/>
+
+            </com.google.android.material.button.MaterialButtonToggleGroup>
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <!-- 导航栏 -->
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:background="@color/transpart">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/secondary_text"
+            android:layout_marginStart="6dp"
+            android:layout_marginEnd="6dp"/>
 
         <TextView
             android:id="@+id/volume_back"
@@ -110,6 +161,6 @@
             android:focusable="false"
             android:text="@string/back"
             android:textColor="#9E9E9E"
-            android:textSize="24sp" />
+            android:textSize="24sp"/>
     </RelativeLayout>
 </RelativeLayout>
