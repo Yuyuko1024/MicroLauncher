@@ -157,7 +157,8 @@ public class AppListActivity extends AppCompatActivity implements SharedPreferen
             //      设置适配器
             mAppRecyclerView.setAdapter(new AppAdapter(mApplicationList, 1));
         }else{
-            mAppRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+            //列表布局
+            mAppRecyclerView.setLayoutManager(new GridLayoutManager(this,1));
             mAppRecyclerView.setAdapter(new AppAdapter(mApplicationList, 0));
         }
     }

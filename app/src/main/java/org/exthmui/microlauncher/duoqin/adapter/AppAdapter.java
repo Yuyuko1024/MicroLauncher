@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -32,6 +33,8 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ApplicationViewH
     private final int mLayoutMode;
     private static int mPosition = -1;
 
+    private OnItemCallback onItemCallBack;
+
     /**
      * @param applicationList: 类型为Application的List集
      * @param layoutMode:      0，线性；1：网格
@@ -46,10 +49,10 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ApplicationViewH
     public ApplicationViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         switch (this.mLayoutMode) {
             case 0:
-                mItemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.app_list_item_linear,parent, false);
+                mItemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.app_list_item_linear, parent, false);
                 break;
             case 1:
-                mItemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.app_list_item_grid,parent, false);
+                mItemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.app_list_item_grid, parent, false);
                 break;
         }
         return new ApplicationViewHolder(mItemView,this.mApplicationList);
@@ -60,6 +63,8 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ApplicationViewH
         Application application = this.mApplicationList.get(position);
         holder.mAppIconView.setImageDrawable(application.getAppIcon());
         holder.mText.setText(application.getAppLabel());
+        holder.mAppItem.setOnClickListener(new AppClick(position));
+        holder.mAppItem.setOnFocusChangeListener(new FocusChange(position,holder));
 
 //      设置单击监听事件
         holder.mText.setOnClickListener(v -> {
@@ -95,12 +100,14 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ApplicationViewH
 
         private final ImageView mAppIconView;
         private final TextView mText;
+        private final RelativeLayout mAppItem;
         private final List<Application> mApplicationList;
 
         public ApplicationViewHolder(@NonNull View view,List<Application> applicationList) {
             super(view);
             this.mAppIconView = view.findViewById(R.id.app_icon);
             this.mText = view.findViewById(R.id.app_title);
+            this.mAppItem = view.findViewById(R.id.app_item);
             this.mApplicationList = applicationList;
             view.setOnCreateContextMenuListener(this);
         }
@@ -158,6 +165,49 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ApplicationViewH
             return false;
         }
 
+    }
+
+    private class FocusChange implements View.OnFocusChangeListener {
+        int position;
+        ApplicationViewHolder holder;
+
+        public FocusChange(int position, ApplicationViewHolder holder){
+            this.position = position;
+            this.holder = holder;
+        }
+
+        @Override
+        public void onFocusChange(View v, boolean hasFocus) {
+            if (hasFocus) {
+                holder.mAppItem.animate().scaleX(1.1f).scaleY(1.1f).start();
+                holder.mAppItem.setBackgroundResource(R.drawable.border_app_item);
+            }else{
+                holder.mAppItem.animate().scaleX(1f).scaleY(1f).start();
+                holder.mAppItem.setBackgroundResource(R.color.no_color);
+            }
+            if (onItemCallBack != null){
+                onItemCallBack.onFocusChange(v,hasFocus,position);
+            }
+        }
+    }
+
+    private class AppClick implements View.OnClickListener {
+        int position;
+
+        public AppClick(int position){
+            this.position = position;
+        }
+
+        @Override
+        public void onClick(View v) {
+            if (onItemCallBack != null){
+                onItemCallBack.onItemClick(v,position);
+            }
+        }
+    }
+
+    public void setOnItemClickCallback(OnItemCallback onItemCallback){
+        this.onItemCallBack = onItemCallback;
     }
 
 }
