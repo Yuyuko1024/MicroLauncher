@@ -57,21 +57,25 @@ public class AppList3rdActivity extends AppCompatActivity implements SharedPrefe
         loadSettings(sharedPreferences);
         Intent start_it = getIntent();
         boolean veri_success = start_it.getBooleanExtra("result",false);
+        boolean no_pwd = start_it.getBooleanExtra("no_password",false);
         if (!veri_success){
-            startVerification();
-            finish();
+            if (isEnablePwd) {
+                startVerification();
+                finish();
+            }
+        }
+        if (no_pwd){
+            Toasty.warning(getApplicationContext(),"怎么都没系统密码保护啊...",Toasty.LENGTH_LONG).show();
         }
         loadApp();
         receiveSyscast();
     }
 
     private void startVerification(){
-        if (isEnablePwd){
-            if (pwdUseKeyguard){
-                Intent intent = new Intent(AppList3rdActivity.this, KeyguardVerificationActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-            }
+        if (pwdUseKeyguard){
+            Intent intent = new Intent(AppList3rdActivity.this, KeyguardVerificationActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
         }
     }
 

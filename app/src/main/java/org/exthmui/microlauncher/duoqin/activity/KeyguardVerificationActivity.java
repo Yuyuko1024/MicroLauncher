@@ -30,7 +30,7 @@ public class KeyguardVerificationActivity extends AppCompatActivity {
             Intent intent = km.createConfirmDeviceCredentialIntent(title,desc);
             if (intent == null){
                 Log.d(TAG, "该设备没有密码/PIN保护。");
-                openExtraToolbox();
+                openExtraToolbox(true);
                 finish();
             }else{
                 startActivityForResult(intent, REQUEST_CODE);
@@ -44,15 +44,16 @@ public class KeyguardVerificationActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
-            openExtraToolbox();
+            openExtraToolbox(false);
         }
         finish();
     }
 
-    private void openExtraToolbox(){
+    private void openExtraToolbox(boolean nopassword){
         Intent intent = new Intent();
         intent.setClass(KeyguardVerificationActivity.this,AppList3rdActivity.class);
         intent.putExtra("result",true);
+        intent.putExtra("no_password",nopassword);
         startActivity(intent);
     }
 
