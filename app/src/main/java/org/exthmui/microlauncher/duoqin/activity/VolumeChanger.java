@@ -1,11 +1,15 @@
 package org.exthmui.microlauncher.duoqin.activity;
 
+import android.app.NotificationManager;
 import android.app.admin.DevicePolicyManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -14,6 +18,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import es.dmoral.toasty.Toasty;
 import org.exthmui.microlauncher.duoqin.R;
 
 public class VolumeChanger extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener{
@@ -45,7 +50,17 @@ public class VolumeChanger extends AppCompatActivity implements SharedPreference
         media_ctrl();
         ring_ctrl();
         alarm_ctrl();
+        PermissionGrant();
     }
+
+    private void PermissionGrant(){
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && !notificationManager.isNotificationPolicyAccessGranted()) {
+            Toasty.info(getApplicationContext(),"请授予勿扰权限以用于开关勿扰权限",Toasty.LENGTH_LONG).show();
+            startActivity(new Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS));
+        }
+    }
+
     public void media_ctrl(){
         mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         //最大音量
@@ -165,23 +180,13 @@ public class VolumeChanger extends AppCompatActivity implements SharedPreference
     private void loadSettings(){
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
-        Boolean lock_isEnabled = (sharedPreferences.getBoolean("preference_main_lockscreen",true));
-        if(lock_isEnabled){
-            lock_enable=true;
-        }else{
-            lock_enable=false;
-        }
+        lock_enable = (sharedPreferences.getBoolean("preference_main_lockscreen",true));
     }
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if(key.equals("preference_main_lockscreen")){
-            Boolean lock_isEnabled = (sharedPreferences.getBoolean("preference_main_lockscreen",true));
-            if(lock_isEnabled){
-                lock_enable=true;
-            }else{
-                lock_enable=false;
-            }
+            lock_enable = (sharedPreferences.getBoolean("preference_main_lockscreen",true));
         }
     }
 }
