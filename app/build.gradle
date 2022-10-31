@@ -4,12 +4,12 @@ plugins {
 
 android {
     android.defaultConfig.vectorDrawables.useSupportLibrary = true
-    compileSdk 31
+    compileSdk 32
 
     defaultConfig {
         applicationId "org.exthmui.microlauncher.duoqin"
-        minSdkVersion 21
-        targetSdkVersion 31
+        minSdkVersion 26
+        targetSdkVersion 32
         versionCode 19000
         versionName "1.0_th12"
 
@@ -29,12 +29,12 @@ android {
 }
 
 dependencies {
-    implementation 'androidx.appcompat:appcompat:1.4.0'
-    implementation 'com.google.android.material:material:1.4.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.2'
-    implementation 'org.jetbrains:annotations:15.0'
+    implementation 'androidx.appcompat:appcompat:1.4.1'
+    implementation 'com.google.android.material:material:1.6.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'org.jetbrains:annotations:23.0.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.preference:preference:1.1.1'
+    implementation 'androidx.preference:preference:1.2.0'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
