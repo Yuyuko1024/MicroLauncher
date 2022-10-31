@@ -261,6 +261,12 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        finish();
+    }
+
     public boolean onKeyUp(int keyCode, KeyEvent event){
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             Intent it = new Intent();
