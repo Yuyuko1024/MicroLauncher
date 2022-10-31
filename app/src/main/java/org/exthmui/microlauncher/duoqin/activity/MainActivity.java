@@ -57,7 +57,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     TextClock text_clock;
 
     @SuppressLint("SetTextI18n")
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -278,9 +277,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         return false;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    public boolean onKeyDown(int keyCode, KeyEvent event)
-    {
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
         Log.d(TAG,"这个按键的KeyCode是 "+keyCode);
            if(keyCode == KeyEvent.KEYCODE_DPAD_DOWN){
                 String methodName = "expandNotificationsPanel";
