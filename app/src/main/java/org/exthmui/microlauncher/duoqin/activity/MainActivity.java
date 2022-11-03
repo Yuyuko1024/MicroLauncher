@@ -266,6 +266,12 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         finish();
     }
 
+    @Override
+    protected void onUserLeaveHint() {
+        super.onUserLeaveHint();
+        // TODO: 实现其他用户离开Activity焦点功能
+    }
+
     public boolean onKeyUp(int keyCode, KeyEvent event){
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             Intent it = new Intent();

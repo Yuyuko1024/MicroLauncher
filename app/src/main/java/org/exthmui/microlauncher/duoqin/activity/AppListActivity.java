@@ -105,8 +105,6 @@ public class AppListActivity extends AppCompatActivity implements SharedPreferen
         public void onClick(View v) {
             if(v == back) {
                 finish();
-                Intent main_it=new Intent(AppListActivity.this,MainActivity.class);
-                startActivity(main_it);
             }else if(v == menu){
                 showMenu(menu);
             }
