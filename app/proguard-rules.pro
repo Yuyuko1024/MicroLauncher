@@ -25,6 +25,12 @@
    *** get*();
 }
 
+# androidx
+-keep class androidx.** {*;}
+-keep interface androidx.** {*;}
+-keep public class * extends androidx.**
+-dontwarn androidx.**
+
 -keepclassmembers class **.R$* {
     public static <fields>;
 }
