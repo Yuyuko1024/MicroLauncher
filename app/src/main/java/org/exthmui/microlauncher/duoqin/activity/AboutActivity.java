@@ -121,7 +121,7 @@ public class AboutActivity extends AppCompatActivity implements SharedPreference
     }
 
     private void loadSettings(){
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences sharedPreferences = getSharedPreferences(getPackageName()+"_preferences",Context.MODE_PRIVATE);
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
         boolean lock_isEnabled = (sharedPreferences.getBoolean("preference_main_lockscreen",true));
         lock_enable= lock_isEnabled;

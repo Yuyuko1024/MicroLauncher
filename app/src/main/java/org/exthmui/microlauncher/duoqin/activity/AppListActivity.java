@@ -71,7 +71,7 @@ public class AppListActivity extends AppCompatActivity implements SharedPreferen
     }
 
     private void loadSettings(){
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences sharedPreferences = getSharedPreferences(getPackageName()+"_preferences",Context.MODE_PRIVATE);
         app_list_style=sharedPreferences.getString("app_list_func","grid");
         isSimpleList=sharedPreferences.getBoolean("switch_preference_app_list_func",false);
     }

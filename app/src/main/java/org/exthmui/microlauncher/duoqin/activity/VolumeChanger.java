@@ -22,12 +22,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.button.MaterialButtonToggleGroup;
 import es.dmoral.toasty.Toasty;
 import org.exthmui.microlauncher.duoqin.R;
+import org.exthmui.microlauncher.duoqin.databinding.VolumeDialogBinding;
 
 public class VolumeChanger extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener{
-    TextView media,ring,alarm,back;
-    SeekBar media_sek,ring_sek,alarm_sek;
+    private VolumeDialogBinding binding;
     private AudioManager mAudioManager;
-    private MaterialButtonToggleGroup mModeToggleView;
     private NotificationManager notificationManager;
     private int maxVolume, currentVolume, modeStatus;
     private boolean lock_enable = true;
@@ -35,16 +34,10 @@ public class VolumeChanger extends AppCompatActivity implements SharedPreference
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.volume_dialog);
-        media=findViewById(R.id.vol_media_text);
-        ring=findViewById(R.id.vol_ring_text);
-        alarm=findViewById(R.id.vol_alarm_text);
-        back=findViewById(R.id.volume_back);
-        media_sek=findViewById(R.id.vol_media_seek);
-        ring_sek=findViewById(R.id.vol_ring_seek);
-        alarm_sek=findViewById(R.id.vol_alarm_seek);
+        binding = VolumeDialogBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-        back.setOnClickListener(v -> finish());
+        binding.volumeBack.setOnClickListener(v -> finish());
         loadSettings();
         //获取系统的Audio管理者
         media_ctrl();
@@ -56,44 +49,39 @@ public class VolumeChanger extends AppCompatActivity implements SharedPreference
     }
 
     private void initModeToggleView() {
-        mModeToggleView = findViewById(R.id.mode_toggle_group);
         Log.d("Mode", String.valueOf(modeStatus));
         if (modeStatus == AudioManager.RINGER_MODE_NORMAL){
-            mModeToggleView.check(R.id.mode_normal);
+            binding.modeToggleGroup.check(R.id.mode_normal);
         } else if (modeStatus == AudioManager.RINGER_MODE_VIBRATE) {
-            mModeToggleView.check(R.id.mode_vibrate);
+            binding.modeToggleGroup.check(R.id.mode_vibrate);
         } else {
-            mModeToggleView.check(R.id.mode_dnd);
+            binding.modeToggleGroup.check(R.id.mode_dnd);
         }
     }
 
     private void initModeEvent() {
-        mModeToggleView.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
-            if (isChecked){
-                switch (checkedId){
-                    case R.id.mode_normal:
-                        mAudioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
-                        //设置正常模式，媒体6，铃声和闹钟为4
-                        mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC,6,0);
-                        mAudioManager.setStreamVolume(AudioManager.STREAM_RING, 4, 0);
-                        mAudioManager.setStreamVolume(AudioManager.STREAM_ALARM, 4, 0);
-                        media_sek.setProgress(6);
-                        ring_sek.setProgress(4);
-                        alarm_sek.setProgress(4);
-                        break;
-                    case R.id.mode_vibrate:
-                        mAudioManager.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
-                        //只设置铃声为0
-                        ring_sek.setProgress(0);
-                        break;
-                    case R.id.mode_dnd:
-                        mAudioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
-                        //将铃声，闹钟音量全部设为0
-                        mAudioManager.setStreamVolume(AudioManager.STREAM_RING, 0, 0);
-                        mAudioManager.setStreamVolume(AudioManager.STREAM_ALARM, 0, 0);
-                        ring_sek.setProgress(0);
-                        alarm_sek.setProgress(0);
-                        break;
+        binding.modeToggleGroup.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
+            if (isChecked) {
+                if (checkedId == R.id.mode_normal) {
+                    // 设置正常模式
+                    mAudioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+                    mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC,6,0);
+                    mAudioManager.setStreamVolume(AudioManager.STREAM_RING, 4, 0);
+                    mAudioManager.setStreamVolume(AudioManager.STREAM_ALARM, 4, 0);
+                    binding.volMediaSeek.setProgress(6);
+                    binding.volRingSeek.setProgress(4);
+                    binding.volAlarmSeek.setProgress(4);
+                } else if (checkedId == R.id.mode_vibrate) {
+                    // 设置震动模式
+                    mAudioManager.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
+                    binding.volRingSeek.setProgress(0);
+                } else if (checkedId == R.id.mode_dnd) {
+                    // 设置免打扰模式
+                    mAudioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+                    mAudioManager.setStreamVolume(AudioManager.STREAM_RING, 0, 0);
+                    mAudioManager.setStreamVolume(AudioManager.STREAM_ALARM, 0, 0);
+                    binding.volRingSeek.setProgress(0);
+                    binding.volAlarmSeek.setProgress(0);
                 }
             }
         });
@@ -101,7 +89,7 @@ public class VolumeChanger extends AppCompatActivity implements SharedPreference
 
     private void PermissionGrant(){
         notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && !notificationManager.isNotificationPolicyAccessGranted()) {
+        if (!notificationManager.isNotificationPolicyAccessGranted()) {
             Toasty.info(getApplicationContext(),"请授予勿扰权限以用于开关勿扰权限",Toasty.LENGTH_LONG).show();
             startActivity(new Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS));
         }
@@ -113,19 +101,19 @@ public class VolumeChanger extends AppCompatActivity implements SharedPreference
         //当前音量
         currentVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
         //seekbar设置最大值为最大音量，这样设置当前进度时不用换算百分比了
-        media_sek.setMax(maxVolume);
+        binding.volMediaSeek.setMax(maxVolume);
         //seekbar设置当前进度为当前音量
-        media.setText(currentVolume + "");
-        media_sek.setProgress(currentVolume);
+        binding.volMediaText.setText(currentVolume + "");
+        binding.volMediaSeek.setProgress(currentVolume);
 
         //seekbar设置拖动监听
-        media_sek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        binding.volMediaSeek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar arg0, int progress, boolean fromUser) {
                 //设置媒体音量为当前seekbar进度
                 mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, progress, 0);
                 currentVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-                media.setText(currentVolume + "");
-                media_sek.setProgress(currentVolume);
+                binding.volMediaText.setText(currentVolume + "");
+                binding.volMediaSeek.setProgress(currentVolume);
             }
 
             @Override
@@ -148,19 +136,19 @@ public class VolumeChanger extends AppCompatActivity implements SharedPreference
         //当前音量
         currentVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_RING);
         //seekbar设置最大值为最大音量，这样设置当前进度时不用换算百分比了
-        ring_sek.setMax(maxVolume);
+        binding.volRingSeek.setMax(maxVolume);
         //seekbar设置当前进度为当前音量
-        ring.setText(currentVolume + "");
-        ring_sek.setProgress(currentVolume);
+        binding.volRingText.setText(currentVolume + "");
+        binding.volRingSeek.setProgress(currentVolume);
 
         //seekbar设置拖动监听
-        ring_sek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        binding.volRingSeek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar arg0, int progress, boolean fromUser) {
                 //设置媒体音量为当前seekbar进度
                 mAudioManager.setStreamVolume(AudioManager.STREAM_RING, progress, 0);
                 currentVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_RING);
-                ring.setText(currentVolume + "");
-                ring_sek.setProgress(currentVolume);
+                binding.volRingText.setText(currentVolume + "");
+                binding.volRingSeek.setProgress(currentVolume);
             }
 
             @Override
@@ -180,19 +168,19 @@ public class VolumeChanger extends AppCompatActivity implements SharedPreference
         //当前音量
         currentVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_ALARM);
         //seekbar设置最大值为最大音量，这样设置当前进度时不用换算百分比了
-        alarm_sek.setMax(maxVolume);
+        binding.volAlarmSeek.setMax(maxVolume);
         //seekbar设置当前进度为当前音量
-        alarm.setText(currentVolume + "");
-        alarm_sek.setProgress(currentVolume);
+        binding.volAlarmText.setText(currentVolume + "");
+        binding.volAlarmSeek.setProgress(currentVolume);
 
         //seekbar设置拖动监听
-        alarm_sek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        binding.volAlarmSeek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar arg0, int progress, boolean fromUser) {
                 //设置媒体音量为当前seekbar进度
                 mAudioManager.setStreamVolume(AudioManager.STREAM_ALARM, progress, 0);
                 currentVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_ALARM);
-                alarm.setText(currentVolume + "");
-                alarm_sek.setProgress(currentVolume);
+                binding.volAlarmText.setText(currentVolume + "");
+                binding.volAlarmSeek.setProgress(currentVolume);
             }
 
             @Override
@@ -221,7 +209,7 @@ public class VolumeChanger extends AppCompatActivity implements SharedPreference
     }
 
     private void loadSettings(){
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences sharedPreferences = getSharedPreferences(getPackageName()+"_preferences",Context.MODE_PRIVATE);
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
         lock_enable = (sharedPreferences.getBoolean("preference_main_lockscreen",true));
         modeStatus = mAudioManager.getRingerMode();

@@ -53,7 +53,7 @@ public class AppList3rdActivity extends AppCompatActivity implements SharedPrefe
         back=findViewById(R.id.app_back);
         back.setOnClickListener(new funClick());
         menu.setOnClickListener(new funClick());
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        sharedPreferences = getSharedPreferences(getPackageName()+"_preferences",Context.MODE_PRIVATE);
         loadSettings(sharedPreferences);
         Intent start_it = getIntent();
         boolean veri_success = start_it.getBooleanExtra("result",false);
