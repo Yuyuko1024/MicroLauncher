@@ -61,40 +61,42 @@ public class AppList3rdActivity extends AppCompatActivity implements SharedPrefe
         menu.setOnClickListener(new funClick());
         sharedPreferences = getSharedPreferences(getPackageName()+"_preferences",Context.MODE_PRIVATE);
         loadSettings(sharedPreferences);
-        if (pwdUseKeyguard){
-            Intent start_it = getIntent();
-            boolean veri_success = start_it.getBooleanExtra("result",false);
-            boolean no_pwd = start_it.getBooleanExtra("no_password",false);
-            if (!veri_success){
-                if (isEnablePwd) {
-                    startVerification();
-                    finish();
-                }
-            }
-            if (no_pwd){
-                Toasty.warning(getApplicationContext(),getString(R.string.system_no_password),Toasty.LENGTH_LONG).show();
-            }
-            init();
-        } else if (!TextUtils.isEmpty(pwdCustom)){
-            EditText editText = new EditText(this);
-            new MaterialAlertDialogBuilder(this)
-                    .setTitle(R.string.password_title)
-                    .setView(editText)
-                    .setCancelable(false)
-                    .setPositiveButton(getString(android.R.string.ok), (dialog, which) -> {
-                        if (editText.getText().toString().equals(pwdCustom)){
-                            init();
-                            dialog.dismiss();
-                        } else {
-                            Toasty.error(getApplicationContext(),getString(R.string.password_wrong),Toasty.LENGTH_LONG).show();
-                            finish();
-                        }
-                    })
-                    .setNegativeButton(getString(android.R.string.cancel), (dialog, which) -> {
-                        dialog.dismiss();
+        if (isEnablePwd) {
+            if (pwdUseKeyguard){
+                Intent start_it = getIntent();
+                boolean veri_success = start_it.getBooleanExtra("result",false);
+                boolean no_pwd = start_it.getBooleanExtra("no_password",false);
+                if (!veri_success){
+                    if (isEnablePwd) {
+                        startVerification();
                         finish();
-                    })
-                    .show();
+                    }
+                }
+                if (no_pwd){
+                    Toasty.warning(getApplicationContext(),getString(R.string.system_no_password),Toasty.LENGTH_LONG).show();
+                }
+                init();
+            } else if (!TextUtils.isEmpty(pwdCustom)){
+                EditText editText = new EditText(this);
+                new MaterialAlertDialogBuilder(this)
+                        .setTitle(R.string.password_title)
+                        .setView(editText)
+                        .setCancelable(false)
+                        .setPositiveButton(getString(android.R.string.ok), (dialog, which) -> {
+                            if (editText.getText().toString().equals(pwdCustom)){
+                                init();
+                                dialog.dismiss();
+                            } else {
+                                Toasty.error(getApplicationContext(),getString(R.string.password_wrong),Toasty.LENGTH_LONG).show();
+                                finish();
+                            }
+                        })
+                        .setNegativeButton(getString(android.R.string.cancel), (dialog, which) -> {
+                            dialog.dismiss();
+                            finish();
+                        })
+                        .show();
+            }
         } else {
             init();
         }
