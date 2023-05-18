@@ -3,6 +3,7 @@ package org.exthmui.microlauncher.duoqin.activity;
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -14,10 +15,12 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
@@ -27,6 +30,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import org.exthmui.microlauncher.duoqin.R;
 import org.exthmui.microlauncher.duoqin.adapter.AppAdapter;
@@ -40,10 +45,11 @@ import es.dmoral.toasty.Toasty;
 public class AppList3rdActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener{
     private final static String TAG = "AppListActivity";
     private PkgDelReceiver mPkgDelReceiver;
-    TextView menu,back;
-    String app_list_style;
-    boolean isSimpleList,isEnablePwd,pwdUseKeyguard;
-    SharedPreferences sharedPreferences;
+    private TextView menu,back;
+    private String app_list_style;
+    private String pwdCustom;
+    private boolean isSimpleList,isEnablePwd,pwdUseKeyguard;
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -55,18 +61,46 @@ public class AppList3rdActivity extends AppCompatActivity implements SharedPrefe
         menu.setOnClickListener(new funClick());
         sharedPreferences = getSharedPreferences(getPackageName()+"_preferences",Context.MODE_PRIVATE);
         loadSettings(sharedPreferences);
-        Intent start_it = getIntent();
-        boolean veri_success = start_it.getBooleanExtra("result",false);
-        boolean no_pwd = start_it.getBooleanExtra("no_password",false);
-        if (!veri_success){
-            if (isEnablePwd) {
-                startVerification();
-                finish();
+        if (pwdUseKeyguard){
+            Intent start_it = getIntent();
+            boolean veri_success = start_it.getBooleanExtra("result",false);
+            boolean no_pwd = start_it.getBooleanExtra("no_password",false);
+            if (!veri_success){
+                if (isEnablePwd) {
+                    startVerification();
+                    finish();
+                }
             }
+            if (no_pwd){
+                Toasty.warning(getApplicationContext(),"怎么都没系统密码保护啊...",Toasty.LENGTH_LONG).show();
+            }
+            init();
+        } else if (!TextUtils.isEmpty(pwdCustom)){
+            EditText editText = new EditText(this);
+            new MaterialAlertDialogBuilder(this)
+                    .setTitle("Input Password")
+                    .setView(editText)
+                    .setCancelable(false)
+                    .setPositiveButton(getString(android.R.string.ok), (dialog, which) -> {
+                        if (editText.getText().toString().equals(pwdCustom)){
+                            init();
+                            dialog.dismiss();
+                        } else {
+                            Toasty.error(getApplicationContext(),"密码错误",Toasty.LENGTH_LONG).show();
+                            finish();
+                        }
+                    })
+                    .setNegativeButton(getString(android.R.string.cancel), (dialog, which) -> {
+                        dialog.dismiss();
+                        finish();
+                    })
+                    .show();
+        } else {
+            init();
         }
-        if (no_pwd){
-            Toasty.warning(getApplicationContext(),"怎么都没系统密码保护啊...",Toasty.LENGTH_LONG).show();
-        }
+    }
+
+    private void init(){
         loadApp();
         receiveSyscast();
     }
@@ -84,6 +118,7 @@ public class AppList3rdActivity extends AppCompatActivity implements SharedPrefe
         isSimpleList=sp.getBoolean("switch_preference_app_list_func",false);
         isEnablePwd=sp.getBoolean("enable_toolbox_password",false);
         pwdUseKeyguard=sp.getBoolean("toolbox_password_use_keyguard",true);
+        pwdCustom=sp.getString("toolbox_password_use_custom","");
     }
 
     @Override
@@ -96,8 +131,10 @@ public class AppList3rdActivity extends AppCompatActivity implements SharedPrefe
         intentFilter.addAction("android.intent.action.PACKAGE_ADDED");
         intentFilter.addAction("android.intent.action.PACKAGE_REMOVED");
         intentFilter.addDataScheme("package");
-        mPkgDelReceiver = new PkgDelReceiver();
-        registerReceiver(mPkgDelReceiver, intentFilter);
+        if (mPkgDelReceiver == null) {
+            mPkgDelReceiver = new PkgDelReceiver();
+            registerReceiver(mPkgDelReceiver, intentFilter);
+        }
     }
 
     class PkgDelReceiver extends BroadcastReceiver{
@@ -244,6 +281,6 @@ public class AppList3rdActivity extends AppCompatActivity implements SharedPrefe
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(mPkgDelReceiver);
+        if (mPkgDelReceiver != null) unregisterReceiver(mPkgDelReceiver);
     }
 }
