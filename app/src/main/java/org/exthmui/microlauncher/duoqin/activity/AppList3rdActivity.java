@@ -72,13 +72,13 @@ public class AppList3rdActivity extends AppCompatActivity implements SharedPrefe
                 }
             }
             if (no_pwd){
-                Toasty.warning(getApplicationContext(),"怎么都没系统密码保护啊...",Toasty.LENGTH_LONG).show();
+                Toasty.warning(getApplicationContext(),getString(R.string.system_no_password),Toasty.LENGTH_LONG).show();
             }
             init();
         } else if (!TextUtils.isEmpty(pwdCustom)){
             EditText editText = new EditText(this);
             new MaterialAlertDialogBuilder(this)
-                    .setTitle("Input Password")
+                    .setTitle(R.string.password_title)
                     .setView(editText)
                     .setCancelable(false)
                     .setPositiveButton(getString(android.R.string.ok), (dialog, which) -> {
@@ -86,7 +86,7 @@ public class AppList3rdActivity extends AppCompatActivity implements SharedPrefe
                             init();
                             dialog.dismiss();
                         } else {
-                            Toasty.error(getApplicationContext(),"密码错误",Toasty.LENGTH_LONG).show();
+                            Toasty.error(getApplicationContext(),getString(R.string.password_wrong),Toasty.LENGTH_LONG).show();
                             finish();
                         }
                     })

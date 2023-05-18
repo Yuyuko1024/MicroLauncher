@@ -103,4 +103,7 @@
     <string name="preference_toolbox_pwd_custom">Use custom password</string>
     <string name="preference_toolbox_pwd_custom_summary">You can set a custom password.</string>
     <string name="chs_lunar_text" translatable="false">农历  <xliff:g id="ganzhi">%s</xliff:g><xliff:g id="animal">%s</xliff:g> <xliff:g id="string">%s</xliff:g></string>
+    <string name="password_title">Input Password</string>
+    <string name="password_wrong">Wrong password!</string>
+    <string name="system_no_password">System is not password protected</string>
 </resources>

@@ -100,4 +100,7 @@
     </string>
     <string name="preference_toolbox_pwd_custom">使用自定义密码</string>
     <string name="preference_toolbox_pwd_custom_summary">可以设置自定义密码</string>
+    <string name="password_title">输入密码</string>
+    <string name="password_wrong">密码错误</string>
+    <string name="system_no_password">怎么都没系统密码保护啊…</string>
 </resources>
