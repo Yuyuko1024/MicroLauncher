@@ -32,6 +32,7 @@ public class CarrierTextView extends TextView {
         private void updateText(Context context) {
             setText(getCarrier(context));
             setTextColor(Color.WHITE);
+            setTextSize(14);
         }
 
         private String getCarrier(Context context) {

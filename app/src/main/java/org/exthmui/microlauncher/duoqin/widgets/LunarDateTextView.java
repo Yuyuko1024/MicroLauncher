@@ -42,6 +42,7 @@ public class LunarDateTextView extends TextView {
     private void updateText(Context context) {
         setText(getDayLunar(context));
         setTextColor(Color.WHITE);
+        setTextSize(16);
     }
 
     /**

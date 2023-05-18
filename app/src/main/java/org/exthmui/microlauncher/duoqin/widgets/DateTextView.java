@@ -61,6 +61,7 @@ public class DateTextView extends TextView {
         String date = sdf.format(new Date());
         setText(date);
         setTextColor(Color.WHITE);
+        setTextSize(16);
     }
 
     private void registerReceiver() {
