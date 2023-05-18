@@ -98,6 +98,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             Log.d(TAG, "Disable lunar");
             clockViewManager.removeView(2);
         }
+        carrier_enable = sharedPreferences.getBoolean("switch_preference_carrier_name",true);
         if(carrier_enable){
             Log.d(TAG, "Enable carrier name");
             clockViewManager.insertOrUpdateView(3,carrier);
@@ -110,7 +111,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         pound_func = (sharedPreferences.getString("preference_pound_func","volume"));
         String clock_size = (sharedPreferences.getString("list_preference_clock_size","58"));
         mainBinding.clock.textClock.setTextSize(Float.parseFloat(clock_size));
-        carrier_enable = sharedPreferences.getBoolean("switch_preference_carrier_name",true);
         xiaoai_enable = sharedPreferences.getBoolean("preference_main_xiaoai_ai",true);
         dialpad_enable = sharedPreferences.getBoolean("preference_dial_pad",true);
     }
