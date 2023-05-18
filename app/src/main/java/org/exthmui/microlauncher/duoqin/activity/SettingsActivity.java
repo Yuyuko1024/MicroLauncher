@@ -1,5 +1,6 @@
 package org.exthmui.microlauncher.duoqin.activity;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -13,25 +14,26 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import org.exthmui.microlauncher.duoqin.R;
+import org.exthmui.microlauncher.duoqin.databinding.ActivitySettingsBinding;
 import org.exthmui.microlauncher.duoqin.misc.RestartTool;
 
 public class SettingsActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
-    TextView back;
-    boolean reload_flag;
+    private ActivitySettingsBinding binding;
+    private boolean reload_flag;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_settings);
+        binding = ActivitySettingsBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         ActionBar actionBar = this.getSupportActionBar();
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences sharedPreferences = getSharedPreferences(getPackageName()+"_preferences", Context.MODE_PRIVATE);
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
         if(actionBar != null){
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-        back=findViewById(R.id.settings_back);
-        back.setOnClickListener(new backFunc());
+        binding.settingsBack.setOnClickListener(new backFunc());
     }
 
     class backFunc implements View.OnClickListener{
@@ -73,7 +75,7 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
             case "switch_preference_lunar":
             case "switch_preference_carrier_name":
             case "switch_preference_app_list_func":
-                back.setText("重启桌面");
+                binding.settingsBack.setText(getText(R.string.status_reload_launcher));
                 reload_flag=true;
                 break;
         }
@@ -88,7 +90,7 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences sharedPreferences = getSharedPreferences(getPackageName()+"_preferences", Context.MODE_PRIVATE);
         sharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
         rebootLauncher(reload_flag);
     }

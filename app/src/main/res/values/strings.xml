@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">MicroLauncher</string>
     <string name="menu">Menu</string>
     <string name="contact">Contact</string>
@@ -88,6 +88,7 @@
     <string name="err_string">Error</string>
     <string name="trd_apps">Extra Toolbox</string>
     <string name="osl">Open Source License</string>
+    <string name="status_reload_launcher">Restart</string>
     <string name="abort_msg_uninstall_self">Uninstall myself,abort.</string>
     <string name="preference_toolbox_enable_pwd">Enable Extra toolbox password</string>
     <string name="preference_toolbox_enable_pwd_summary">When enabled, entering the toolbox will ask for a password.
@@ -101,4 +102,5 @@
     </string>
     <string name="preference_toolbox_pwd_custom">Use custom password</string>
     <string name="preference_toolbox_pwd_custom_summary">You can set a custom password.</string>
+    <string name="chs_lunar_text" translatable="false">农历  <xliff:g id="ganzhi">%s</xliff:g><xliff:g id="animal">%s</xliff:g> <xliff:g id="string">%s</xliff:g></string>
 </resources>

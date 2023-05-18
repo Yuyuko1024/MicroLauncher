@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextClock;
 import android.widget.TextView;
@@ -29,7 +30,12 @@ import androidx.core.content.ContextCompat;
 import com.google.android.material.snackbar.Snackbar;
 
 import org.exthmui.microlauncher.duoqin.R;
+import org.exthmui.microlauncher.duoqin.databinding.ActivityMainBinding;
 import org.exthmui.microlauncher.duoqin.misc.ChineseCale;
+import org.exthmui.microlauncher.duoqin.widgets.CarrierTextView;
+import org.exthmui.microlauncher.duoqin.widgets.ClockViewManager;
+import org.exthmui.microlauncher.duoqin.widgets.DateTextView;
+import org.exthmui.microlauncher.duoqin.widgets.LunarDateTextView;
 
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
@@ -42,48 +48,35 @@ import es.dmoral.toasty.Toasty;
 
 public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
     private final static String TAG = "ML_MainActivity";
-    private final static String dateFormat = "yyyy年MM月dd日";
-    private final Calendar calendar = Calendar.getInstance();
-    private String week;
     private static final int grant_int=1;
     private boolean carrier_enable = true;
     private boolean xiaoai_enable = true;
     private boolean dialpad_enable = true;
     private boolean torch = false;
     private CameraManager manager;
+    private ActivityMainBinding mainBinding;
+    private ClockViewManager clockViewManager;
+    private DateTextView date;
+    private LunarDateTextView lunarDate;
+    private CarrierTextView carrier;
     String pound_func;
-    TextView dateView,menu,contact;
-    LinearLayout clock;
-    TextClock text_clock;
 
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        mainBinding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(mainBinding.getRoot());
         showFirstLogcat();
         checkDevice();
-        View decorView = getWindow().getDecorView();
-        decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE); //使背景图与状态栏融合到一起，这里需要在setcontentview前执行
-        getWindow().setStatusBarColor(Color.TRANSPARENT);
-        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
-        Date date = new Date(System.currentTimeMillis());
-        dateView = findViewById(R.id.date_text);
-        clock = findViewById(R.id.clock);
-        text_clock = findViewById(R.id.text_clock);
-        printDayOfWeek();
-        dateView.setText(sdf.format(date) + " " + week);
-        menu = findViewById(R.id.menu);
-        contact = findViewById(R.id.contact);
-        contact.setOnClickListener(new mClick());
-        menu.setOnClickListener(new mClick());
         GrantPermissions();
-        clock.post(() -> {
-            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) clock.getLayoutParams();
-            params.bottomMargin = menu.getHeight();
-            clock.setLayoutParams(params);
-        });
-        Log.e(TAG, "Carrier Name is " + getCarrierName(getApplicationContext()));
+        clockViewManager = new ClockViewManager(mainBinding.clock.datesLayout);
+        mainBinding.contact.setOnClickListener(new mClick());
+        mainBinding.menu.setOnClickListener(new mClick());
+        date = new DateTextView(this);
+        lunarDate = new LunarDateTextView(this);
+        carrier = new CarrierTextView(this);
+        clockViewManager.insertOrUpdateView(1, date);
         loadSettings();
     }
 
@@ -95,66 +88,48 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     }
 
     private void loadSettings(){
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences sharedPreferences = getSharedPreferences(getPackageName()+"_preferences",Context.MODE_PRIVATE);
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
         boolean lunar_isEnable= (sharedPreferences.getBoolean("switch_preference_lunar",true));
         if(lunar_isEnable){
             Log.d(TAG, "Enable lunar");
-            removeItem("lunar");
-            TextView lunar = new TextView(this);
-            lunar.setTextColor(Color.WHITE);
-            lunar.setTextSize(14);
-            lunar.setId(R.id.lunar);
-            clock.addView(lunar, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            lunar.setText(getDayLunar());
+            clockViewManager.insertOrUpdateView(2, lunarDate);
         }else{
             Log.d(TAG, "Disable lunar");
-            removeItem("lunar");
+            clockViewManager.removeView(2);
+        }
+        if(carrier_enable){
+            Log.d(TAG, "Enable carrier name");
+            clockViewManager.insertOrUpdateView(3,carrier);
+        }else{
+            Log.d(TAG, "Disable carrier name");
+            clockViewManager.removeView(3);
         }
         String clock_locate = (sharedPreferences.getString("list_preference_clock_locate","reimu"));
         setClockLocate(clock_locate);
         pound_func = (sharedPreferences.getString("preference_pound_func","volume"));
         String clock_size = (sharedPreferences.getString("list_preference_clock_size","58"));
-        text_clock.setTextSize(Float.parseFloat(clock_size));
+        mainBinding.clock.textClock.setTextSize(Float.parseFloat(clock_size));
         carrier_enable = sharedPreferences.getBoolean("switch_preference_carrier_name",true);
         xiaoai_enable = sharedPreferences.getBoolean("preference_main_xiaoai_ai",true);
         dialpad_enable = sharedPreferences.getBoolean("preference_dial_pad",true);
-        if(carrier_enable){
-            Log.d(TAG, "Enable carrier name");
-            removeItem("carrier");
-            TextView carrier_name = new TextView(this);
-            carrier_name.setTextColor(Color.WHITE);
-            carrier_name.setTextSize(16);
-            carrier_name.setId(R.id.carrier_name);
-            clock.addView(carrier_name, LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT);
-            carrier_name.setText(getCarrierName(getApplicationContext()));
-        }else{
-            Log.d(TAG, "Disable carrier name");
-            removeItem("carrier");
-        }
     }
 
     private void setClockLocate(String clockLocate) {
-        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) clock.getLayoutParams();
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mainBinding.clock.textClock.getLayoutParams();
         switch (clockLocate){
-            case "reimu":
-                clock.setGravity(Gravity.START);
-                params.gravity = Gravity.START | Gravity.TOP;
+            case "left":
+                params.gravity = Gravity.START;
                 break;
-            case "marisa":
-                clock.setGravity(Gravity.START);
-                params.gravity = Gravity.START | Gravity.BOTTOM;
-                break;
-            case "renko":
-                clock.setGravity(Gravity.END);
-                params.gravity = Gravity.END | Gravity.TOP;
-                break;
-            case "maribel":
-                clock.setGravity(Gravity.END);
-                params.gravity = Gravity.END | Gravity.BOTTOM;
+            case "right":
+                params.gravity = Gravity.END;
                 break;
         }
-        clock.setLayoutParams(params);
+        mainBinding.clock.textClock.setLayoutParams(params);
+        for (int i = 1; i < 4; i++) {
+            Log.d(TAG, "setClockLocate: "+i);
+            clockViewManager.setLayoutParams(i, params);
+        }
     }
 
     private void checkDevice(){
@@ -164,11 +139,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         }
     }
 
-    public static String getCarrierName(Context context){
-        TelephonyManager teleMgr  = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-        return teleMgr.getSimOperatorName();
-    }
-
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         switch (key) {
@@ -176,16 +146,10 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                 boolean lunar_isEnable = (sharedPreferences.getBoolean("switch_preference_lunar", true));
                 if (lunar_isEnable) {
                     Log.d(TAG, "Enable lunar");
-                    removeItem("lunar");
-                    TextView lunar = new TextView(this);
-                    lunar.setTextColor(Color.WHITE);
-                    lunar.setTextSize(14);
-                    lunar.setId(R.id.lunar);
-                    clock.addView(lunar, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                    lunar.setText(getDayLunar());
+                    clockViewManager.insertOrUpdateView(2, lunarDate);
                 } else {
                     Log.d(TAG, "Disable lunar");
-                    removeItem("lunar");
+                    clockViewManager.removeView(2);
                 }
                 break;
             case "list_preference_clock_locate":
@@ -194,22 +158,16 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                 break;
             case "list_preference_clock_size":
                 String clock_size = (sharedPreferences.getString("list_preference_clock_size", "58"));
-                text_clock.setTextSize(Float.parseFloat(clock_size));
+                mainBinding.clock.textClock.setTextSize(Float.parseFloat(clock_size));
                 break;
             case  "switch_preference_carrier_name":
                 carrier_enable = sharedPreferences.getBoolean("switch_preference_carrier_name",true);
                 if(carrier_enable){
                     Log.d(TAG,"Enable carrier name");
-                    removeItem("carrier");
-                    TextView carrier_name = new TextView(this);
-                    carrier_name.setTextColor(Color.WHITE);
-                    carrier_name.setTextSize(16);
-                    carrier_name.setId(R.id.carrier_name);
-                    clock.addView(carrier_name, LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT);
-                    carrier_name.setText(getCarrierName(getApplicationContext()));
+                    clockViewManager.insertOrUpdateView(3,carrier);
                 }else{
                     Log.d(TAG,"Disable carrier name");
-                    removeItem("carrier");
+                    clockViewManager.removeView(3);
                 }
                 break;
             case "preference_main_xiaoai_ai":
@@ -224,23 +182,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         }
     }
 
-    private void removeItem(String item){
-        if(item.equals("lunar")){
-            try{
-                clock.removeViewAt(R.id.lunar);
-            }catch (Exception e){
-                Log.e(TAG,"该控件或许已被移除");
-            }
-        }else if(item.equals("carrier")){
-            try{
-                clock.removeViewAt(R.id.carrier_name);
-            }catch (Exception e){
-                Log.e(TAG,"该控件或许已被移除");
-            }
-        }
-    }
-
-    @SuppressLint("NonConstantResourceId")
     class mClick implements View.OnClickListener{
         @Override
         public void onClick(View v) {
@@ -319,7 +260,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                 }
            return true;}
            else if (keyCode == KeyEvent.KEYCODE_MENU ){
-               Snackbar.make(dateView,R.string.loading,Snackbar.LENGTH_SHORT).show();
+               Snackbar.make(mainBinding.getRoot(),R.string.loading,Snackbar.LENGTH_SHORT).show();
                Timer timer = new Timer();
                timer.schedule(new TimerTask() {
                    @Override
@@ -368,6 +309,10 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                        it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                        startActivity(it);
                    }catch (Exception e){
+                       Intent it = new Intent();
+                       it.setClassName("com.android.dialer","com.android.dialer.main.impl.MainActivity");
+                       it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                       startActivity(it);
                        Log.e(TAG,"没有找到拨号盘");
                    }
                }
@@ -399,48 +344,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         } catch (Exception e) {
             Log.e(TAG,"Expand NotificationPanel Error");
             e.printStackTrace();
-        }
-    }
-    /**
-     * 获取现在农历的日期
-     */
-    public static String getDayLunar() {
-        ChineseCale lunarCalender = new ChineseCale();
-        Calendar calendar = Calendar.getInstance();
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH)+1;
-        int day = calendar.get(Calendar.DATE);
-        String lunarAnimal = lunarCalender.animalsYear(year);
-        String lunarGanZhi = lunarCalender.cyclical(year,month,day);
-        String lunarString = lunarCalender.getLunarString(year, month, day);
-        return "农历"+"  "+lunarGanZhi+lunarAnimal+" "+lunarString;
-    }
-
-    private void printDayOfWeek() {
-        switch (calendar.get(Calendar.DAY_OF_WEEK)) {
-            case Calendar.SUNDAY:
-                week="周日";
-                break;
-            case Calendar.MONDAY:
-                week="周一";
-                break;
-            case Calendar.TUESDAY:
-                week="周二";
-                break;
-            case Calendar.WEDNESDAY:
-                week="周三";
-                break;
-            case Calendar.THURSDAY:
-                week="周四";
-                break;
-            case Calendar.FRIDAY:
-                week="周五";
-                break;
-            case Calendar.SATURDAY:
-                week="周六";
-                break;
-            default:
-                break;
         }
     }
 

@@ -2,16 +2,12 @@
 <resources>
     <string-array name="clock_locate_entries">
         <item>@string/clock_locate_left_up</item>
-        <item>@string/clock_locate_left_down</item>
         <item>@string/clock_locate_right_up</item>
-        <item>@string/clock_locate_right_down</item>
     </string-array>
 
     <string-array name="clock_locate_values" translatable="false">
-        <item>reimu</item>
-        <item>marisa</item>
-        <item>renko</item>
-        <item>maribel</item>
+        <item>left</item>
+        <item>right</item>
     </string-array>
 
     <string-array name="pound_func_entries">
