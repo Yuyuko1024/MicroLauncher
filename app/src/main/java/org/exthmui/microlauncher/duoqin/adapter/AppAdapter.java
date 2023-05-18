@@ -118,15 +118,12 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ApplicationViewH
             menu.add(0, 0, Menu.NONE, R.string.app_menu_open);
             menu.add(0, 1, Menu.NONE,  R.string.app_menu_uninstall);
             menu.add(0, 2, Menu.NONE,  R.string.app_menu_info);
-            menu.add(0, 3, Menu.NONE,  R.string.app_menu_manage);
             MenuItem item1 = menu.findItem(0);
             MenuItem item2 = menu.findItem(1);
             MenuItem item3 = menu.findItem(2);
-            MenuItem item4 = menu.findItem(3);
             item1.setOnMenuItemClickListener(this);
             item2.setOnMenuItemClickListener(this);
             item3.setOnMenuItemClickListener(this);
-            item4.setOnMenuItemClickListener(this);
         }
 
         @Override
@@ -154,11 +151,6 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ApplicationViewH
                 case 2:
                     intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
                     intent.setData(Uri.fromParts("package", application.getPkgName(), null));
-                    mItemView.getContext().startActivity(intent);
-                    break;
-                case 3:
-                    intent.setClassName("com.android.settings",
-                            "com.android.settings.applications.ManageApplications");
                     mItemView.getContext().startActivity(intent);
                     break;
             }
