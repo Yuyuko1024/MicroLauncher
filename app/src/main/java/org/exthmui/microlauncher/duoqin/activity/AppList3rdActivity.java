@@ -182,7 +182,6 @@ public class AppList3rdActivity extends AppCompatActivity implements SharedPrefe
             appIntent = new Intent().setClassName(activityInfo.packageName, activityInfo.name);
             pkgName = activityInfo.packageName;
             application = new Application(appIcon, appLabel, isSystemApp, appIntent, pkgName);
-            Log.e(TAG, String.valueOf(appLabel));
             if(appLabel!=getString(R.string.trd_apps) && appLabel!=getString(R.string.app_name) && !isSystemApp){ mApplicationList.add(application);}
         }
         RecyclerView mAppRecyclerView = findViewById(R.id.app_list);
