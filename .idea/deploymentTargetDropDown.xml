@@ -6,12 +6,12 @@
         <type value="RUNNING_DEVICE_TARGET" />
         <deviceKey>
           <Key>
-            <type value="SERIAL_NUMBER" />
-            <value value="6pvgcaeahmem65by" />
+            <type value="VIRTUAL_DEVICE_PATH" />
+            <value value="C:\Users\Maribel\.android\avd\QinAPI_30.avd" />
           </Key>
         </deviceKey>
       </Target>
     </runningDeviceTargetSelectedWithDropDown>
-    <timeTargetWasSelectedWithDropDown value="2023-06-22T02:59:15.037586900Z" />
+    <timeTargetWasSelectedWithDropDown value="2023-06-22T03:42:43.174335800Z" />
   </component>
 </project>

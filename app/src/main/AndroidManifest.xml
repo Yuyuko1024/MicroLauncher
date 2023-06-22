@@ -67,6 +67,7 @@
         <activity
             android:name=".activity.AppListActivity"
             android:excludeFromRecents="true"
+            android:clearTaskOnLaunch="true"
             android:exported="true"
             android:label="@string/app_list_title"
             android:theme="@style/Theme.MicroLauncher" />
@@ -86,6 +87,7 @@
         <activity
             android:name=".activity.AppList3rdActivity"
             android:excludeFromRecents="false"
+            android:clearTaskOnLaunch="true"
             android:exported="true"
             android:icon="@drawable/toolbox"
             android:label="@string/trd_apps"
