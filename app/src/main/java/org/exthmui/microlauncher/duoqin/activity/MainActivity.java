@@ -23,6 +23,7 @@ import androidx.core.content.ContextCompat;
 
 import com.google.android.material.snackbar.Snackbar;
 
+import org.exthmui.microlauncher.duoqin.BuildConfig;
 import org.exthmui.microlauncher.duoqin.R;
 import org.exthmui.microlauncher.duoqin.databinding.ActivityMainBinding;
 import org.exthmui.microlauncher.duoqin.widgets.CarrierTextView;
@@ -57,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         super.onCreate(savedInstanceState);
         mainBinding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(mainBinding.getRoot());
-        showFirstLogcat();
+        if (BuildConfig.DEBUG) { showFirstLogcat(); }
         checkDevice();
         GrantPermissions();
         clockViewManager = new ClockViewManager(mainBinding.clock.datesLayout);
@@ -175,18 +176,15 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     class mClick implements View.OnClickListener{
         @Override
         public void onClick(View v) {
-            switch (v.getId()) {
-                case R.id.contact:
-                    Intent i = new Intent();
-                    i.setAction("android.intent.action.MAIN");
-                    i.addCategory("android.intent.category.APP_CONTACTS");
-                    i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(i);
-                    break;
-                case R.id.menu:
-                    Intent menu_it = new Intent(MainActivity.this, AppListActivity.class);
-                    startActivity(menu_it);
-                    break;
+            if (v.getId() == R.id.contact) {
+                Intent i = new Intent();
+                i.setAction("android.intent.action.MAIN");
+                i.addCategory("android.intent.category.APP_CONTACTS");
+                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(i);
+            } else if (v.getId() == R.id.menu) {
+                Intent menu_it = new Intent(MainActivity.this, AppListActivity.class);
+                startActivity(menu_it);
             }
         }
     }
@@ -217,8 +215,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         Log.d(TAG,"这个按键的KeyCode是 "+keyCode);
            if(keyCode == KeyEvent.KEYCODE_DPAD_DOWN){
-                String methodName = "expandNotificationsPanel";
-                doInStatusBar(getApplicationContext(), methodName);
+                doInStatusBar(getApplicationContext());
                 return true;}
             else if (keyCode == KeyEvent.KEYCODE_DPAD_UP){
                Intent it = new Intent();
@@ -319,6 +316,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                    it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                    startActivity(it);
                } catch (Exception e) {
+                   Log.e(TAG,"没有找到拨号盘,正在尝试AOSP方式");
                    Intent it = new Intent();
                    it.setClassName("com.android.dialer","com.android.dialer.main.impl.MainActivity");
                    it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -342,12 +340,12 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     /*
     * 下拉通知栏
     */
-    private static void doInStatusBar(Context mContext, String methodName) {
+    private static void doInStatusBar(Context mContext) {
         try {
             @SuppressLint("WrongConstant") Object service = mContext.getSystemService("statusbar");
-            Method expand = service.getClass().getMethod(methodName);
+            Method expand = service.getClass().getMethod("expandNotificationsPanel");
             expand.invoke(service);
-            Log.i(TAG,"");
+            Log.i(TAG,"Expand NotificationPanel");
         } catch (Exception e) {
             Log.e(TAG,"Expand NotificationPanel Error");
             e.printStackTrace();

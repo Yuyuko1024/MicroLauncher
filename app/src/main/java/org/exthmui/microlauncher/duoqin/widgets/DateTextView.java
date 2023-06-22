@@ -39,9 +39,8 @@ public class DateTextView extends TextView {
 
     private void init(Context context) {
         Resources res = context.getResources();
-        String locale;
         Configuration config = res.getConfiguration();
-        locale = config.getLocales().get(0).getLanguage()
+        String locale = config.getLocales().get(0).getLanguage()
                 + "_" + config.getLocales().get(0).getCountry();
 
         if ("zh_CN".equals(locale)) {
