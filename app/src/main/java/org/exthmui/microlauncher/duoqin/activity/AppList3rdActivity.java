@@ -3,7 +3,6 @@ package org.exthmui.microlauncher.duoqin.activity;
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -14,12 +13,12 @@ import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.PopupMenu;
 import android.widget.TextView;
@@ -35,7 +34,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import org.exthmui.microlauncher.duoqin.R;
 import org.exthmui.microlauncher.duoqin.adapter.AppAdapter;
-import org.exthmui.microlauncher.duoqin.misc.Application;
+import org.exthmui.microlauncher.duoqin.utils.Application;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,6 +77,10 @@ public class AppList3rdActivity extends AppCompatActivity implements SharedPrefe
                 init();
             } else if (!TextUtils.isEmpty(pwdCustom)){
                 EditText editText = new EditText(this);
+                editText.setMaxLines(1);
+                editText.setHint(R.string.password_title);
+                editText.setInputType(129);
+                editText.setImeOptions(EditorInfo.IME_ACTION_DONE);
                 new MaterialAlertDialogBuilder(this)
                         .setTitle(R.string.password_title)
                         .setView(editText)

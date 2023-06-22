@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
@@ -38,8 +39,9 @@ public class DateTextView extends TextView {
 
     private void init(Context context) {
         Resources res = context.getResources();
+        String locale;
         Configuration config = res.getConfiguration();
-        String locale = config.getLocales().get(0).getLanguage()
+        locale = config.getLocales().get(0).getLanguage()
                 + "_" + config.getLocales().get(0).getCountry();
 
         if ("zh_CN".equals(locale)) {

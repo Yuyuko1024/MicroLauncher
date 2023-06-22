@@ -6,23 +6,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.TextClock;
-import android.widget.TextView;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -31,16 +25,12 @@ import com.google.android.material.snackbar.Snackbar;
 
 import org.exthmui.microlauncher.duoqin.R;
 import org.exthmui.microlauncher.duoqin.databinding.ActivityMainBinding;
-import org.exthmui.microlauncher.duoqin.misc.ChineseCale;
 import org.exthmui.microlauncher.duoqin.widgets.CarrierTextView;
 import org.exthmui.microlauncher.duoqin.widgets.ClockViewManager;
 import org.exthmui.microlauncher.duoqin.widgets.DateTextView;
 import org.exthmui.microlauncher.duoqin.widgets.LunarDateTextView;
 
 import java.lang.reflect.Method;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -303,21 +293,38 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                return true;}
            else if(keyCode >=7 && keyCode <= 16){
                if(dialpad_enable){
-                   try{
-                       Intent it = new Intent();
+                   try {
+                       Intent it = new Intent("android.intent.action.DIAL", Uri.parse("tel:" + event.getNumber()));
                        it.setClassName("com.android.dialer","com.duoqin.dialer.DialpadActivity");
                        it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                        startActivity(it);
-                   }catch (Exception e){
-                       Intent it = new Intent();
-                       it.setClassName("com.android.dialer","com.android.dialer.main.impl.MainActivity");
-                       it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                       startActivity(it);
-                       Log.e(TAG,"没有找到拨号盘");
+                   } catch (Exception e){
+                       Log.e(TAG,"没有找到拨号盘,正在尝试AOSP方式");
+                       try {
+                           Intent it = new Intent("android.intent.action.DIAL", Uri.parse("tel:" + event.getNumber()));
+                           it.setClassName("com.android.dialer","com.android.dialer.main.impl.MainActivity");
+                           it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                           startActivity(it);
+                       } catch (Exception ex) {
+                           Toasty.error(this,"没有找到拨号盘",Toasty.LENGTH_LONG).show();
+                           Log.e(TAG,"没有找到拨号盘");
+                           e.printStackTrace();
+                       }
                    }
                }
-           }
-            else if(keyCode == KeyEvent.KEYCODE_STAR){
+           } else if (keyCode == KeyEvent.KEYCODE_CALL) {
+               try {
+                   Intent it = new Intent();
+                   it.setClassName("com.android.dialer","com.duoqin.dialer.DialpadActivity");
+                   it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                   startActivity(it);
+               } catch (Exception e) {
+                   Intent it = new Intent();
+                   it.setClassName("com.android.dialer","com.android.dialer.main.impl.MainActivity");
+                   it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                   startActivity(it);
+               }
+           } else if(keyCode == KeyEvent.KEYCODE_STAR){
                 if(xiaoai_enable){
                     try{
                         Intent ai_intent = new Intent();

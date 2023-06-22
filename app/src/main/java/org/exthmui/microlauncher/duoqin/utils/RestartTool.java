@@ -1,4 +1,4 @@
-package org.exthmui.microlauncher.duoqin.misc;
+package org.exthmui.microlauncher.duoqin.utils;
 
 import android.content.Context;
 import android.content.Intent;

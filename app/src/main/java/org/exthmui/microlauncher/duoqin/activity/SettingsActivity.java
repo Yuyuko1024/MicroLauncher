@@ -3,11 +3,9 @@ package org.exthmui.microlauncher.duoqin.activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
@@ -15,7 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import org.exthmui.microlauncher.duoqin.R;
 import org.exthmui.microlauncher.duoqin.databinding.ActivitySettingsBinding;
-import org.exthmui.microlauncher.duoqin.misc.RestartTool;
+import org.exthmui.microlauncher.duoqin.utils.RestartTool;
 
 public class SettingsActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 

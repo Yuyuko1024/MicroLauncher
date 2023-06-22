@@ -1,7 +1,6 @@
 package org.exthmui.microlauncher.duoqin.activity;
 
 import android.annotation.SuppressLint;
-import android.app.admin.DevicePolicyManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -14,9 +13,7 @@ import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,12 +24,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.exthmui.microlauncher.duoqin.R;
 import org.exthmui.microlauncher.duoqin.adapter.AppAdapter;
-import org.exthmui.microlauncher.duoqin.misc.Application;
+import org.exthmui.microlauncher.duoqin.utils.Application;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -196,7 +192,7 @@ public class AppListActivity extends AppCompatActivity implements SharedPreferen
                     startActivity(vol_it);
                     break;
             }
-            return false;
+            return true;
         });
         popupMenu.show();
     }

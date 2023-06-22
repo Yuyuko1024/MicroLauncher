@@ -11,6 +11,8 @@
     <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" />
     <uses-permission android:name="android.permission.FLASHLIGHT" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.BIND_APPWIDGET"
+        tools:ignore="ProtectedPermissions"/>
     <uses-permission
         android:name="android.permission.QUERY_ALL_PACKAGES"
         tools:ignore="QueryAllPackagesPermission" />
@@ -36,6 +38,8 @@
         <activity
             android:name=".activity.MainActivity"
             android:excludeFromRecents="true"
+            android:clearTaskOnLaunch="true"
+            android:launchMode="singleTask"
             android:exported="true"
             android:theme="@style/TranslucentActivity">
             <intent-filter>
@@ -63,7 +67,7 @@
         <activity
             android:name=".activity.AppListActivity"
             android:excludeFromRecents="true"
-            android:exported="false"
+            android:exported="true"
             android:label="@string/app_list_title"
             android:theme="@style/Theme.MicroLauncher" />
         <activity

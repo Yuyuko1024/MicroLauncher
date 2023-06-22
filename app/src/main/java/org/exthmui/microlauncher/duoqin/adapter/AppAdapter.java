@@ -20,12 +20,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.snackbar.Snackbar;
 
 import es.dmoral.toasty.Toasty;
-import org.exthmui.microlauncher.duoqin.BuildConfig;
-import org.exthmui.microlauncher.duoqin.misc.Application;
+
+import org.exthmui.microlauncher.duoqin.utils.Application;
 import org.exthmui.microlauncher.duoqin.R;
 
 import java.util.List;
-import java.util.Objects;
 
 public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ApplicationViewHolder> {
     private final List<Application> mApplicationList;

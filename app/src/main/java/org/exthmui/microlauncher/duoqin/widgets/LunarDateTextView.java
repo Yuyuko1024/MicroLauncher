@@ -10,7 +10,7 @@ import android.util.AttributeSet;
 import android.widget.TextView;
 
 import org.exthmui.microlauncher.duoqin.R;
-import org.exthmui.microlauncher.duoqin.misc.ChineseCale;
+import org.exthmui.microlauncher.duoqin.utils.ChineseCale;
 
 import java.util.Calendar;
 

@@ -90,8 +90,8 @@ public class VolumeChanger extends AppCompatActivity implements SharedPreference
     private void PermissionGrant(){
         notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         if (!notificationManager.isNotificationPolicyAccessGranted()) {
-            Toasty.info(getApplicationContext(),"请授予勿扰权限以用于开关勿扰权限",Toasty.LENGTH_LONG).show();
-            startActivity(new Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS));
+            Intent intent = new Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
+            startActivity(intent);
         }
     }
 
