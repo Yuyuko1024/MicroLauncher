@@ -91,15 +91,15 @@
     </RelativeLayout>
 
     <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="8dp"
-            android:layout_below="@id/vol_alarm" android:layout_marginTop="8dp" android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp" android:layout_marginBottom="8dp">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:layout_below="@id/vol_alarm"
+        android:layout_margin="8dp">
         <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="模式"
+                android:text="@string/ring_mode_title"
                 android:id="@+id/mode_title"/>
         <LinearLayout
                 android:layout_width="match_parent"
@@ -119,19 +119,19 @@
                         android:layout_height="wrap_content"
                         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                         android:id="@+id/mode_normal"
-                        android:text="正常模式"/>
+                        android:text="@string/ring_mode_normal"/>
                 <com.google.android.material.button.MaterialButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                         android:id="@+id/mode_vibrate"
-                        android:text="震动模式"/>
+                        android:text="@string/ring_mode_vibrate"/>
                 <com.google.android.material.button.MaterialButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                         android:id="@+id/mode_dnd"
-                        android:text="勿扰模式"/>
+                        android:text="@string/ring_mode_dnd"/>
 
             </com.google.android.material.button.MaterialButtonToggleGroup>
         </LinearLayout>

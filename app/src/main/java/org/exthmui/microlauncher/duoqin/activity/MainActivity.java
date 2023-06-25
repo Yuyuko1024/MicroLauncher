@@ -6,17 +6,21 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.ContentObserver;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.CallLog;
+import android.provider.Telephony;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -26,6 +30,7 @@ import com.google.android.material.snackbar.Snackbar;
 import org.exthmui.microlauncher.duoqin.BuildConfig;
 import org.exthmui.microlauncher.duoqin.R;
 import org.exthmui.microlauncher.duoqin.databinding.ActivityMainBinding;
+import org.exthmui.microlauncher.duoqin.widgets.CallSmsCounter;
 import org.exthmui.microlauncher.duoqin.widgets.CarrierTextView;
 import org.exthmui.microlauncher.duoqin.widgets.ClockViewManager;
 import org.exthmui.microlauncher.duoqin.widgets.DateTextView;
@@ -36,18 +41,25 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import es.dmoral.toasty.Toasty;
+import pub.devrel.easypermissions.AfterPermissionGranted;
+import pub.devrel.easypermissions.EasyPermissions;
 
 public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
     private final static String TAG = "ML_MainActivity";
     private static final int grant_int=1;
-    private boolean carrier_enable = true;
-    private boolean xiaoai_enable = true;
-    private boolean dialpad_enable = true;
+    private boolean carrier_enable;
+    private boolean xiaoai_enable;
+    private boolean dialpad_enable;
+    private boolean callsms_counter;
     private boolean torch = false;
+    private String clock_locate;
     private CameraManager manager;
+    private ContentObserver mMissedPhoneContentObserver;
+    private ContentObserver mMissedMsgContentObserver;
     private ActivityMainBinding mainBinding;
     private ClockViewManager clockViewManager;
     private DateTextView date;
+    private CallSmsCounter callSmsCounter;
     private LunarDateTextView lunarDate;
     private CarrierTextView carrier;
     String pound_func;
@@ -67,14 +79,74 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         date = new DateTextView(this);
         lunarDate = new LunarDateTextView(this);
         carrier = new CarrierTextView(this);
+        callSmsCounter = new CallSmsCounter(this);
         clockViewManager.insertOrUpdateView(1, date);
         loadSettings();
+        initCallSmsObserver();
     }
 
     private void GrantPermissions(){
-        if(PackageManager.PERMISSION_GRANTED != ContextCompat.checkSelfPermission(this,android.Manifest.permission.CAMERA)){
-            String[] perms = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA};
-            ActivityCompat.requestPermissions(this, perms,grant_int);
+        String[] perms = {Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA,
+                Manifest.permission.READ_CALL_LOG, Manifest.permission.READ_SMS};
+        if (!EasyPermissions.hasPermissions(this, perms)) {
+            EasyPermissions.requestPermissions(this, getString(R.string.permission_required_title),
+                    grant_int, perms);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        EasyPermissions.onRequestPermissionsResult(requestCode,permissions,grantResults,this);
+    }
+
+    @AfterPermissionGranted(grant_int)
+    private void initCallSmsObserver() {
+        mMissedPhoneContentObserver = new ContentObserver(null) {
+            @Override
+            public void onChange(boolean selfChange, Uri uri) {
+                super.onChange(selfChange);
+                runOnUiThread(() -> {
+                    callSmsCounter = null;
+                    callSmsCounter = new CallSmsCounter(MainActivity.this);
+                    clockViewManager.insertOrUpdateView(4, callSmsCounter);
+                    setClockLocate(clock_locate);
+                });
+            }
+        };
+        mMissedMsgContentObserver = new ContentObserver(null) {
+            @Override
+            public void onChange(boolean selfChange, Uri uri) {
+                super.onChange(selfChange);
+                runOnUiThread(() -> {
+                    callSmsCounter = null;
+                    callSmsCounter = new CallSmsCounter(MainActivity.this);
+                    clockViewManager.insertOrUpdateView(4, callSmsCounter);
+                    setClockLocate(clock_locate);
+                });
+            }
+        };
+        unregisterObserver();
+        getContentResolver().registerContentObserver(CallLog.Calls.CONTENT_URI,
+                true, mMissedPhoneContentObserver);
+        getContentResolver().registerContentObserver(Uri.parse("content://sms"),
+                true, mMissedMsgContentObserver);
+        getContentResolver().registerContentObserver(Telephony.MmsSms.CONTENT_URI,
+                true, mMissedMsgContentObserver);
+    }
+
+    private synchronized void unregisterObserver() {
+        try {
+            if (mMissedPhoneContentObserver != null) {
+                getContentResolver().unregisterContentObserver(mMissedPhoneContentObserver);
+            }
+            if (mMissedMsgContentObserver != null) {
+                getContentResolver().unregisterContentObserver(mMissedMsgContentObserver);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e(TAG, "unregisterObserver failed: " + e.getMessage());
         }
     }
 
@@ -97,7 +169,15 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             Log.d(TAG, "Disable carrier name");
             clockViewManager.removeView(3);
         }
-        String clock_locate = (sharedPreferences.getString("list_preference_clock_locate","reimu"));
+        callsms_counter = sharedPreferences.getBoolean("switch_preference_callsms_counter",false);
+        if(callsms_counter){
+            Log.d(TAG, "Enable call/sms counter");
+            clockViewManager.insertOrUpdateView(4, callSmsCounter);
+        }else{
+            Log.d(TAG, "Disable call/sms counter");
+            clockViewManager.removeView(4);
+        }
+        clock_locate = (sharedPreferences.getString("list_preference_clock_locate","left"));
         setClockLocate(clock_locate);
         pound_func = (sharedPreferences.getString("preference_pound_func","volume"));
         String clock_size = (sharedPreferences.getString("list_preference_clock_size","58"));
@@ -117,7 +197,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                 break;
         }
         mainBinding.clock.textClock.setLayoutParams(params);
-        for (int i = 1; i < 4; i++) {
+        for (int i = 1; i < clockViewManager.getViewCount()+1; i++) {
             Log.d(TAG, "setClockLocate: "+i);
             clockViewManager.setLayoutParams(i, params);
         }
@@ -126,7 +206,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     private void checkDevice(){
         Log.d(TAG, "checkDevice: "+Build.BOARD);
         if(!Build.BOARD.equals("k61v1_64_bsp")){
-            Toasty.info(this,"非多亲设备，部分功能可能无法使用。",Toasty.LENGTH_SHORT).show();
+            Toasty.info(this,R.string.not_qin_device,Toasty.LENGTH_SHORT).show();
         }
     }
 
@@ -144,7 +224,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                 }
                 break;
             case "list_preference_clock_locate":
-                String clock_locate = (sharedPreferences.getString("list_preference_clock_locate", "reimu"));
+                clock_locate = (sharedPreferences.getString("list_preference_clock_locate", "left"));
                 setClockLocate(clock_locate);
                 break;
             case "list_preference_clock_size":
@@ -170,6 +250,9 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             case "preference_pound_func":
                 pound_func = sharedPreferences.getString("preference_pound_func","volume");
                 break;
+            case "switch_preference_callsms_counter":
+                callsms_counter = sharedPreferences.getBoolean("switch_preference_callsms_counter",false);
+                break;
         }
     }
 
@@ -193,6 +276,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     protected void onDestroy() {
         super.onDestroy();
         finish();
+        unregisterObserver();
     }
 
     @Override
@@ -230,7 +314,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                     it.addCategory("android.intent.category.APP_BROWSER");
                     it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(it);
-                    Log.d(TAG,"5,4,3,2,1,三倍ice cream!!!!!");
                 }catch (Exception e){
                     Log.d(TAG,"没有找到系统浏览器或者系统浏览器被禁用");
                 }

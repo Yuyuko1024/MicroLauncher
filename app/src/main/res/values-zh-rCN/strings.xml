@@ -42,6 +42,7 @@
     <string name="error_lock_phone">错误：无法锁定手机！</string>
     <string name="preference_main_category">主界面设置</string>
     <string name="preference_main_lunar">启用农历显示</string>
+    <string name="preference_main_lunar_summary">在时钟区域显示农历</string>
     <string name="clock_locate_left_up">左上角</string>
     <string name="clock_locate_right_up">右上角</string>
     <string name="clock_locate_left_down">左下角</string>
@@ -56,6 +57,7 @@
     <string name="this_is_system_app">这是系统应用，无法卸载！</string>
     <string name="refreshing_pkg_list">刷新应用列表…</string>
     <string name="preference_carrier">启用运营商名称显示</string>
+    <string name="preference_carrier_summary">在时钟区域显示SIM卡运营商名称</string>
     <string name="default_carrier">幻想乡电信</string>
     <string name="preference_main_enable_ai_category">启用此功能后，*键将绑定为小爱键</string>
     <string name="preference_main_enable_ai">启用小爱键</string>
@@ -103,4 +105,13 @@
     <string name="password_title">输入密码</string>
     <string name="password_wrong">密码错误</string>
     <string name="system_no_password">怎么都没系统密码保护啊…</string>
+    <string name="preference_callsms">启用未接来电和短信计数器</string>
+    <string name="preference_callsms_summary">统计通知栏中未接来点数量和系统未读短信数量</string>
+    <string name="permission_required_title">需要获取一些功能必要权限</string>
+    <string name="permission_dnd_require">请授予勿扰权限以用于开关勿扰模式</string>
+    <string name="not_qin_device">非多亲设备，部分功能可能无法使用。</string>
+    <string name="ring_mode_title">响铃模式</string>
+    <string name="ring_mode_normal">正常</string>
+    <string name="ring_mode_vibrate">震动</string>
+    <string name="ring_mode_dnd">勿扰</string>
 </resources>

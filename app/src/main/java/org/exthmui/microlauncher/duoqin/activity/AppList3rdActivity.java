@@ -205,36 +205,42 @@ public class AppList3rdActivity extends AppCompatActivity implements SharedPrefe
         PopupMenu popupMenu = new PopupMenu(this,view);
         popupMenu.getMenuInflater().inflate(R.menu.app_option,popupMenu.getMenu());
         popupMenu.setOnMenuItemClickListener(item -> {
-            Intent ia = new Intent();
             switch (item.getItemId()){
                 case R.id.menu_app_manage:
-                    ia.setClassName("com.android.settings",
+                    Intent i = new Intent();
+                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    i.setClassName("com.android.settings",
                             "com.android.settings.applications.ManageApplications");
-                    startActivity(ia);
+                    startActivity(i);
                     break;
                 case R.id.menu_about_phone:
+                    Log.e("Device Info","Device SDK="+Build.VERSION.SDK_INT);
                     if (Build.VERSION.SDK_INT >= 28){
-                        Log.e("Device Info","Device SDK="+Build.VERSION.SDK_INT);
+                        Intent ia = new Intent();
+                        ia.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         ia.setClassName("com.android.settings",
                                 "com.android.settings.Settings$MyDeviceInfoActivity");
                         startActivity(ia);
                     }else{
-                        Log.e("Device Info","Device SDK="+Build.VERSION.SDK_INT);
+                        Intent ia = new Intent();
+                        ia.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         ia.setClassName("com.android.settings",
                                 "com.android.settings.Settings$DeviceInfoSettingsActivity");
                         startActivity(ia);}
                     break;
                 case R.id.menu_launcher_option:
                     Intent menu = new Intent(AppList3rdActivity.this, MenuActivity.class);
+                    menu.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(menu);
                     finish();
                     break;
                 case R.id.menu_volume_changer:
                     Intent vol_it = new Intent(AppList3rdActivity.this, VolumeChanger.class);
+                    vol_it.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(vol_it);
                     break;
             }
-            return false;
+            return true;
         });
         popupMenu.show();
     }

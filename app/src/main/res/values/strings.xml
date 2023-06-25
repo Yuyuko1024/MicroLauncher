@@ -42,6 +42,7 @@
     <string name="error_lock_phone">Error: Lock phone error!</string>
     <string name="preference_main_category">Main Screen Settings</string>
     <string name="preference_main_lunar">Enable Chinese Lunar</string>
+    <string name="preference_main_lunar_summary">Display Chinese lunar in clock</string>
     <string name="clock_locate_left_up">Left up</string>
     <string name="clock_locate_right_up">Right up</string>
     <string name="clock_locate_left_down">Left down</string>
@@ -57,6 +58,7 @@
     <string name="this_is_system_app">This is System app, cannot uninstall !</string>
     <string name="refreshing_pkg_list">Refreshing App List…</string>
     <string name="preference_carrier">Enable carrier name display</string>
+    <string name="preference_carrier_summary">Display carrier name in clock</string>
     <string name="default_carrier">Genso Telecom</string>
     <string name="preference_main_enable_ai_category">When this function is enabled, press the * key will launch XiaoAi AI</string>
     <string name="preference_main_enable_ai">Enable AI key</string>
@@ -106,4 +108,13 @@
     <string name="password_title">Input Password</string>
     <string name="password_wrong">Wrong password!</string>
     <string name="system_no_password">System is not password protected</string>
+    <string name="preference_callsms">Enable missed call sms counter</string>
+    <string name="preference_callsms_summary">Display missed call sms counter in clock</string>
+    <string name="permission_required_title">Need some necessary permissions</string>
+    <string name="permission_dnd_require">Please grant Do Not Disturb permission to switch on/off Do Not Disturb mode</string>
+    <string name="not_qin_device">Not Qin device, some feature may be unusable</string>
+    <string name="ring_mode_title">Mode</string>
+    <string name="ring_mode_normal">Normal</string>
+    <string name="ring_mode_vibrate">Vibrate</string>
+    <string name="ring_mode_dnd">DnD</string>
 </resources>

@@ -11,6 +11,8 @@ public class ClockViewManager {
 
     private ViewGroup mParent;
 
+    private int mViewCount = 0;
+
     public ClockViewManager(ViewGroup mParent) {
         this.mParent = mParent;
     }
@@ -20,6 +22,12 @@ public class ClockViewManager {
         View existedView = mParent.findViewById(id);
         if (existedView == null) {
             // 不存在,插入新的View
+            view.setId(id);
+            mParent.addView(view);
+            mViewCount++;
+        } else {
+            // 存在,更新View
+            mParent.removeView(existedView);
             view.setId(id);
             mParent.addView(view);
         }
@@ -33,6 +41,7 @@ public class ClockViewManager {
         } else {
             Log.e(TAG, "removeView: unable to find view with id " + id);
         }
+        mViewCount--;
     }
 
     public void setLayoutParams(int id,ViewGroup.LayoutParams params){
@@ -44,4 +53,7 @@ public class ClockViewManager {
         }
     }
 
+    public int getViewCount() {
+        return mViewCount;
+    }
 }

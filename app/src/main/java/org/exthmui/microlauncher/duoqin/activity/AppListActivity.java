@@ -130,10 +130,7 @@ public class AppListActivity extends AppCompatActivity implements SharedPreferen
             pkgName = activityInfo.packageName;
             application = new Application(appIcon, appLabel, isSystemApp, appIntent, pkgName);
             if(isSimpleList) {
-                if(appLabel != getString(R.string.app_name) && isSystemApp ){
-                    mApplicationList.add(application);
-                }
-                if(appLabel == getString(R.string.trd_apps)){
+                if(appLabel != getString(R.string.app_name) && isSystemApp || appLabel == getString(R.string.trd_apps)){
                     mApplicationList.add(application);
                 }
             }else{
@@ -164,31 +161,35 @@ public class AppListActivity extends AppCompatActivity implements SharedPreferen
             switch (item.getItemId()){
                 case R.id.menu_app_manage:
                     Intent i = new Intent();
+                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     i.setClassName("com.android.settings",
                             "com.android.settings.applications.ManageApplications");
                     startActivity(i);
                     break;
                 case R.id.menu_about_phone:
+                    Log.e("Device Info","Device SDK="+Build.VERSION.SDK_INT);
                     if (Build.VERSION.SDK_INT >= 28){
-                        Log.e("Device Info","Device SDK="+Build.VERSION.SDK_INT);
                         Intent ia = new Intent();
+                        ia.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         ia.setClassName("com.android.settings",
                                 "com.android.settings.Settings$MyDeviceInfoActivity");
                         startActivity(ia);
                     }else{
-                        Log.e("Device Info","Device SDK="+Build.VERSION.SDK_INT);
                         Intent ia = new Intent();
+                        ia.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         ia.setClassName("com.android.settings",
                                 "com.android.settings.Settings$DeviceInfoSettingsActivity");
                         startActivity(ia);}
                     break;
                 case R.id.menu_launcher_option:
                     Intent menu = new Intent(AppListActivity.this, MenuActivity.class);
+                    menu.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(menu);
                     finish();
                     break;
                 case R.id.menu_volume_changer:
                     Intent vol_it = new Intent(AppListActivity.this, VolumeChanger.class);
+                    vol_it.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(vol_it);
                     break;
             }

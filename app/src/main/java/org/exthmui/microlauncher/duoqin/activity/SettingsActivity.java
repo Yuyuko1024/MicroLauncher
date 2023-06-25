@@ -73,6 +73,7 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
             case "switch_preference_lunar":
             case "switch_preference_carrier_name":
             case "switch_preference_app_list_func":
+            case "switch_preference_callsms_counter":
                 binding.settingsBack.setText(getText(R.string.status_reload_launcher));
                 reload_flag=true;
                 break;

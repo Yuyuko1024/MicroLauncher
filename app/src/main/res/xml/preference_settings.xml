@@ -5,22 +5,28 @@
         android:textColor="#00838F"
         android:title="@string/preference_main_category"
         android:key="preference_main">
-
+        <!-- Main -->
         <SwitchPreference
             android:defaultValue="true"
             android:key="switch_preference_lunar"
-            android:title="@string/preference_main_lunar" />
+            android:title="@string/preference_main_lunar"
+            android:summary="@string/preference_main_lunar_summary"/>
         <SwitchPreference
             android:defaultValue="true"
             android:key="switch_preference_carrier_name"
-            android:title="@string/preference_carrier"/>
+            android:title="@string/preference_carrier"
+            android:summary="@string/preference_carrier_summary"/>
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="switch_preference_callsms_counter"
+            android:title="@string/preference_callsms"
+            android:summary="@string/preference_callsms_summary"/>
         <ListPreference
-            android:defaultValue="reimu"
+            android:defaultValue="left"
             android:entries="@array/clock_locate_entries"
             android:entryValues="@array/clock_locate_values"
             android:key="list_preference_clock_locate"
             android:title="@string/clock_locate_title" />
-
         <ListPreference
             android:defaultValue="56"
             android:entries="@array/clock_size_entries"
