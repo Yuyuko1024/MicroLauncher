@@ -30,6 +30,7 @@ import com.google.android.material.snackbar.Snackbar;
 import org.exthmui.microlauncher.duoqin.BuildConfig;
 import org.exthmui.microlauncher.duoqin.R;
 import org.exthmui.microlauncher.duoqin.databinding.ActivityMainBinding;
+import org.exthmui.microlauncher.duoqin.utils.BuglyUtils;
 import org.exthmui.microlauncher.duoqin.widgets.CallSmsCounter;
 import org.exthmui.microlauncher.duoqin.widgets.CarrierTextView;
 import org.exthmui.microlauncher.duoqin.widgets.ClockViewManager;
@@ -51,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     private boolean xiaoai_enable;
     private boolean dialpad_enable;
     private boolean callsms_counter;
+    private boolean bugly_init;
     private boolean torch = false;
     private String clock_locate;
     private CameraManager manager;
@@ -184,6 +186,14 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         mainBinding.clock.textClock.setTextSize(Float.parseFloat(clock_size));
         xiaoai_enable = sharedPreferences.getBoolean("preference_main_xiaoai_ai",true);
         dialpad_enable = sharedPreferences.getBoolean("preference_dial_pad",true);
+        bugly_init = sharedPreferences.getBoolean("bugly_init",false);
+        if(bugly_init){
+            BuglyUtils.initBugly(this);
+        } else {
+            Intent intent = new Intent(this, PrivacyLicenseActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        }
     }
 
     private void setClockLocate(String clockLocate) {
@@ -252,6 +262,9 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                 break;
             case "switch_preference_callsms_counter":
                 callsms_counter = sharedPreferences.getBoolean("switch_preference_callsms_counter",false);
+                break;
+            case "preference_bugly_init":
+                bugly_init = sharedPreferences.getBoolean("bugly_init",false);
                 break;
         }
     }

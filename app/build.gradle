@@ -1,3 +1,5 @@
+import java.text.SimpleDateFormat
+
 plugins {
     id 'com.android.application'
 }
@@ -6,14 +8,21 @@ android {
     android.defaultConfig.vectorDrawables.useSupportLibrary = true
     compileSdk 32
 
+    def buildSerial = new SimpleDateFormat("MMddHHmm").format(new Date())
+
     defaultConfig {
         applicationId "org.exthmui.microlauncher.duoqin"
         minSdkVersion 26
         targetSdkVersion 32
         versionCode 20000
-        versionName "1.1.0"
+        versionName "1.1.0-${buildSerial}"
+        flavorDimensions "channel"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        ndk {
+            // 设置支持的SO库架构,不设置时默认支持全部架构
+            abiFilters 'armeabi' , 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
+        }
     }
 
     viewBinding{
@@ -27,10 +36,23 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    productFlavors {
+        coolapk {
+            manifestPlaceholders = [BUGLY_APP_CHANNEL: "coolapk"]
+            dimension = "channel"
+        }
+        github {
+            manifestPlaceholders = [BUGLY_APP_CHANNEL: "github"]
+            dimension = "channel"
+        }
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    namespace 'org.exthmui.microlauncher.duoqin'
 }
 
 dependencies {
@@ -44,9 +66,10 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.preference:preference:1.2.0'
     implementation 'pub.devrel:easypermissions:3.0.0'
+    implementation 'com.tencent.bugly:crashreport:4.0.4'
     testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
     implementation 'com.github.GrenderG:Toasty:1.5.2'
     implementation 'io.github.medyo:android-about-page:2.0.0'
     implementation 'de.psdev.licensesdialog:licensesdialog:2.1.0'

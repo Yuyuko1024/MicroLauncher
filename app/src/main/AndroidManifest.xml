@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="org.exthmui.microlauncher.duoqin">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY"/>
     <uses-permission android:name="android.permission.INTERNET" />
@@ -13,6 +12,8 @@
     <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" />
     <uses-permission android:name="android.permission.FLASHLIGHT" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.BIND_APPWIDGET"
         tools:ignore="ProtectedPermissions"/>
     <uses-permission
@@ -34,6 +35,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MicroLauncher">
+
+        <!-- 配置APP ID -->
+        <meta-data
+            android:name="BUGLY_APPID"
+            android:value="e8f8feabcc" />
+        <!-- 配置APP渠道号 -->
+        <meta-data
+            android:name="BUGLY_APP_CHANNEL"
+            android:value="${BUGLY_APP_CHANNEL}" />
 
         <service
             android:process=":restart"
@@ -115,6 +125,11 @@
             android:exported="false"
             android:label="@string/keyguard_title"
             android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar" />
+        <activity android:name=".activity.PrivacyLicenseActivity"
+            android:exported="false"
+            android:label="隐私协议"
+            android:excludeFromRecents="true"
+            android:clearTaskOnLaunch="true"/>
     </application>
 
 </manifest>
