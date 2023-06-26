@@ -2156,3 +2156,9 @@
 {"ts":1687791002718,"action":"FILE_OPENED","file":"/app/proguard-rules.pro","tags":{"FILE_LINE_OF_CODE":"52"}}
 {"ts":1687791005130,"action":"FILE_CLOSED","file":"/app/proguard-rules.pro","tags":{"FILE_LINE_OF_CODE":"52"}}
 {"ts":1687791005130,"action":"FILE_OPENED","file":"/app/.gitignore","tags":{"FILE_LINE_OF_CODE":"2"}}
+{"ts":1687791040066,"action":"IDE_DEACTIVATED"}
+{"ts":1687791068635,"action":"IDE_ACTIVATED"}
+{"ts":1687791076730,"action":"FILE_CLOSED","file":"/app/.gitignore","tags":{"FILE_LINE_OF_CODE":"4"}}
+{"ts":1687791076730,"action":"FILE_OPENED","file":"/app/build.gradle","tags":{"FILE_LINE_OF_CODE":"76"}}
+{"ts":1687791128718,"action":"IDE_DEACTIVATED"}
+{"ts":1687791146301,"action":"IDE_ACTIVATED"}
