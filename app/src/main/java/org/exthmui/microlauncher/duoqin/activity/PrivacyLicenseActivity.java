@@ -33,7 +33,7 @@ public class PrivacyLicenseActivity extends AppCompatActivity {
             finish();
         });
         binding.reject.setOnClickListener(v -> {
-            sharedPreferences.edit().putBoolean("bugly_init", false).apply();
+            sharedPreferences.edit().putBoolean("disagree", true).apply();
             finish();
         });
     }

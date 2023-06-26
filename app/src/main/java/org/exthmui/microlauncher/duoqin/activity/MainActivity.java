@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     private boolean dialpad_enable;
     private boolean callsms_counter;
     private boolean bugly_init;
+    private boolean disagree_privacy;
     private boolean torch = false;
     private String clock_locate;
     private CameraManager manager;
@@ -187,12 +188,15 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         xiaoai_enable = sharedPreferences.getBoolean("preference_main_xiaoai_ai",true);
         dialpad_enable = sharedPreferences.getBoolean("preference_dial_pad",true);
         bugly_init = sharedPreferences.getBoolean("bugly_init",false);
+        disagree_privacy = sharedPreferences.getBoolean("disagree",false);
         if(bugly_init){
             BuglyUtils.initBugly(this);
         } else {
-            Intent intent = new Intent(this, PrivacyLicenseActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
+            if (!disagree_privacy) {
+                Intent intent = new Intent(this, PrivacyLicenseActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            }
         }
     }
 
@@ -265,6 +269,9 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                 break;
             case "preference_bugly_init":
                 bugly_init = sharedPreferences.getBoolean("bugly_init",false);
+                break;
+            case "disagree":
+                disagree_privacy = sharedPreferences.getBoolean("disagree",false);
                 break;
         }
     }
