@@ -127,7 +127,7 @@
             android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar" />
         <activity android:name=".activity.PrivacyLicenseActivity"
             android:exported="false"
-            android:label="隐私协议"
+            android:label="@string/privacy_policy_title"
             android:excludeFromRecents="true"
             android:clearTaskOnLaunch="true"/>
     </application>

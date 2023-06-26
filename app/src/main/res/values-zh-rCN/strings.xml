@@ -114,4 +114,10 @@
     <string name="ring_mode_normal">正常</string>
     <string name="ring_mode_vibrate">震动</string>
     <string name="ring_mode_dnd">勿扰</string>
+    <string name="privacy_policy_title">隐私协议</string>
+    <string name="privacy_read_first">请阅读并同意隐私政策!</string>
+    <string name="agree">同意</string>
+    <string name="disagree">不同意</string>
+    <string name="shortcuts_title">快捷方式</string>
+    <string name="no_shortcuts_toast">该应用没有快捷方式</string>
 </resources>

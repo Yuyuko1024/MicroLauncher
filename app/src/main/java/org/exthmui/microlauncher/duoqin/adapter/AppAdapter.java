@@ -1,7 +1,11 @@
 package org.exthmui.microlauncher.duoqin.adapter;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.LauncherApps;
+import android.content.pm.ShortcutInfo;
 import android.net.Uri;
+import android.os.Process;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -15,16 +19,18 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
 
-import es.dmoral.toasty.Toasty;
-
-import org.exthmui.microlauncher.duoqin.utils.Application;
 import org.exthmui.microlauncher.duoqin.R;
+import org.exthmui.microlauncher.duoqin.utils.Application;
 
 import java.util.List;
+
+import es.dmoral.toasty.Toasty;
 
 public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ApplicationViewHolder> {
     private final List<Application> mApplicationList;
@@ -117,12 +123,15 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ApplicationViewH
             menu.add(0, 0, Menu.NONE, R.string.app_menu_open);
             menu.add(0, 1, Menu.NONE,  R.string.app_menu_uninstall);
             menu.add(0, 2, Menu.NONE,  R.string.app_menu_info);
+            menu.add(0, 3, Menu.NONE,  R.string.shortcuts_title);
             MenuItem item1 = menu.findItem(0);
             MenuItem item2 = menu.findItem(1);
             MenuItem item3 = menu.findItem(2);
+            MenuItem item4 = menu.findItem(3);
             item1.setOnMenuItemClickListener(this);
             item2.setOnMenuItemClickListener(this);
             item3.setOnMenuItemClickListener(this);
+            item4.setOnMenuItemClickListener(this);
         }
 
         @Override
@@ -152,10 +161,42 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ApplicationViewH
                     intent.setData(Uri.fromParts("package", application.getPkgName(), null));
                     mItemView.getContext().startActivity(intent);
                     break;
+                case 3:
+                    List<ShortcutInfo> list = getAppsShortcutsList(application.getPkgName());
+                    if (list.size() != 0 && list != null) {
+                        showShortcutsDialog(list);
+                    } else {
+                        Toasty.error(mItemView.getContext(), R.string.no_shortcuts_toast, Toasty.LENGTH_SHORT).show();
+                    }
+                    break;
             }
             return false;
         }
+    }
 
+    private static void showShortcutsDialog(List<ShortcutInfo> list) {
+        RecyclerView recyclerView = new RecyclerView(mItemView.getContext());
+        recyclerView.setLayoutManager(new LinearLayoutManager(mItemView.getContext()));
+        recyclerView.setAdapter(new ShortcutsListAdapter(list));
+        new MaterialAlertDialogBuilder(mItemView.getContext())
+                .setTitle(R.string.shortcuts_title)
+                .setView(recyclerView)
+                .show();
+    }
+
+    private static List<ShortcutInfo> getAppsShortcutsList(String pkgName) {
+        LauncherApps launcherApps = (LauncherApps) mItemView.getContext().getSystemService(Context.LAUNCHER_APPS_SERVICE);
+        LauncherApps.ShortcutQuery query = new LauncherApps.ShortcutQuery();
+        query.setQueryFlags(LauncherApps.ShortcutQuery.FLAG_MATCH_DYNAMIC |
+                LauncherApps.ShortcutQuery.FLAG_MATCH_MANIFEST |
+                LauncherApps.ShortcutQuery.FLAG_MATCH_PINNED);
+        query.setPackage(pkgName);
+        try {
+            return launcherApps.getShortcuts(query, Process.myUserHandle());
+        } catch (SecurityException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private class FocusChange implements View.OnFocusChangeListener {

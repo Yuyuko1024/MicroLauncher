@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.tencent.bugly.crashreport.CrashReport;
 
+import org.exthmui.microlauncher.duoqin.R;
 import org.exthmui.microlauncher.duoqin.databinding.ActivityPrivacyPolicyBinding;
 import org.exthmui.microlauncher.duoqin.utils.BuglyUtils;
 
@@ -39,6 +40,6 @@ public class PrivacyLicenseActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        Toasty.info(this, "请阅读并同意隐私政策!", Toasty.LENGTH_SHORT).show();
+        Toasty.info(this, R.string.privacy_read_first, Toasty.LENGTH_SHORT).show();
     }
 }

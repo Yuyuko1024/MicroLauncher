@@ -117,4 +117,10 @@
     <string name="ring_mode_normal">Normal</string>
     <string name="ring_mode_vibrate">Vibrate</string>
     <string name="ring_mode_dnd">DnD</string>
+    <string name="privacy_policy_title">Privacy Policy</string>
+    <string name="privacy_read_first">Please read privacy policy first!</string>
+    <string name="agree">Agree</string>
+    <string name="disagree">Disagree</string>
+    <string name="shortcuts_title">App Shortcuts</string>
+    <string name="no_shortcuts_toast">This app doesn\'t have shortcuts</string>
 </resources>
