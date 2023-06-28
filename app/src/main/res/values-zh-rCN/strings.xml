@@ -120,4 +120,5 @@
     <string name="disagree">不同意</string>
     <string name="shortcuts_title">快捷方式</string>
     <string name="no_shortcuts_toast">该应用没有快捷方式</string>
+    <string name="not_default_launcher_shortcut_msg">Android 12 及以后版本本桌面非默认桌面时不可使用快捷方式功能！</string>
 </resources>

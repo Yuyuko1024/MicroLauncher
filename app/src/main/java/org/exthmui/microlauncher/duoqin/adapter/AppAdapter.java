@@ -27,6 +27,7 @@ import com.google.android.material.snackbar.Snackbar;
 
 import org.exthmui.microlauncher.duoqin.R;
 import org.exthmui.microlauncher.duoqin.utils.Application;
+import org.exthmui.microlauncher.duoqin.utils.LauncherUtils;
 
 import java.util.List;
 
@@ -163,10 +164,14 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ApplicationViewH
                     break;
                 case 3:
                     List<ShortcutInfo> list = getAppsShortcutsList(application.getPkgName());
-                    if (list.size() != 0 && list != null) {
-                        showShortcutsDialog(list);
+                    if (LauncherUtils.isDefaultLauncher(mItemView.getContext())) {
+                        if (list.size() != 0 && list != null) {
+                            showShortcutsDialog(list);
+                        } else {
+                            Toasty.error(mItemView.getContext(), R.string.no_shortcuts_toast, Toasty.LENGTH_SHORT).show();
+                        }
                     } else {
-                        Toasty.error(mItemView.getContext(), R.string.no_shortcuts_toast, Toasty.LENGTH_SHORT).show();
+                        Toasty.error(mItemView.getContext(), R.string.not_default_launcher_shortcut_msg, Toasty.LENGTH_SHORT).show();
                     }
                     break;
             }
