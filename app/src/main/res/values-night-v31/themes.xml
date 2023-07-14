@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="Base.Theme.MicroLauncher" parent="Theme.Material3.DayNight">
+        <item name="colorPrimary">@color/system_accent</item>
+        <item name="colorPrimaryDark">@color/system_accent_darker</item>
+        <item name="colorSecondary">@color/system_accent</item>
+
+        <item name="colorError">@color/error</item>
+
+        <item name="colorPrimaryVariant">@color/system_accent</item>
+        <item name="colorSecondaryVariant">@color/system_accent_2</item>
+        <item name="scrimBackground">@color/netrual_color</item>
+
+        <item name="colorSurface">@color/netrual_color</item>
+        <item name="colorSecondaryContainer">@color/system_accent_soft</item>
+    </style>
+
+    <style name="Theme.MicroLauncher" parent="Base.Theme.MicroLauncher">
+        <item name="android:colorBackground">@color/background</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowSplashScreenBackground">@color/background</item>
+    </style>
+
+    <style name="NoTitle" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/system_accent</item>
+        <item name="colorPrimaryDark">@color/system_accent_darker</item>
+        <item name="colorSecondary">@color/system_accent_2</item>
+        <item name="android:colorBackground">@color/background</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowSplashScreenBackground">@color/background</item>
+    </style>
+</resources>

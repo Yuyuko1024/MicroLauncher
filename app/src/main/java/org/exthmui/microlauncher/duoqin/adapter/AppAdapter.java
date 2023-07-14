@@ -179,6 +179,10 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ApplicationViewH
         }
     }
 
+    /**
+     * 显示快捷方式列表对话框
+     * @param list 快捷方式列表
+     */
     private static void showShortcutsDialog(List<ShortcutInfo> list) {
         RecyclerView recyclerView = new RecyclerView(mItemView.getContext());
         recyclerView.setLayoutManager(new LinearLayoutManager(mItemView.getContext()));
@@ -189,6 +193,11 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ApplicationViewH
                 .show();
     }
 
+    /**
+     * 获取指定软件包的快捷方式列表
+     * @param pkgName 指定软件包PackageName
+     * @return List<ShortcutInfo> ShortcutInfo列表 或者为 null
+     */
     private static List<ShortcutInfo> getAppsShortcutsList(String pkgName) {
         LauncherApps launcherApps = (LauncherApps) mItemView.getContext().getSystemService(Context.LAUNCHER_APPS_SERVICE);
         LauncherApps.ShortcutQuery query = new LauncherApps.ShortcutQuery();

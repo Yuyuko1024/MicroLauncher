@@ -3,7 +3,7 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:id="@+id/app_item"
-    android:background="?android:attr/selectableItemBackground">
+    android:defaultFocusHighlightEnabled="false">
 
     <RelativeLayout
             android:layout_width="wrap_content"
