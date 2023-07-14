@@ -14,14 +14,14 @@ android {
         applicationId "org.exthmui.microlauncher.duoqin"
         minSdkVersion 26
         targetSdkVersion 32
-        versionCode 30000
-        versionName "1.2.0-${buildSerial}"
+        versionCode 35000
+        versionName "1.2.5-${buildSerial}"
         flavorDimensions "channel"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         ndk {
             // 设置支持的SO库架构,不设置时默认支持全部架构
-            abiFilters 'armeabi' , 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
+            abiFilters 'arm64-v8a', 'x86_64'
         }
     }
 
