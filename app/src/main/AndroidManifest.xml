@@ -39,7 +39,7 @@
         <!-- 配置APP ID -->
         <meta-data
             android:name="BUGLY_APPID"
-            android:value="e8f8feabcc" />
+            android:value="${BUGLY_APP_ID}" />
         <!-- 配置APP渠道号 -->
         <meta-data
             android:name="BUGLY_APP_CHANNEL"
