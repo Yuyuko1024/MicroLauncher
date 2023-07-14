@@ -36,4 +36,13 @@
         <item name="android:windowSplashScreenBackground">@color/background</item>
     </style>
 
+    <style name="Recycler_Scroll">
+        <item name="android:scrollbarSize">6dp</item>
+        <item name="android:scrollbars">vertical</item>
+        <item name="android:fastScrollEnabled">true</item>
+        <item name="android:fadeScrollbars">true</item>
+        <item name="android:scrollbarAlwaysDrawVerticalTrack">true</item>
+        <item name="android:scrollbarThumbVertical">@color/system_accent</item>
+    </style>
+
 </resources>
