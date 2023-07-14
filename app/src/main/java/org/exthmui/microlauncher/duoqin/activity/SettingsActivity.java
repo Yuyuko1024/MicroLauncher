@@ -1,5 +1,6 @@
 package org.exthmui.microlauncher.duoqin.activity;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,9 +17,16 @@ import org.exthmui.microlauncher.duoqin.R;
 import org.exthmui.microlauncher.duoqin.databinding.ActivitySettingsBinding;
 import org.exthmui.microlauncher.duoqin.utils.RestartTool;
 
-public class SettingsActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
+import java.util.List;
+
+import pub.devrel.easypermissions.EasyPermissions;
+
+public class SettingsActivity extends AppCompatActivity
+        implements SharedPreferences.OnSharedPreferenceChangeListener, EasyPermissions.PermissionCallbacks {
 
     private ActivitySettingsBinding binding;
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor editor;
     private boolean reload_flag;
 
     @Override
@@ -26,7 +35,8 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
         binding = ActivitySettingsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         ActionBar actionBar = this.getSupportActionBar();
-        SharedPreferences sharedPreferences = getSharedPreferences(getPackageName()+"_preferences", Context.MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(getPackageName()+"_preferences", Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
         if(actionBar != null){
             actionBar.setDisplayHomeAsUpEnabled(true);
@@ -73,12 +83,64 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
             case "switch_preference_lunar":
             case "switch_preference_carrier_name":
             case "switch_preference_app_list_func":
-            case "switch_preference_callsms_counter":
                 binding.settingsBack.setText(getText(R.string.status_reload_launcher));
                 reload_flag=true;
                 break;
+            case "switch_preference_callsms_counter":
+                GrantPermissions(new String[]{Manifest.permission.READ_CALL_LOG,Manifest.permission.READ_SMS},1);
+                break;
+            case "preference_pound_func":
+                if (sharedPreferences.getString("preference_pound_func","volume").equals("torch")){
+                    GrantPermissions(new String[]{Manifest.permission.CAMERA},2);
+                }
+                break;
         }
     }
+
+    private void GrantPermissions(String[] perms,int code){
+        if (!EasyPermissions.hasPermissions(this, perms)) {
+            EasyPermissions.requestPermissions(this, getString(R.string.permission_required_title),
+                    code, perms);
+        }
+    }
+
+    @Override
+    public void onPermissionsGranted(int requestCode, @NonNull List<String> perms) {
+        switch (requestCode){
+            case 1:
+                editor.putBoolean("switch_preference_callsms_counter",true);
+                editor.apply();
+                binding.settingsBack.setText(getText(R.string.status_reload_launcher));
+                reload_flag=true;
+                break;
+            case 2:
+                editor.putString("preference_pound_func","torch");
+                editor.apply();
+                break;
+        }
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, @NonNull List<String> perms) {
+        switch (requestCode){
+            case 1:
+                editor.putBoolean("switch_preference_callsms_counter",false);
+                editor.apply();
+                break;
+            case 2:
+                editor.putString("preference_pound_func","volume");
+                editor.apply();
+                break;
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        EasyPermissions.onRequestPermissionsResult(requestCode,permissions,grantResults,this);
+    }
+
+
 
     private void rebootLauncher(boolean isReboot){
         if(isReboot){
@@ -89,7 +151,6 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        SharedPreferences sharedPreferences = getSharedPreferences(getPackageName()+"_preferences", Context.MODE_PRIVATE);
         sharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
         rebootLauncher(reload_flag);
     }

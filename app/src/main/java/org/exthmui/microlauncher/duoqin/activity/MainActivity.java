@@ -82,16 +82,13 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         date = new DateTextView(this);
         lunarDate = new LunarDateTextView(this);
         carrier = new CarrierTextView(this);
-        callSmsCounter = new CallSmsCounter(this);
         clockViewManager.insertOrUpdateView(1, date);
         loadSettings();
-        initCallSmsObserver();
     }
 
     private void GrantPermissions(){
         String[] perms = {Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA,
-                Manifest.permission.READ_CALL_LOG, Manifest.permission.READ_SMS};
+                Manifest.permission.WRITE_EXTERNAL_STORAGE};
         if (!EasyPermissions.hasPermissions(this, perms)) {
             EasyPermissions.requestPermissions(this, getString(R.string.permission_required_title),
                     grant_int, perms);
@@ -106,37 +103,39 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
     @AfterPermissionGranted(grant_int)
     private void initCallSmsObserver() {
-        mMissedPhoneContentObserver = new ContentObserver(null) {
-            @Override
-            public void onChange(boolean selfChange, Uri uri) {
-                super.onChange(selfChange);
-                runOnUiThread(() -> {
-                    callSmsCounter = null;
-                    callSmsCounter = new CallSmsCounter(MainActivity.this);
-                    clockViewManager.insertOrUpdateView(4, callSmsCounter);
-                    setClockLocate(clock_locate);
-                });
-            }
-        };
-        mMissedMsgContentObserver = new ContentObserver(null) {
-            @Override
-            public void onChange(boolean selfChange, Uri uri) {
-                super.onChange(selfChange);
-                runOnUiThread(() -> {
-                    callSmsCounter = null;
-                    callSmsCounter = new CallSmsCounter(MainActivity.this);
-                    clockViewManager.insertOrUpdateView(4, callSmsCounter);
-                    setClockLocate(clock_locate);
-                });
-            }
-        };
-        unregisterObserver();
-        getContentResolver().registerContentObserver(CallLog.Calls.CONTENT_URI,
-                true, mMissedPhoneContentObserver);
-        getContentResolver().registerContentObserver(Uri.parse("content://sms"),
-                true, mMissedMsgContentObserver);
-        getContentResolver().registerContentObserver(Telephony.MmsSms.CONTENT_URI,
-                true, mMissedMsgContentObserver);
+        if (EasyPermissions.hasPermissions(this, Manifest.permission.READ_CALL_LOG, Manifest.permission.READ_SMS)) {
+            mMissedPhoneContentObserver = new ContentObserver(null) {
+                @Override
+                public void onChange(boolean selfChange, Uri uri) {
+                    super.onChange(selfChange);
+                    runOnUiThread(() -> {
+                        callSmsCounter = null;
+                        callSmsCounter = new CallSmsCounter(MainActivity.this);
+                        clockViewManager.insertOrUpdateView(4, callSmsCounter);
+                        setClockLocate(clock_locate);
+                    });
+                }
+            };
+            mMissedMsgContentObserver = new ContentObserver(null) {
+                @Override
+                public void onChange(boolean selfChange, Uri uri) {
+                    super.onChange(selfChange);
+                    runOnUiThread(() -> {
+                        callSmsCounter = null;
+                        callSmsCounter = new CallSmsCounter(MainActivity.this);
+                        clockViewManager.insertOrUpdateView(4, callSmsCounter);
+                        setClockLocate(clock_locate);
+                    });
+                }
+            };
+            unregisterObserver();
+            getContentResolver().registerContentObserver(CallLog.Calls.CONTENT_URI,
+                    true, mMissedPhoneContentObserver);
+            getContentResolver().registerContentObserver(Uri.parse("content://sms"),
+                    true, mMissedMsgContentObserver);
+            getContentResolver().registerContentObserver(Telephony.MmsSms.CONTENT_URI,
+                    true, mMissedMsgContentObserver);
+        }
     }
 
     private synchronized void unregisterObserver() {
@@ -174,6 +173,10 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         }
         callsms_counter = sharedPreferences.getBoolean("switch_preference_callsms_counter",false);
         if(callsms_counter){
+            if (callSmsCounter == null) {
+                callSmsCounter = new CallSmsCounter(this);
+            }
+            initCallSmsObserver();
             Log.d(TAG, "Enable call/sms counter");
             clockViewManager.insertOrUpdateView(4, callSmsCounter);
         }else{
@@ -266,6 +269,12 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                 break;
             case "switch_preference_callsms_counter":
                 callsms_counter = sharedPreferences.getBoolean("switch_preference_callsms_counter",false);
+                if (callsms_counter && EasyPermissions.hasPermissions(this, Manifest.permission.READ_CALL_LOG,Manifest.permission.READ_SMS)){
+                    if (callSmsCounter == null){
+                        callSmsCounter = new CallSmsCounter(this);
+                    }
+                    initCallSmsObserver();
+                }
                 break;
             case "preference_bugly_init":
                 bugly_init = sharedPreferences.getBoolean("bugly_init",false);

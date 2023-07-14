@@ -14,7 +14,7 @@ public class SettingsFragments extends PreferenceFragmentCompat implements
         SharedPreferences.OnSharedPreferenceChangeListener{
 
     public ListPreference clock_locate,clock_size,pound_func,app_list_style;
-    SwitchPreference toolbox_pwd,pwd_keyguard;
+    SwitchPreference toolbox_pwd,pwd_keyguard,callSmsSwitch;
     EditTextPreference pwd_custom;
 
     @Override
@@ -25,11 +25,18 @@ public class SettingsFragments extends PreferenceFragmentCompat implements
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         boolean pwd_enabled = sharedPreferences.getBoolean("enable_toolbox_password",false);
+        boolean callSmsCounter = sharedPreferences.getBoolean("switch_preference_callsms_counter",false);
+        String pound_func_value = sharedPreferences.getString("preference_pound_func","volume");
         clock_size.setSummary(clock_size.getValue());
         clock_locate.setSummary(clock_locate.getEntry());
-        pound_func.setSummary(pound_func.getEntry());
+        if (pound_func_value.equals("volume")) {
+            pound_func.setSummary(R.string.pound_func_volume);
+        } else if (pound_func_value.equals("torch")) {
+            pound_func.setSummary(R.string.pound_func_torch);
+        }
         app_list_style.setSummary(app_list_style.getEntry());
         pwd_keyguard.setEnabled(pwd_enabled);
+        callSmsSwitch.setChecked(callSmsCounter);
         setPwdCustomEnabled(sharedPreferences);
     }
 
@@ -47,6 +54,7 @@ public class SettingsFragments extends PreferenceFragmentCompat implements
         toolbox_pwd=getPreferenceScreen().findPreference("enable_toolbox_password");
         pwd_keyguard=getPreferenceScreen().findPreference("toolbox_password_use_keyguard");
         pwd_custom=getPreferenceScreen().findPreference("toolbox_password_use_custom");
+        callSmsSwitch=getPreferenceScreen().findPreference("switch_preference_callsms_counter");
         clock_size.setSummary(clock_size.getValue());
         clock_locate.setSummary(clock_locate.getEntry());
         pound_func.setSummary(pound_func.getEntry());
