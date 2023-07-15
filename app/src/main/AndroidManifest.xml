@@ -28,6 +28,7 @@
         android:required="false" />
 
     <application
+        android:name=".MainApplication"
         android:allowBackup="true"
         android:fullBackupOnly="true"
         android:icon="@mipmap/ic_launcher"
