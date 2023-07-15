@@ -70,10 +70,10 @@ dependencies {
     implementation 'androidx.preference:preference:1.2.0'
     implementation 'pub.devrel:easypermissions:3.0.0'
     implementation 'com.tencent.bugly:crashreport:4.1.9.1'
-    testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
     implementation 'com.github.GrenderG:Toasty:1.5.2'
     implementation 'io.github.medyo:android-about-page:2.0.0'
     implementation 'de.psdev.licensesdialog:licensesdialog:2.1.0'
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 }

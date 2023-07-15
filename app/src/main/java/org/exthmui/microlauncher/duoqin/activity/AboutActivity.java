@@ -81,6 +81,8 @@ public class AboutActivity extends AppCompatActivity implements SharedPreference
         opensourceLicense.setTitle(osl);
         opensourceLicense.setOnClickListener(v -> {
             final Notices notices = new Notices();
+            notices.addNotice(new Notice("MicroLauncher","https://github.com/Yuyuko1024/MicroLauncher","Yuyuko1024",new ApacheSoftwareLicense20()));
+            notices.addNotice(new Notice("EasyPermissions", "https://github.com/googlesamples/easypermissions", "googlesamples", new ApacheSoftwareLicense20()));
             notices.addNotice(new Notice("Toasty","https://github.com/GrenderG/Toasty","GrenderG",new GnuGeneralPublicLicense30()));
             notices.addNotice(new Notice("android-about-page","https://github.com/medyo/android-about-page","medyo",new MITLicense()));
             new LicensesDialog.Builder(this)
