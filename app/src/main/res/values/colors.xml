@@ -25,4 +25,5 @@
     <color name="error">#FFC1666B</color>
     <color name="white_alpha">#EEFFFFFF</color>
     <color name="border">@color/primary</color>
+    <color name="title_color">@color/primary</color>
 </resources>

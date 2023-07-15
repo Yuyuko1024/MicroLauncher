@@ -123,5 +123,5 @@
     <string name="disagree">Disagree</string>
     <string name="shortcuts_title">App Shortcuts</string>
     <string name="no_shortcuts_toast">This app doesn\'t have shortcuts</string>
-    <string name="not_default_launcher_shortcut_msg">Android 12 and later version This software is not the default launcher can not use the shortcut function!</string>
+    <string name="not_default_launcher_shortcut_msg">This software is not the default launcher can not use the shortcut function!</string>
 </resources>

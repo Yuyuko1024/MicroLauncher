@@ -28,6 +28,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import org.exthmui.microlauncher.duoqin.R;
 import org.exthmui.microlauncher.duoqin.adapter.AppAdapter;
+import org.exthmui.microlauncher.duoqin.databinding.AppListActivityBinding;
 import org.exthmui.microlauncher.duoqin.utils.Application;
 
 import java.util.ArrayList;
@@ -37,19 +38,18 @@ import es.dmoral.toasty.Toasty;
 
 public class AppListActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener{
     private final static String TAG = "AppListActivity";
+    private AppListActivityBinding binding;
     private PkgDelReceiver mPkgDelReceiver;
-    TextView menu,back;
     String app_list_style;
     boolean isSimpleList;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.app_list_activity);
-        menu=findViewById(R.id.app_menu);
-        back=findViewById(R.id.app_back);
-        back.setOnClickListener(new funClick());
-        menu.setOnClickListener(new funClick());
+        binding = AppListActivityBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+        binding.appBack.setOnClickListener(new funClick());
+        binding.appMenu.setOnClickListener(new funClick());
         loadSettings();
         loadApp();
         receiveSyscast();
@@ -99,10 +99,10 @@ public class AppListActivity extends AppCompatActivity implements SharedPreferen
     class funClick implements View.OnClickListener{
         @Override
         public void onClick(View v) {
-            if(v == back) {
+            if(v == binding.appBack) {
                 finish();
-            }else if(v == menu){
-                showMenu(menu);
+            }else if(v == binding.appMenu){
+                showMenu(v);
             }
         }
     }

@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.MicroLauncher" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+    <style name="Theme.MicroLauncher" parent="Theme.Material3.DayNight">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryVariant">@color/primary_dark</item>
@@ -14,7 +14,7 @@
         <!-- Customize your theme here. -->
     </style>
 
-    <style name="TranslucentActivity" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="TranslucentActivity" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@color/transpart</item>
         <item name="android:windowAnimationStyle">@android:style/Animation.Translucent</item>

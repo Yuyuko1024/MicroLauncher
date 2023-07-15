@@ -22,10 +22,6 @@ android {
         manifestPlaceholders = [BUGLY_APP_ID: "202cbaa27b"]
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        ndk {
-            // 设置支持的SO库架构,不设置时默认支持全部架构
-            abiFilters 'arm64-v8a', 'x86_64'
-        }
     }
 
     viewBinding{
@@ -37,6 +33,10 @@ android {
             shrinkResources true
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            ndk {
+                // 设置支持的SO库架构
+                abiFilters 'arm64-v8a'
+            }
         }
     }
 
