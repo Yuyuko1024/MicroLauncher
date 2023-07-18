@@ -18,7 +18,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.PopupMenu;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -83,8 +82,10 @@ public class AppListActivity extends AppCompatActivity implements SharedPreferen
         intentFilter.addAction("android.intent.action.PACKAGE_ADDED");
         intentFilter.addAction("android.intent.action.PACKAGE_REMOVED");
         intentFilter.addDataScheme("package");
-        mPkgDelReceiver = new PkgDelReceiver();
-        registerReceiver(mPkgDelReceiver, intentFilter);
+        if (mPkgDelReceiver == null) {
+            mPkgDelReceiver = new PkgDelReceiver();
+            registerReceiver(mPkgDelReceiver, intentFilter);
+        }
     }
 
     class PkgDelReceiver extends BroadcastReceiver{
@@ -244,6 +245,8 @@ public class AppListActivity extends AppCompatActivity implements SharedPreferen
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(mPkgDelReceiver);
+        if (mPkgDelReceiver != null){
+            unregisterReceiver(mPkgDelReceiver);
+        }
     }
 }
