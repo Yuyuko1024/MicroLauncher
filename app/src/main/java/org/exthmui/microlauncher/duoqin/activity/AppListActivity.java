@@ -23,6 +23,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.exthmui.microlauncher.duoqin.R;
@@ -149,9 +150,10 @@ public class AppListActivity extends AppCompatActivity implements SharedPreferen
             mAppRecyclerView.setAdapter(new AppAdapter(mApplicationList, 1));
         }else{
             //列表布局
-            mAppRecyclerView.setLayoutManager(new GridLayoutManager(this,1));
+            mAppRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
             mAppRecyclerView.setAdapter(new AppAdapter(mApplicationList, 0));
         }
+        mAppRecyclerView.setItemViewCacheSize(100);
     }
 
     @SuppressLint("NonConstantResourceId")

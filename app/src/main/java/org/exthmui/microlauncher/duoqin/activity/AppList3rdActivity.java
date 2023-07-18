@@ -198,6 +198,7 @@ public class AppList3rdActivity extends AppCompatActivity implements SharedPrefe
             mAppRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
             mAppRecyclerView.setAdapter(new AppAdapter(mApplicationList, 0));
         }
+        mAppRecyclerView.setItemViewCacheSize(100);
     }
 
     @SuppressLint("NonConstantResourceId")
