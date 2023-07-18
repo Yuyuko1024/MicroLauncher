@@ -14,8 +14,8 @@ android {
         applicationId "org.exthmui.microlauncher.duoqin"
         minSdkVersion 26
         targetSdkVersion 32
-        versionCode 35000
-        versionName "1.2.5-${buildSerial}"
+        versionCode 36000
+        versionName "1.2.6-${buildSerial}"
         flavorDimensions "channel"
 
         // 统一设置的App ID
