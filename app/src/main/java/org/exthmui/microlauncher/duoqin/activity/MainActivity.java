@@ -31,6 +31,7 @@ import org.exthmui.microlauncher.duoqin.BuildConfig;
 import org.exthmui.microlauncher.duoqin.R;
 import org.exthmui.microlauncher.duoqin.databinding.ActivityMainBinding;
 import org.exthmui.microlauncher.duoqin.utils.BuglyUtils;
+import org.exthmui.microlauncher.duoqin.utils.Constants;
 import org.exthmui.microlauncher.duoqin.widgets.CallSmsCounter;
 import org.exthmui.microlauncher.duoqin.widgets.CarrierTextView;
 import org.exthmui.microlauncher.duoqin.widgets.ClockViewManager;
@@ -222,7 +223,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
     private void checkDevice(){
         Log.d(TAG, "checkDevice: "+Build.BOARD);
-        if(!Build.BOARD.equals("k61v1_64_bsp")){
+        if(!Constants.DeviceList.contains(Build.BOARD)){
             Toasty.info(this,R.string.not_qin_device,Toasty.LENGTH_SHORT).show();
         }
     }
