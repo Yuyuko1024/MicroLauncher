@@ -30,6 +30,7 @@ import org.exthmui.microlauncher.duoqin.R;
 import org.exthmui.microlauncher.duoqin.adapter.AppAdapter;
 import org.exthmui.microlauncher.duoqin.databinding.AppListActivityBinding;
 import org.exthmui.microlauncher.duoqin.utils.Application;
+import org.exthmui.microlauncher.duoqin.widgets.AppRecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -141,7 +142,7 @@ public class AppListActivity extends AppCompatActivity implements SharedPreferen
                 }
             }
         }
-        RecyclerView mAppRecyclerView = findViewById(R.id.app_list);
+        AppRecyclerView mAppRecyclerView = findViewById(R.id.app_list);
         //如果是网格布局
         if(app_list_style.equals("grid")){
             //      设置布局管理器
@@ -153,7 +154,6 @@ public class AppListActivity extends AppCompatActivity implements SharedPreferen
             mAppRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
             mAppRecyclerView.setAdapter(new AppAdapter(mApplicationList, 0));
         }
-        mAppRecyclerView.setItemViewCacheSize(100);
     }
 
     @SuppressLint("NonConstantResourceId")

@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -48,6 +49,7 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ApplicationViewH
     public AppAdapter(List<Application> applicationList, int layoutMode ) {
         this.mApplicationList = applicationList;
         this.mLayoutMode = layoutMode;
+        setHasStableIds(true);
     }
 
     @NonNull
@@ -102,11 +104,21 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ApplicationViewH
         return mApplicationList == null ? 0 : mApplicationList.size();
     }
 
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public void setHasStableIds(boolean hasStableIds) {
+        super.setHasStableIds(hasStableIds);
+    }
+
     public static class ApplicationViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener {
 
         private final ImageView mAppIconView;
         private final TextView mText;
-        private final RelativeLayout mAppItem;
+        private final LinearLayout mAppItem;
         private final List<Application> mApplicationList;
 
         public ApplicationViewHolder(@NonNull View view,List<Application> applicationList) {

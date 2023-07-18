@@ -1,36 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:orientation="vertical"
     android:id="@+id/app_item"
     android:defaultFocusHighlightEnabled="false">
 
-    <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_margin="8dp">
+   <ImageView
+       android:id="@+id/app_icon"
+       android:layout_width="48dp"
+       android:layout_height="48dp"
+       android:layout_margin="6dp"
+       android:layout_gravity="center_horizontal"
+       android:contentDescription="@string/content_desc_app_icon"
+       android:src="@mipmap/ic_launcher"/>
 
-        <ImageView
-                android:id="@+id/app_icon"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_centerHorizontal="true"
-                android:contentDescription="@string/content_desc_app_icon"
-                android:src="@mipmap/ic_launcher"/>
+   <TextView
+       android:id="@+id/app_title"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_gravity="center_horizontal"
+       android:layout_margin="4dp"
+       android:ellipsize="marquee"
+       android:focusable="false"
+       android:maxWidth="88dp"
+       android:singleLine="true"
+       android:text="@string/default_app_title"/>
 
-        <TextView
-                android:id="@+id/app_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/app_icon"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="6dp"
-                android:ellipsize="marquee"
-                android:focusable="false"
-                android:maxWidth="88dp"
-                android:singleLine="true"
-                android:text="@string/default_app_title"/>
-    </RelativeLayout>
-
-</RelativeLayout>
+</LinearLayout>

@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <androidx.recyclerview.widget.RecyclerView
+    <org.exthmui.microlauncher.duoqin.widgets.AppRecyclerView
         android:id="@+id/app_list"
         android:defaultFocusHighlightEnabled="false"
         style="@style/Recycler_Scroll"
