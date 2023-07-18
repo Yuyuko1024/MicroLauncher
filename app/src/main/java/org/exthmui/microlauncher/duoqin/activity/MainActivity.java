@@ -215,7 +215,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                 break;
         }
         mainBinding.clock.textClock.setLayoutParams(params);
-        for (int i = 1; i < clockViewManager.getViewCount()+1; i++) {
+        for (int i = 1; i < 5; i++) {
             Log.d(TAG, "setClockLocate: "+i);
             clockViewManager.setLayoutParams(i, params);
         }

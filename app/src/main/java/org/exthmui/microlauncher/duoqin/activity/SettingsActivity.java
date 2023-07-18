@@ -87,7 +87,10 @@ public class SettingsActivity extends AppCompatActivity
                 reload_flag=true;
                 break;
             case "switch_preference_callsms_counter":
-                GrantPermissions(new String[]{Manifest.permission.READ_CALL_LOG,Manifest.permission.READ_SMS},1);
+                if (GrantPermissions(new String[]{Manifest.permission.READ_CALL_LOG,Manifest.permission.READ_SMS},1)){
+                    binding.settingsBack.setText(getText(R.string.status_reload_launcher));
+                    reload_flag=true;
+                }
                 break;
             case "preference_pound_func":
                 if (sharedPreferences.getString("preference_pound_func","volume").equals("torch")){
@@ -97,11 +100,13 @@ public class SettingsActivity extends AppCompatActivity
         }
     }
 
-    private void GrantPermissions(String[] perms,int code){
+    private boolean GrantPermissions(String[] perms,int code){
         if (!EasyPermissions.hasPermissions(this, perms)) {
             EasyPermissions.requestPermissions(this, getString(R.string.permission_required_title),
                     code, perms);
+            return EasyPermissions.hasPermissions(this, perms);
         }
+        return true;
     }
 
     @Override
@@ -110,8 +115,6 @@ public class SettingsActivity extends AppCompatActivity
             case 1:
                 editor.putBoolean("switch_preference_callsms_counter",true);
                 editor.apply();
-                binding.settingsBack.setText(getText(R.string.status_reload_launcher));
-                reload_flag=true;
                 break;
             case 2:
                 editor.putString("preference_pound_func","torch");
