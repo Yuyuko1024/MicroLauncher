@@ -124,4 +124,10 @@
     <string name="shortcuts_title">App Shortcuts</string>
     <string name="no_shortcuts_toast">This app doesn\'t have shortcuts</string>
     <string name="not_default_launcher_shortcut_msg">This software is not the default launcher can not use the shortcut function!</string>
+
+    <!-- Carrier Name -->
+    <string name="carrier_no_sim_text">No SIM card</string>
+    <string name="carrier_china_unicom">China Unicom</string>
+    <string name="carrier_cmcc">CMCC</string>
+    <string name="carrier_chn_ct">China Telecom</string>
 </resources>

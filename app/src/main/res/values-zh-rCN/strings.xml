@@ -121,4 +121,10 @@
     <string name="shortcuts_title">快捷方式</string>
     <string name="no_shortcuts_toast">该应用没有快捷方式</string>
     <string name="not_default_launcher_shortcut_msg">本桌面非默认桌面时不可使用快捷方式功能！</string>
+
+    <!-- Carrier Name -->
+    <string name="carrier_no_sim_text">无 SIM 卡</string>
+    <string name="carrier_china_unicom">中国联通</string>
+    <string name="carrier_cmcc">中国移动</string>
+    <string name="carrier_chn_ct">中国电信</string>
 </resources>
