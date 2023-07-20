@@ -2,6 +2,20 @@
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <item
+        android:title="排序方式"
+        app:showAsAction="never">
+        <menu>
+            <item
+                android:id="@+id/menu_app_sort_pinyin"
+                android:title="名称（拼音）"
+                app:showAsAction="never"/>
+            <item
+                android:id="@+id/menu_app_sort_default"
+                android:title="默认"
+                app:showAsAction="never"/>
+        </menu>
+    </item>
+    <item
         android:id="@+id/menu_app_manage"
         android:title="@string/app_menu_manage"
         app:showAsAction="never" />

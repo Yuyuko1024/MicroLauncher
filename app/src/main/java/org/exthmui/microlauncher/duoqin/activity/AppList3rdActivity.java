@@ -35,6 +35,8 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import org.exthmui.microlauncher.duoqin.R;
 import org.exthmui.microlauncher.duoqin.adapter.AppAdapter;
 import org.exthmui.microlauncher.duoqin.utils.Application;
+import org.exthmui.microlauncher.duoqin.utils.PinyinComparator;
+import org.exthmui.microlauncher.duoqin.utils.PinyinUtils;
 import org.exthmui.microlauncher.duoqin.widgets.AppRecyclerView;
 
 import java.util.ArrayList;
@@ -45,10 +47,12 @@ import es.dmoral.toasty.Toasty;
 public class AppList3rdActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener{
     private final static String TAG = "AppListActivity";
     private PkgDelReceiver mPkgDelReceiver;
+    private PinyinComparator mComparator;
     private TextView menu,back;
     private String app_list_style;
     private String pwdCustom;
     private boolean isSimpleList,isEnablePwd,pwdUseKeyguard;
+    private boolean isSortByPinyin = false;
     private SharedPreferences sharedPreferences;
 
     @Override
@@ -125,6 +129,7 @@ public class AppList3rdActivity extends AppCompatActivity implements SharedPrefe
         isEnablePwd=sp.getBoolean("enable_toolbox_password",false);
         pwdUseKeyguard=sp.getBoolean("toolbox_password_use_keyguard",true);
         pwdCustom=sp.getString("toolbox_password_use_custom","");
+        isSortByPinyin=sp.getBoolean("switch_preference_app_list_sort",false);
     }
 
     @Override
@@ -165,6 +170,7 @@ public class AppList3rdActivity extends AppCompatActivity implements SharedPrefe
 
     private void loadApp() {
         PackageManager packageManager = getPackageManager();
+        mComparator = new PinyinComparator();
         Application application;
         Intent appIntent;
         Intent intent = new Intent().setAction(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER);
@@ -174,8 +180,9 @@ public class AppList3rdActivity extends AppCompatActivity implements SharedPrefe
         Drawable appIcon;
         CharSequence appLabel;
         boolean isSystemApp;
+        String pinyin;
+        String sortString;
         List<Application> mApplicationList = new ArrayList<>();
-
         List<ResolveInfo> resolveInfos = packageManager.queryIntentActivities(intent, 0);
         for (ResolveInfo resolveInfo : resolveInfos) {
             activityInfo = resolveInfo.activityInfo;
@@ -186,7 +193,21 @@ public class AppList3rdActivity extends AppCompatActivity implements SharedPrefe
             appIntent = new Intent().setClassName(activityInfo.packageName, activityInfo.name);
             pkgName = activityInfo.packageName;
             application = new Application(appIcon, appLabel, isSystemApp, appIntent, pkgName);
+            //如果使用按拼音排序
+            if (isSortByPinyin) {
+                pinyin = PinyinUtils.getPingYin(appLabel.toString());
+                sortString = pinyin.substring(0, 1).toUpperCase();
+                if (sortString.matches("[A-Za-z]")) {
+                    application.setLetters(sortString.toUpperCase());
+                } else {
+                    application.setLetters("#");
+                }
+            }
             if(appLabel!=getString(R.string.trd_apps) && appLabel!=getString(R.string.app_name) && !isSystemApp){ mApplicationList.add(application);}
+        }
+        //如果使用按拼音排序
+        if (isSortByPinyin) {
+            mApplicationList.sort(mComparator);
         }
         AppRecyclerView mAppRecyclerView = findViewById(R.id.app_list);
         //如果是网格布局
@@ -240,6 +261,16 @@ public class AppList3rdActivity extends AppCompatActivity implements SharedPrefe
                     vol_it.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(vol_it);
                     break;
+                case R.id.menu_app_sort_pinyin:
+                    isSortByPinyin = true;
+                    sharedPreferences.edit().putBoolean("switch_preference_app_list_sort",true).apply();
+                    loadApp();
+                    break;
+                case R.id.menu_app_sort_default:
+                    isSortByPinyin = false;
+                    sharedPreferences.edit().putBoolean("switch_preference_app_list_sort",false).apply();
+                    loadApp();
+                    break;
             }
             return true;
         });
@@ -284,6 +315,16 @@ public class AppList3rdActivity extends AppCompatActivity implements SharedPrefe
             case R.id.menu_volume_changer:
                 Intent vol_it = new Intent(AppList3rdActivity.this, VolumeChanger.class);
                 startActivity(vol_it);
+                break;
+            case R.id.menu_app_sort_pinyin:
+                isSortByPinyin = true;
+                sharedPreferences.edit().putBoolean("switch_preference_app_list_sort",true).apply();
+                loadApp();
+                break;
+            case R.id.menu_app_sort_default:
+                isSortByPinyin = false;
+                sharedPreferences.edit().putBoolean("switch_preference_app_list_sort",false).apply();
+                loadApp();
                 break;
         }
         return super.onOptionsItemSelected(item);

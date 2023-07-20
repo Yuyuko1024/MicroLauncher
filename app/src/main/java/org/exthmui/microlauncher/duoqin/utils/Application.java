@@ -13,7 +13,8 @@ public class Application {
     private CharSequence mAppLabel;         //App标题，CharSequence类型，可强制转换为String类型
     private boolean mIsSystemApp;           //App类型，boolean类型，true为系统应用，false则为用户应用
     private Intent mAppIntent;              //App启动项，Intent类型，可用于启动App
-    private String mPkgName;
+    private String mPkgName;                //App Package Name，String类型，用于存储当前App的包名
+    private String mLetters;                //App首字母，String类型，用于存储当前App的首字母
 
     //    带参数的构造函数，可以自动生成
     public Application(Drawable mAppIcon, CharSequence mAppLabel, boolean mIsSystemApp, Intent mAppIntent, String mPkgName) {
@@ -60,10 +61,15 @@ public class Application {
     public String getPkgName() {return this.mPkgName;}
 
     public boolean isAppSelf() {
-        if (Objects.equals(getPkgName(), BuildConfig.APPLICATION_ID)){
-            return true;
-        }
-        return false;
+        return Objects.equals(getPkgName(), BuildConfig.APPLICATION_ID);
+    }
+
+    public String getLetters() {
+        return mLetters;
+    }
+
+    public void setLetters(String mLetters) {
+        this.mLetters = mLetters;
     }
 
     //    toString()方法，可以自动生成

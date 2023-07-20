@@ -31,11 +31,12 @@ import org.exthmui.microlauncher.duoqin.utils.Application;
 import org.exthmui.microlauncher.duoqin.utils.LauncherUtils;
 
 import java.util.List;
+import java.util.Objects;
 
 import es.dmoral.toasty.Toasty;
 
 public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ApplicationViewHolder> {
-    private final List<Application> mApplicationList;
+    private List<Application> mApplicationList;
     private static View mItemView;
     private final int mLayoutMode;
     private static int mPosition = -1;
@@ -112,6 +113,34 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ApplicationViewH
     @Override
     public void setHasStableIds(boolean hasStableIds) {
         super.setHasStableIds(hasStableIds);
+    }
+
+    /**
+     * 提供给Activity刷新数据
+     * @param list
+     */
+    public void updateList(List<Application> list){
+        this.mApplicationList = list;
+        notifyDataSetChanged();
+    }
+
+    public Object getItem(int position) {
+        return mApplicationList.get(position);
+    }
+
+    public int getSectionForPosition(int position) {
+        return mApplicationList.get(position).getLetters().charAt(0);
+    }
+
+    public int getPositionForSection(int section) {
+        for (int i = 0; i < getItemCount(); i++) {
+            String sortStr = mApplicationList.get(i).getLetters();
+            char firstChar = sortStr.toUpperCase().charAt(0);
+            if (firstChar == section) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     public static class ApplicationViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener {
