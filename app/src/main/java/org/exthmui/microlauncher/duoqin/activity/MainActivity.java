@@ -12,6 +12,9 @@ import android.hardware.camera2.CameraManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.provider.CallLog;
 import android.provider.Telephony;
 import android.util.Log;
@@ -56,6 +59,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     private boolean bugly_init;
     private boolean disagree_privacy;
     private boolean torch = false;
+    private boolean isShortPress;
     private String clock_locate;
     private CameraManager manager;
     private ContentObserver mMissedPhoneContentObserver;
@@ -89,7 +93,8 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
     private void GrantPermissions(){
         String[] perms = {Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE};
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.READ_PHONE_STATE};
         if (!EasyPermissions.hasPermissions(this, perms)) {
             EasyPermissions.requestPermissions(this, getString(R.string.permission_required_title),
                     grant_int, perms);
@@ -315,40 +320,53 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         // TODO: 实现其他用户离开Activity焦点功能
     }
 
-    public boolean onKeyUp(int keyCode, KeyEvent event){
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            Intent it = new Intent();
-            it.setAction("android.intent.action.MAIN");
-            it.addCategory("android.intent.category.APP_CONTACTS");
-            it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(it);
-            return true;}
-        return false;
+    @Override
+    public boolean onKeyLongPress(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK){
+            isShortPress = false;
+            return true;
+        }
+        return super.onKeyLongPress(keyCode, event);
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK){
+            if (isShortPress) {
+                Intent it = new Intent();
+                it.setAction("android.intent.action.MAIN");
+                it.addCategory("android.intent.category.APP_CONTACTS");
+                it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(it);
+            }
+            return true;
+        }
+        return super.onKeyUp(keyCode, event);
     }
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         Log.d(TAG,"这个按键的KeyCode是 "+keyCode);
            if(keyCode == KeyEvent.KEYCODE_DPAD_DOWN){
                 doInStatusBar(getApplicationContext());
-                return true;}
-            else if (keyCode == KeyEvent.KEYCODE_DPAD_UP){
+                return true;
+           } else if (keyCode == KeyEvent.KEYCODE_DPAD_UP){
                Intent it = new Intent();
                 it.setClassName("com.android.settings",
                         "com.android.settings.Settings");
                 startActivity(it);
-                return true;}
-            else if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
-                try{
+                return true;
+           } else if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
+                try {
                     Intent it = new Intent();
                     it.setAction("android.intent.action.MAIN");
                     it.addCategory("android.intent.category.APP_BROWSER");
                     it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(it);
-                }catch (Exception e){
+                } catch (Exception e){
                     Log.d(TAG,"没有找到系统浏览器或者系统浏览器被禁用");
                 }
-           return true;}
-            else if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT){
+                return true;
+           } else if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT){
                 try{
                     Intent it = new Intent();
                     it.setAction("android.intent.action.MAIN");
@@ -358,8 +376,8 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                 }catch (Exception e){
                     Log.d(TAG,"没有找到系统短信或者系统短信被禁用");
                 }
-           return true;}
-           else if (keyCode == KeyEvent.KEYCODE_MENU ){
+                return true;
+           } else if (keyCode == KeyEvent.KEYCODE_MENU ){
                Snackbar.make(mainBinding.getRoot(),R.string.loading,Snackbar.LENGTH_SHORT).show();
                Timer timer = new Timer();
                timer.schedule(new TimerTask() {
@@ -369,7 +387,17 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                        startActivity(menu_it);
                    }
                },500); // 延时0.5秒，不加延时的话应用列表的菜单误触我很难顶啊QAQ
-               return true;}
+               return true;
+           } else if (keyCode == KeyEvent.KEYCODE_BACK) {
+               if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                   event.startTracking();
+                   if (event.getRepeatCount() == 0) {
+                       isShortPress = true;
+                       return true;
+                   }
+               }
+               return true;
+           }
            //突然想起来得把音量控制面板绑定到#键上
            else if (keyCode == KeyEvent.KEYCODE_POUND ){
                if(pound_func.equals("volume")){
@@ -377,31 +405,10 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                    vol_it.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
                    startActivity(vol_it);
                }else{
-                   if(PackageManager.PERMISSION_GRANTED == ContextCompat.checkSelfPermission(this,android.Manifest.permission.CAMERA)){
-                       if(torch){
-                           try {
-                               manager = (CameraManager) getApplicationContext().getSystemService(Context.CAMERA_SERVICE);
-                               manager.setTorchMode("0", true);// "0"是主闪光灯
-                           } catch (CameraAccessException e) {
-                               e.printStackTrace();
-                           }
-                           torch=false;
-                       }else{
-                           try {
-                               manager = (CameraManager) getApplicationContext().getSystemService(Context.CAMERA_SERVICE);
-                               manager.setTorchMode("0", false);
-                               manager = null;
-                           } catch (Exception e) {
-                               e.printStackTrace();
-                           }
-                           torch=true;
-                       }
-                   }else{
-                       Toasty.error(this,R.string.permission_denied,Toasty.LENGTH_LONG).show();
-                   }
+                   turnOnTorch();
                }
-               return true;}
-           else if(keyCode >=7 && keyCode <= 16){
+               return true;
+           } else if(keyCode >=7 && keyCode <= 16){
                if(dialpad_enable){
                    try {
                        Intent it = new Intent("android.intent.action.DIAL", Uri.parse("tel:" + event.getNumber()));
@@ -422,6 +429,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                        }
                    }
                }
+               return true;
            } else if (keyCode == KeyEvent.KEYCODE_CALL) {
                try {
                    Intent it = new Intent();
@@ -435,6 +443,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                    it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                    startActivity(it);
                }
+               return true;
            } else if(keyCode == KeyEvent.KEYCODE_STAR){
                 if(xiaoai_enable){
                     try{
@@ -447,9 +456,35 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                         Toasty.error(getApplicationContext(),R.string.err_pkg_not_found,Toasty.LENGTH_LONG).show();
                     }
                 }
-           return true;}
-        return false;
+                return true;
+           }
+        return super.onKeyDown(keyCode, event);
     }
+
+    private void turnOnTorch(){
+        if(PackageManager.PERMISSION_GRANTED == ContextCompat.checkSelfPermission(this,android.Manifest.permission.CAMERA)){
+            manager = (CameraManager) getApplicationContext().getSystemService(Context.CAMERA_SERVICE);
+            if(torch){
+                try {
+                    manager.setTorchMode("0", true);// "0"是主闪光灯
+                } catch (CameraAccessException e) {
+                    e.printStackTrace();
+                }
+                torch=false;
+            }else{
+                try {
+                    manager.setTorchMode("0", false);
+                    manager = null;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                torch=true;
+            }
+        }else{
+            Toasty.error(this,R.string.permission_denied,Toasty.LENGTH_LONG).show();
+        }
+    }
+
     /*
     * 下拉通知栏
     */

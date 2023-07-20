@@ -79,7 +79,9 @@ public class LunarDateTextView extends TextView {
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        getContext().unregisterReceiver(receiver);
+        if (receiver != null) {
+            getContext().unregisterReceiver(receiver);
+        }
     }
 
 }

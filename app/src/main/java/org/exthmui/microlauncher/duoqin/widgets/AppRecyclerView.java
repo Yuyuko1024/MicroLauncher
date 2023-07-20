@@ -35,11 +35,11 @@ public class AppRecyclerView extends RecyclerView {
     private void initView() {
         setDescendantFocusability(FOCUS_AFTER_DESCENDANTS);
         setHasFixedSize(true);
-        /**
-         防止RecyclerView刷新时焦点不错乱bug的步骤如下:
-         (1)adapter执行setHasStableIds(true)方法
-         (2)重写getItemId()方法,让每个view都有各自的id
-         (3)RecyclerView的动画必须去掉
+        /*
+          防止RecyclerView刷新时焦点不错乱bug的步骤如下:
+          (1)adapter执行setHasStableIds(true)方法
+          (2)重写getItemId()方法,让每个view都有各自的id
+          (3)RecyclerView的动画必须去掉
          */
         setItemAnimator(null);
         setItemViewCacheSize(100);
