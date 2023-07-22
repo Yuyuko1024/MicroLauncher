@@ -50,7 +50,6 @@ public class AppListActivity extends AppCompatActivity implements SharedPreferen
     private PkgDelReceiver mPkgDelReceiver;
     private PinyinComparator mComparator;
     private SharedPreferences sharedPreferences;
-    private AlertDialog dialogBuilder;
     private String app_list_style;
     private boolean isSimpleList;
     private boolean isSortByPinyin = false;

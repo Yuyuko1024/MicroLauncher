@@ -40,9 +40,7 @@ public class VolumeChanger extends AppCompatActivity implements SharedPreference
         binding.volumeBack.setOnClickListener(v -> finish());
         loadSettings();
         //获取系统的Audio管理者
-        media_ctrl();
-        ring_ctrl();
-        alarm_ctrl();
+        initVolumeControl();
         PermissionGrant();
         initModeToggleView();
         initModeEvent();
@@ -96,103 +94,36 @@ public class VolumeChanger extends AppCompatActivity implements SharedPreference
         }
     }
 
-    public void media_ctrl(){
-        //最大音量
-        maxVolume = mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-        //当前音量
-        currentVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-        //seekbar设置最大值为最大音量，这样设置当前进度时不用换算百分比了
-        binding.volMediaSeek.setMax(maxVolume);
-        //seekbar设置当前进度为当前音量
-        binding.volMediaText.setText(currentVolume + "");
-        binding.volMediaSeek.setProgress(currentVolume);
-
-        //seekbar设置拖动监听
-        binding.volMediaSeek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            public void onProgressChanged(SeekBar arg0, int progress, boolean fromUser) {
-                //设置媒体音量为当前seekbar进度
-                mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, progress, 0);
-                currentVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-                binding.volMediaText.setText(currentVolume + "");
-                binding.volMediaSeek.setProgress(currentVolume);
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-                // TODO Auto-generated method stub
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                // TODO Auto-generated method stub
-
-
-            }
-        });
+    private void initVolumeControl(){
+        setDeviceVolume(AudioManager.STREAM_MUSIC, binding.volMediaSeek, binding.volMediaText);
+        setDeviceVolume(AudioManager.STREAM_RING, binding.volRingSeek, binding.volRingText);
+        setDeviceVolume(AudioManager.STREAM_ALARM, binding.volAlarmSeek, binding.volAlarmText);
     }
-    public void ring_ctrl(){
-        //最大音量
-        maxVolume = mAudioManager.getStreamMaxVolume(AudioManager.STREAM_RING);
-        //当前音量
-        currentVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_RING);
-        //seekbar设置最大值为最大音量，这样设置当前进度时不用换算百分比了
-        binding.volRingSeek.setMax(maxVolume);
-        //seekbar设置当前进度为当前音量
-        binding.volRingText.setText(currentVolume + "");
-        binding.volRingSeek.setProgress(currentVolume);
 
-        //seekbar设置拖动监听
-        binding.volRingSeek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            public void onProgressChanged(SeekBar arg0, int progress, boolean fromUser) {
-                //设置媒体音量为当前seekbar进度
-                mAudioManager.setStreamVolume(AudioManager.STREAM_RING, progress, 0);
-                currentVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_RING);
-                binding.volRingText.setText(currentVolume + "");
-                binding.volRingSeek.setProgress(currentVolume);
-            }
+    private void setDeviceVolume(int streamType, SeekBar seekBar, TextView textView) {
+        //获取最大和当前音量
+        maxVolume = mAudioManager.getStreamMaxVolume(streamType);
+        currentVolume = mAudioManager.getStreamVolume(streamType);
 
+        //设置seekbar最大值和当前进度
+        seekBar.setMax(maxVolume);
+        textView.setText(currentVolume + "");
+        seekBar.setProgress(currentVolume);
+
+        //设置拖动监听
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-                // TODO Auto-generated method stub
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                //设置音量
+                mAudioManager.setStreamVolume(streamType, progress, 0);
+                currentVolume = mAudioManager.getStreamVolume(streamType);
+                textView.setText(currentVolume + "");
+                seekBar.setProgress(currentVolume);
             }
-
             @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                // TODO Auto-generated method stub
-            }
-        });
-    }
-    public void alarm_ctrl(){
-        //最大音量
-        maxVolume = mAudioManager.getStreamMaxVolume(AudioManager.STREAM_ALARM);
-        //当前音量
-        currentVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_ALARM);
-        //seekbar设置最大值为最大音量，这样设置当前进度时不用换算百分比了
-        binding.volAlarmSeek.setMax(maxVolume);
-        //seekbar设置当前进度为当前音量
-        binding.volAlarmText.setText(currentVolume + "");
-        binding.volAlarmSeek.setProgress(currentVolume);
-
-        //seekbar设置拖动监听
-        binding.volAlarmSeek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            public void onProgressChanged(SeekBar arg0, int progress, boolean fromUser) {
-                //设置媒体音量为当前seekbar进度
-                mAudioManager.setStreamVolume(AudioManager.STREAM_ALARM, progress, 0);
-                currentVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_ALARM);
-                binding.volAlarmText.setText(currentVolume + "");
-                binding.volAlarmSeek.setProgress(currentVolume);
-            }
-
+            public void onStartTrackingTouch(SeekBar seekBar) {}
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-                // TODO Auto-generated method stub
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                // TODO Auto-generated method stub
-            }
+            public void onStopTrackingTouch(SeekBar seekBar) {}
         });
     }
 
