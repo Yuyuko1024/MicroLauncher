@@ -1,5 +1,7 @@
 package org.exthmui.microlauncher.duoqin.activity;
 
+import static org.exthmui.microlauncher.duoqin.utils.Constants.launcherSettingsPref;
+
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -11,19 +13,24 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -34,6 +41,8 @@ import org.exthmui.microlauncher.duoqin.R;
 import org.exthmui.microlauncher.duoqin.adapter.AppAdapter;
 import org.exthmui.microlauncher.duoqin.databinding.AppListActivityBinding;
 import org.exthmui.microlauncher.duoqin.utils.Application;
+import org.exthmui.microlauncher.duoqin.utils.Constants;
+import org.exthmui.microlauncher.duoqin.utils.LauncherUtils;
 import org.exthmui.microlauncher.duoqin.utils.PinyinComparator;
 import org.exthmui.microlauncher.duoqin.utils.PinyinUtils;
 import org.exthmui.microlauncher.duoqin.widgets.AppRecyclerView;
@@ -45,12 +54,17 @@ import java.util.List;
 import es.dmoral.toasty.Toasty;
 
 public class AppListActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener{
-    private final static String TAG = "AppListActivity";
+    private final static String TAG = AppListActivity.class.getSimpleName();
+    private static final int DELAY_TIMER_MILLIS = 500;
+    private static final int ACTIVITY_TRIGGER_COUNT = 3;
+    private final long[] mHits = new long[ACTIVITY_TRIGGER_COUNT];
     private AppListActivityBinding binding;
     private PkgDelReceiver mPkgDelReceiver;
+    private HideAppReceiver HideAppReceiver;
     private PinyinComparator mComparator;
     private SharedPreferences sharedPreferences;
     private String app_list_style;
+    private List<String> excludePackagesList;
     private boolean isSimpleList;
     private boolean isSortByPinyin = false;
 
@@ -61,7 +75,7 @@ public class AppListActivity extends AppCompatActivity implements SharedPreferen
         setContentView(binding.getRoot());
         binding.appBack.setOnClickListener(new funClick());
         binding.appMenu.setOnClickListener(new funClick());
-        sharedPreferences = getSharedPreferences(getPackageName()+"_preferences",Context.MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(launcherSettingsPref,Context.MODE_PRIVATE);
         loadSettings(sharedPreferences);
         loadApp();
         receiveSyscast();
@@ -82,6 +96,7 @@ public class AppListActivity extends AppCompatActivity implements SharedPreferen
         app_list_style=sharedPreferences.getString("app_list_func","grid");
         isSimpleList=sharedPreferences.getBoolean("switch_preference_app_list_func",false);
         isSortByPinyin=sharedPreferences.getBoolean("switch_preference_app_list_sort",false);
+        excludePackagesList = LauncherUtils.getExcludePackagesName(this);
     }
 
     @Override
@@ -94,9 +109,14 @@ public class AppListActivity extends AppCompatActivity implements SharedPreferen
         intentFilter.addAction("android.intent.action.PACKAGE_ADDED");
         intentFilter.addAction("android.intent.action.PACKAGE_REMOVED");
         intentFilter.addDataScheme("package");
-        if (mPkgDelReceiver == null) {
+        if (mPkgDelReceiver == null && HideAppReceiver == null) {
             mPkgDelReceiver = new PkgDelReceiver();
-            registerReceiver(mPkgDelReceiver, intentFilter);
+            HideAppReceiver = new HideAppReceiver();
+            LocalBroadcastManager.getInstance(this).
+                    registerReceiver(mPkgDelReceiver, intentFilter);
+            LocalBroadcastManager.getInstance(this)
+                    .registerReceiver(HideAppReceiver,
+                            new IntentFilter(Constants.HIDE_APP_ACTION));
         }
     }
 
@@ -104,9 +124,37 @@ public class AppListActivity extends AppCompatActivity implements SharedPreferen
         @Override
         public void onReceive(Context context, Intent intent) {
             Log.e(TAG,"detect package change...");
-            Toasty.info(context,R.string.refreshing_pkg_list,Toasty.LENGTH_LONG).show();
+            Toasty.info(context,R.string.refreshing_pkg_list,Toasty.LENGTH_SHORT).show();
             loadApp();
         }
+    }
+
+    class HideAppReceiver extends BroadcastReceiver{
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.i(TAG, "Receive hide app list refresh broadcast");
+            excludePackagesList = LauncherUtils.getExcludePackagesName(AppListActivity.this);
+            Toasty.info(context,R.string.refreshing_pkg_list,Toasty.LENGTH_SHORT).show();
+            loadApp();
+        }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        // 3次按下数字键5触发
+        if (keyCode == KeyEvent.KEYCODE_5) {
+            arrayCopy();
+            mHits[mHits.length - 1] = SystemClock.uptimeMillis();
+            if (mHits[0] >= (SystemClock.uptimeMillis() - DELAY_TIMER_MILLIS)) {
+                final Intent intent = new Intent(Intent.ACTION_VIEW).setAction("org.exthmui.microlauncher.duoqin.action.HIDE_APP_LIST");
+                startActivity(intent);
+            }
+        }
+        return true;
+    }
+
+    private void arrayCopy() {
+        System.arraycopy(mHits, 1, mHits, 0, mHits.length - 1);
     }
 
     class funClick implements View.OnClickListener{
@@ -120,47 +168,51 @@ public class AppListActivity extends AppCompatActivity implements SharedPreferen
         }
     }
 
-    private void loadApp() {
-        PackageManager packageManager = getPackageManager();
-        mComparator = new PinyinComparator();
-        Application application;
-        Intent appIntent;
-        Intent intent = new Intent().setAction(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER);
-        ActivityInfo activityInfo;
-        ApplicationInfo applicationInfo;
-        String pkgName;
-        Drawable appIcon;
-        CharSequence appLabel;
-        boolean isSystemApp;
-        String pinyin;
-        String sortString;
-        List<ResolveInfo> resolveInfos = packageManager.queryIntentActivities(intent, 0);
+    /**
+     * 加载应用列表
+     */
+    private void loadApp(){
         List<Application> mApplicationList = new ArrayList<>();
-        for (ResolveInfo resolveInfo : resolveInfos) {
-            activityInfo = resolveInfo.activityInfo;
-            applicationInfo = activityInfo.applicationInfo;
-            appIcon = activityInfo.loadIcon(packageManager);
-            appLabel = activityInfo.loadLabel(packageManager);
-            isSystemApp = (applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 1;
-            appIntent = new Intent().setClassName(activityInfo.packageName, activityInfo.name);
-            pkgName = activityInfo.packageName;
-            application = new Application(appIcon, appLabel, isSystemApp, appIntent, pkgName);
+        mComparator = new PinyinComparator();
+        //设置启动Intent
+        Intent intent = new Intent().setAction(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER);
+        for (ResolveInfo resolveInfo : getPackageManager().queryIntentActivities(intent, 0)) {
+            String appLabel = resolveInfo.loadLabel(getPackageManager()).toString();
+            String packageName = resolveInfo.activityInfo.packageName;
+            boolean isSystemApp = (resolveInfo.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 1;
+            Intent appIntent = new Intent().setClassName(packageName, resolveInfo.activityInfo.name);
+            //如果应用的包名在排除列表内
+            if (excludePackagesList != null && excludePackagesList.contains(packageName)) {
+                continue;
+            }
+            //初始化Application Bean
+            Application application = new Application(
+                    resolveInfo.loadIcon(getPackageManager()), //图标
+                    resolveInfo.loadLabel(getPackageManager()), //名称
+                    isSystemApp, //是否为系统应用
+                    appIntent, //启动Intent
+                    resolveInfo.activityInfo.packageName); //包名
             //如果使用按拼音排序
             if (isSortByPinyin) {
-                pinyin = PinyinUtils.getPingYin(appLabel.toString());
-                sortString = pinyin.substring(0, 1).toUpperCase();
+                String pinyin = PinyinUtils.getPingYin(appLabel);
+                String sortString = pinyin.substring(0, 1).toUpperCase();
+                //如果是字母开头
                 if (sortString.matches("[A-Za-z]")) {
                     application.setLetters(sortString.toUpperCase());
+                //否则设置Label为#
                 } else {
                     application.setLetters("#");
                 }
             }
-            if(isSimpleList) {
-                if(appLabel != getString(R.string.app_name) && isSystemApp || appLabel == getString(R.string.trd_apps)){
+            //如果启用了工具箱功能
+            if (isSimpleList) {
+                //排除自身和工具箱以及非系统应用
+                if(!appLabel.equals(getString(R.string.app_name)) && isSystemApp || appLabel.equals(getString(R.string.trd_apps))){
                     mApplicationList.add(application);
                 }
-            }else{
-                if(appLabel != getString(R.string.app_name) && appLabel != getString(R.string.trd_apps)){
+            } else {
+                //否则只排除自身和工具箱
+                if(!appLabel.equals(getString(R.string.app_name)) && !appLabel.equals(getString(R.string.trd_apps))){
                     mApplicationList.add(application);
                 }
             }
@@ -181,7 +233,6 @@ public class AppListActivity extends AppCompatActivity implements SharedPreferen
             mAppRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
             mAppRecyclerView.setAdapter(new AppAdapter(mApplicationList, 0));
         }
-
     }
 
     @SuppressLint("NonConstantResourceId")
@@ -296,7 +347,12 @@ public class AppListActivity extends AppCompatActivity implements SharedPreferen
     protected void onDestroy() {
         super.onDestroy();
         if (mPkgDelReceiver != null){
-            unregisterReceiver(mPkgDelReceiver);
+            LocalBroadcastManager.getInstance(this)
+                    .unregisterReceiver(mPkgDelReceiver);
+            LocalBroadcastManager.getInstance(this)
+                    .unregisterReceiver(HideAppReceiver);
+            mPkgDelReceiver = null;
+            HideAppReceiver = null;
         }
     }
 }

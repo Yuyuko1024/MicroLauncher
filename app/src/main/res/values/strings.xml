@@ -130,4 +130,27 @@
     <string name="carrier_china_unicom">China Unicom</string>
     <string name="carrier_cmcc">CMCC</string>
     <string name="carrier_chn_ct">China Telecom</string>
+
+    <!-- Hide App -->
+    <string name="menu_hide_app_label">Hidden Apps</string>
+    <string name="menu_hide_app_summary">
+        When turned on, you can long press an app in the app screen and choose to hide the selected app in the menu.
+        After hiding, you can open the list in the menu option below, or press the number key 5 three times on the main app list screen to open the list.
+    </string>
+    <string name="menu_clear_all_hide">Clear all apps</string>
+    <string name="clear_all_app_message">Are you sure you want to clear all the apps that have been added to the hidden list?</string>
+    <string name="hide_app_list_label">Hidden App List</string>
+    <string name="hide_app_initial_json" translatable="false">
+        {"versionCode": 37000,"totalCount": 0,"excludePackagesName": [""]}
+    </string>
+    <string name="hide_app_label">Hide this app</string>
+    <string name="hide_app_dialog_title">Hide</string>
+    <string name="hide_app_dialog_message">Hide this app will not show up in the app list and the app cannot be found through the search function. Continue?</string>
+    <string name="hide_success">Hide app success</string>
+    <string name="hide_failed">Hide app fail</string>
+    <string name="unhide_app_label">Unhidden this app</string>
+    <string name="unhide_app_dialog_title">Unhidden</string>
+    <string name="unhide_app_dialog_message">Unhidden this app will reappear in the app list. Continue?</string>
+    <string name="unhide_success">Unhidden app success</string>
+    <string name="unhide_failed">Unhidden app fail</string>
 </resources>

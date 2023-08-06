@@ -127,4 +127,24 @@
     <string name="carrier_china_unicom">中国联通</string>
     <string name="carrier_cmcc">中国移动</string>
     <string name="carrier_chn_ct">中国电信</string>
+
+    <!-- Hide App -->
+    <string name="menu_hide_app_label">隐藏 App</string>
+    <string name="menu_hide_app_summary">
+        当启用该功能时，可在应用列表长按某个应用并在弹出的菜单中选择 ”隐藏该应用“ 来隐藏。隐藏的App不会显示在应用列表内。
+        已隐藏的 App 可以在下面的选项中查看或打开，也可以在主应用界面连续短按三次数字键 5 来打开该隐藏的App界面。
+    </string>
+    <string name="menu_clear_all_hide">清空所有应用</string>
+    <string name="clear_all_app_message">你确定要清空所有已添加到隐藏列表的App吗？</string>
+    <string name="hide_app_list_label">已隐藏的 App 列表</string>
+    <string name="hide_app_label">隐藏该应用</string>
+    <string name="hide_app_dialog_title">隐藏</string>
+    <string name="hide_app_dialog_message">隐藏该应用将不会显示在应用列表内，且不可被搜索功能搜索到。是否继续？</string>
+    <string name="hide_success">应用已隐藏！</string>
+    <string name="hide_failed">应用隐藏失败！</string>
+    <string name="unhide_app_label">取消隐藏该应用</string>
+    <string name="unhide_app_dialog_title">取消隐藏</string>
+    <string name="unhide_app_dialog_message">取消隐藏该 App 将会重新显示在应用列表内。是否继续？</string>
+    <string name="unhide_success">应用已取消隐藏！</string>
+    <string name="unhide_failed">应用取消隐藏失败！</string>
 </resources>

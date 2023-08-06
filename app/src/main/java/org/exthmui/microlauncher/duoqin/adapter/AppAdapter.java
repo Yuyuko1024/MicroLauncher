@@ -1,7 +1,11 @@
 package org.exthmui.microlauncher.duoqin.adapter;
 
+import static org.exthmui.microlauncher.duoqin.utils.Constants.launcherSettingsPref;
+
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.LauncherApps;
 import android.content.pm.ShortcutInfo;
 import android.net.Uri;
@@ -20,6 +24,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -28,6 +33,7 @@ import com.google.android.material.snackbar.Snackbar;
 
 import org.exthmui.microlauncher.duoqin.R;
 import org.exthmui.microlauncher.duoqin.utils.Application;
+import org.exthmui.microlauncher.duoqin.utils.Constants;
 import org.exthmui.microlauncher.duoqin.utils.LauncherUtils;
 
 import java.util.List;
@@ -166,14 +172,21 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ApplicationViewH
             menu.add(0, 1, Menu.NONE,  R.string.app_menu_uninstall);
             menu.add(0, 2, Menu.NONE,  R.string.app_menu_info);
             menu.add(0, 3, Menu.NONE,  R.string.shortcuts_title);
-            MenuItem item1 = menu.findItem(0);
-            MenuItem item2 = menu.findItem(1);
-            MenuItem item3 = menu.findItem(2);
-            MenuItem item4 = menu.findItem(3);
-            item1.setOnMenuItemClickListener(this);
-            item2.setOnMenuItemClickListener(this);
-            item3.setOnMenuItemClickListener(this);
-            item4.setOnMenuItemClickListener(this);
+            for (int i = 0; i < menu.size(); i++) {
+                MenuItem item = menu.getItem(i);
+                item.setOnMenuItemClickListener(this);
+            }
+            if (isHideAppOn(mItemView.getContext())){
+                menu.add(0,4, Menu.NONE, R.string.hide_app_label);
+                MenuItem item5 = menu.findItem(4);
+                item5.setOnMenuItemClickListener(this);
+            }
+        }
+
+        public boolean isHideAppOn(Context context) {
+            SharedPreferences sharedPreferences =
+                    context.getSharedPreferences(launcherSettingsPref, Context.MODE_PRIVATE);
+            return sharedPreferences.getBoolean("hide_app", false);
         }
 
         @Override
@@ -215,6 +228,10 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ApplicationViewH
                         Toasty.error(mItemView.getContext(), R.string.not_default_launcher_shortcut_msg, Toasty.LENGTH_SHORT).show();
                     }
                     break;
+                case 4:
+                    LauncherUtils.showExcludeAppDialog(mItemView.getContext(),
+                            (String) application.getAppLabel(), application.getPkgName(), true);
+                    break;
             }
             return false;
         }
@@ -224,7 +241,7 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ApplicationViewH
      * 显示快捷方式列表对话框
      * @param list 快捷方式列表
      */
-    private static void showShortcutsDialog(List<ShortcutInfo> list) {
+    public static void showShortcutsDialog(List<ShortcutInfo> list) {
         RecyclerView recyclerView = new RecyclerView(mItemView.getContext());
         recyclerView.setLayoutManager(new LinearLayoutManager(mItemView.getContext()));
         recyclerView.setAdapter(new ShortcutsListAdapter(list));
@@ -239,7 +256,7 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ApplicationViewH
      * @param pkgName 指定软件包PackageName
      * @return List<ShortcutInfo> ShortcutInfo列表 或者为 null
      */
-    private static List<ShortcutInfo> getAppsShortcutsList(String pkgName) {
+    public static List<ShortcutInfo> getAppsShortcutsList(String pkgName) {
         LauncherApps launcherApps = (LauncherApps) mItemView.getContext().getSystemService(Context.LAUNCHER_APPS_SERVICE);
         LauncherApps.ShortcutQuery query = new LauncherApps.ShortcutQuery();
         query.setQueryFlags(LauncherApps.ShortcutQuery.FLAG_MATCH_DYNAMIC |

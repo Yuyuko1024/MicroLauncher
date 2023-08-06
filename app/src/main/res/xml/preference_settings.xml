@@ -72,7 +72,17 @@
             android:key="switch_preference_app_list_func"
             android:title="@string/preference_app_list_func"
             android:summary="@string/preference_app_list_func_category"/>
-
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="hide_app"
+            android:title="@string/menu_hide_app_label"
+            android:summary="@string/menu_hide_app_summary"/>
+        <Preference
+            android:key="hide_app_list"
+            android:title="@string/hide_app_list_label">
+            <intent android:targetPackage="org.exthmui.microlauncher.duoqin"
+                android:targetClass="org.exthmui.microlauncher.duoqin.activity.AppHideListActivity"/>
+        </Preference>
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/preference_func_category"
         android:key="preference_func">

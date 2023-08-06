@@ -131,6 +131,15 @@
             android:label="@string/privacy_policy_title"
             android:excludeFromRecents="true"
             android:clearTaskOnLaunch="true"/>
+        <activity android:name=".activity.AppHideListActivity"
+            android:exported="true"
+            android:label="@string/hide_app_list_label"
+            android:excludeFromRecents="true">
+            <intent-filter>
+                <action android:name="org.exthmui.microlauncher.duoqin.action.HIDE_APP_LIST"/>
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

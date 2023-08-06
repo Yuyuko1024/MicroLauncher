@@ -83,6 +83,7 @@ public class SettingsActivity extends AppCompatActivity
             case "switch_preference_lunar":
             case "switch_preference_carrier_name":
             case "switch_preference_app_list_func":
+            case "hide_app":
                 binding.settingsBack.setText(getText(R.string.status_reload_launcher));
                 reload_flag=true;
                 break;

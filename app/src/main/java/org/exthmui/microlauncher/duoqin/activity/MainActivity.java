@@ -1,5 +1,7 @@
 package org.exthmui.microlauncher.duoqin.activity;
 
+import static org.exthmui.microlauncher.duoqin.utils.Constants.launcherSettingsPref;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -35,6 +37,7 @@ import org.exthmui.microlauncher.duoqin.R;
 import org.exthmui.microlauncher.duoqin.databinding.ActivityMainBinding;
 import org.exthmui.microlauncher.duoqin.utils.BuglyUtils;
 import org.exthmui.microlauncher.duoqin.utils.Constants;
+import org.exthmui.microlauncher.duoqin.utils.LauncherUtils;
 import org.exthmui.microlauncher.duoqin.widgets.CallSmsCounter;
 import org.exthmui.microlauncher.duoqin.widgets.CarrierTextView;
 import org.exthmui.microlauncher.duoqin.widgets.ClockViewManager;
@@ -159,7 +162,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     }
 
     private void loadSettings(){
-        SharedPreferences sharedPreferences = getSharedPreferences(getPackageName()+"_preferences",Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences(launcherSettingsPref,Context.MODE_PRIVATE);
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
         boolean lunar_isEnable= (sharedPreferences.getBoolean("switch_preference_lunar",true));
         if(lunar_isEnable){
@@ -228,7 +231,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
     private void checkDevice(){
         Log.d(TAG, "checkDevice: "+Build.BOARD);
-        if(!Constants.DeviceList.contains(Build.BOARD)){
+        if(!LauncherUtils.isQinDevice()){
             Toasty.info(this,R.string.not_qin_device,Toasty.LENGTH_SHORT).show();
         }
     }

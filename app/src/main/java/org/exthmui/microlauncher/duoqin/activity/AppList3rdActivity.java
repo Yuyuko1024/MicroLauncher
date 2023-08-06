@@ -1,5 +1,7 @@
 package org.exthmui.microlauncher.duoqin.activity;
 
+import static org.exthmui.microlauncher.duoqin.utils.Constants.launcherSettingsPref;
+
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -26,15 +28,17 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import org.exthmui.microlauncher.duoqin.R;
 import org.exthmui.microlauncher.duoqin.adapter.AppAdapter;
 import org.exthmui.microlauncher.duoqin.utils.Application;
+import org.exthmui.microlauncher.duoqin.utils.Constants;
+import org.exthmui.microlauncher.duoqin.utils.LauncherUtils;
 import org.exthmui.microlauncher.duoqin.utils.PinyinComparator;
 import org.exthmui.microlauncher.duoqin.utils.PinyinUtils;
 import org.exthmui.microlauncher.duoqin.widgets.AppRecyclerView;
@@ -47,11 +51,13 @@ import es.dmoral.toasty.Toasty;
 public class AppList3rdActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener{
     private final static String TAG = "AppListActivity";
     private PkgDelReceiver mPkgDelReceiver;
+    private HideAppReceiver HideAppReceiver;
     private PinyinComparator mComparator;
     private TextView menu,back;
     private String app_list_style;
     private String pwdCustom;
     private boolean isSimpleList,isEnablePwd,pwdUseKeyguard;
+    private List<String> excludePackagesList;
     private boolean isSortByPinyin = false;
     private SharedPreferences sharedPreferences;
 
@@ -63,7 +69,7 @@ public class AppList3rdActivity extends AppCompatActivity implements SharedPrefe
         back=findViewById(R.id.app_back);
         back.setOnClickListener(new funClick());
         menu.setOnClickListener(new funClick());
-        sharedPreferences = getSharedPreferences(getPackageName()+"_preferences",Context.MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(launcherSettingsPref,Context.MODE_PRIVATE);
         loadSettings(sharedPreferences);
         if (isEnablePwd) {
             if (pwdUseKeyguard){
@@ -130,6 +136,7 @@ public class AppList3rdActivity extends AppCompatActivity implements SharedPrefe
         pwdUseKeyguard=sp.getBoolean("toolbox_password_use_keyguard",true);
         pwdCustom=sp.getString("toolbox_password_use_custom","");
         isSortByPinyin=sp.getBoolean("switch_preference_app_list_sort",false);
+        excludePackagesList = LauncherUtils.getExcludePackagesName(this);
     }
 
     @Override
@@ -142,9 +149,24 @@ public class AppList3rdActivity extends AppCompatActivity implements SharedPrefe
         intentFilter.addAction("android.intent.action.PACKAGE_ADDED");
         intentFilter.addAction("android.intent.action.PACKAGE_REMOVED");
         intentFilter.addDataScheme("package");
-        if (mPkgDelReceiver == null) {
+        if (mPkgDelReceiver == null && HideAppReceiver == null) {
             mPkgDelReceiver = new PkgDelReceiver();
-            registerReceiver(mPkgDelReceiver, intentFilter);
+            HideAppReceiver = new HideAppReceiver();
+            LocalBroadcastManager.getInstance(this).
+                    registerReceiver(mPkgDelReceiver, intentFilter);
+            LocalBroadcastManager.getInstance(this)
+                    .registerReceiver(HideAppReceiver,
+                            new IntentFilter(Constants.HIDE_APP_ACTION));
+        }
+    }
+
+    class HideAppReceiver extends BroadcastReceiver{
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.i(TAG, "Receive hide app list refresh broadcast");
+            excludePackagesList = LauncherUtils.getExcludePackagesName(AppList3rdActivity.this);
+            Toasty.info(context,R.string.refreshing_pkg_list,Toasty.LENGTH_SHORT).show();
+            loadApp();
         }
     }
 
@@ -152,7 +174,7 @@ public class AppList3rdActivity extends AppCompatActivity implements SharedPrefe
         @Override
         public void onReceive(Context context, Intent intent) {
             Log.e(TAG,"detect package change...");
-            Toasty.info(context,R.string.refreshing_pkg_list,Toasty.LENGTH_LONG).show();
+            Toasty.info(context,R.string.refreshing_pkg_list,Toasty.LENGTH_SHORT).show();
             loadApp();
         }
     }
@@ -169,7 +191,7 @@ public class AppList3rdActivity extends AppCompatActivity implements SharedPrefe
     }
 
     private void loadApp() {
-        PackageManager packageManager = getPackageManager();
+        /*PackageManager packageManager = getPackageManager();
         mComparator = new PinyinComparator();
         Application application;
         Intent appIntent;
@@ -217,6 +239,56 @@ public class AppList3rdActivity extends AppCompatActivity implements SharedPrefe
             //      设置适配器
             mAppRecyclerView.setAdapter(new AppAdapter(mApplicationList, 1));
         }else{
+            mAppRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+            mAppRecyclerView.setAdapter(new AppAdapter(mApplicationList, 0));
+        }*/
+        List<Application> mApplicationList = new ArrayList<>();
+        mComparator = new PinyinComparator();
+        //设置启动Intent
+        Intent intent = new Intent().setAction(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER);
+        for (ResolveInfo resolveInfo : getPackageManager().queryIntentActivities(intent, 0)) {
+            String appLabel = resolveInfo.loadLabel(getPackageManager()).toString();
+            String packageName = resolveInfo.activityInfo.packageName;
+            boolean isSystemApp = (resolveInfo.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 1;
+            Intent appIntent = new Intent().setClassName(packageName, resolveInfo.activityInfo.name);
+            //如果应用的包名在排除列表内
+            if (excludePackagesList != null && excludePackagesList.contains(packageName)) {
+                continue;
+            }
+            //初始化Application Bean
+            Application application = new Application(
+                    resolveInfo.loadIcon(getPackageManager()), //图标
+                    resolveInfo.loadLabel(getPackageManager()), //名称
+                    isSystemApp, //是否为系统应用
+                    appIntent, //启动Intent
+                    resolveInfo.activityInfo.packageName); //包名
+            //如果使用按拼音排序
+            if (isSortByPinyin) {
+                String pinyin = PinyinUtils.getPingYin(appLabel);
+                String sortString = pinyin.substring(0, 1).toUpperCase();
+                //如果是字母开头
+                if (sortString.matches("[A-Za-z]")) {
+                    application.setLetters(sortString.toUpperCase());
+                    //否则设置Label为#
+                } else {
+                    application.setLetters("#");
+                }
+            }
+            if(!appLabel.equals(getString(R.string.trd_apps)) && !appLabel.equals(getString(R.string.app_name)) && !isSystemApp){ mApplicationList.add(application);}
+        }
+        //如果使用按拼音排序
+        if (isSortByPinyin) {
+            mApplicationList.sort(mComparator);
+        }
+        AppRecyclerView mAppRecyclerView = findViewById(R.id.app_list);
+        //如果是网格布局
+        if(app_list_style.equals("grid")){
+            //      设置布局管理器
+            mAppRecyclerView.setLayoutManager(new GridLayoutManager(this,3));
+            //      设置适配器
+            mAppRecyclerView.setAdapter(new AppAdapter(mApplicationList, 1));
+        }else{
+            //列表布局
             mAppRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
             mAppRecyclerView.setAdapter(new AppAdapter(mApplicationList, 0));
         }
@@ -333,6 +405,13 @@ public class AppList3rdActivity extends AppCompatActivity implements SharedPrefe
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mPkgDelReceiver != null) unregisterReceiver(mPkgDelReceiver);
+        if (mPkgDelReceiver != null) {
+            LocalBroadcastManager.getInstance(this)
+                    .unregisterReceiver(mPkgDelReceiver);
+            LocalBroadcastManager.getInstance(this)
+                    .unregisterReceiver(HideAppReceiver);
+            mPkgDelReceiver = null;
+            HideAppReceiver = null;
+        }
     }
 }

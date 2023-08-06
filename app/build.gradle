@@ -74,6 +74,7 @@ dependencies {
     implementation 'io.github.medyo:android-about-page:2.0.0'
     implementation 'de.psdev.licensesdialog:licensesdialog:2.1.0'
     implementation 'com.belerweb:pinyin4j:2.5.0'
+    implementation 'com.google.code.gson:gson:2.8.9'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
