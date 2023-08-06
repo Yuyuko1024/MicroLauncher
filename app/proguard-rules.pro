@@ -49,3 +49,7 @@
 
 -dontwarn com.tencent.bugly.**
 -keep public class com.tencent.bugly.**{*;}
+
+# dont mix the data bean
+-keep class org.exthmui.microlauncher.duoqin.bean.** {*;}
+-dontwarn org.exthmui.microlauncher.duoqin.bean.**
