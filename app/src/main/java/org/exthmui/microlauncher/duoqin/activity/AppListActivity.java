@@ -148,9 +148,10 @@ public class AppListActivity extends AppCompatActivity implements SharedPreferen
             if (mHits[0] >= (SystemClock.uptimeMillis() - DELAY_TIMER_MILLIS)) {
                 final Intent intent = new Intent(Intent.ACTION_VIEW).setAction("org.exthmui.microlauncher.duoqin.action.HIDE_APP_LIST");
                 startActivity(intent);
+                return true;
             }
         }
-        return true;
+        return super.onKeyDown(keyCode, event);
     }
 
     private void arrayCopy() {
