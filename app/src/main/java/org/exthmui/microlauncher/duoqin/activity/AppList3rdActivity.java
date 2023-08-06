@@ -191,57 +191,6 @@ public class AppList3rdActivity extends AppCompatActivity implements SharedPrefe
     }
 
     private void loadApp() {
-        /*PackageManager packageManager = getPackageManager();
-        mComparator = new PinyinComparator();
-        Application application;
-        Intent appIntent;
-        Intent intent = new Intent().setAction(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER);
-        ActivityInfo activityInfo;
-        ApplicationInfo applicationInfo;
-        String pkgName;
-        Drawable appIcon;
-        CharSequence appLabel;
-        boolean isSystemApp;
-        String pinyin;
-        String sortString;
-        List<Application> mApplicationList = new ArrayList<>();
-        List<ResolveInfo> resolveInfos = packageManager.queryIntentActivities(intent, 0);
-        for (ResolveInfo resolveInfo : resolveInfos) {
-            activityInfo = resolveInfo.activityInfo;
-            applicationInfo = activityInfo.applicationInfo;
-            appIcon = activityInfo.loadIcon(packageManager);
-            appLabel = activityInfo.loadLabel(packageManager);
-            isSystemApp = (applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 1;
-            appIntent = new Intent().setClassName(activityInfo.packageName, activityInfo.name);
-            pkgName = activityInfo.packageName;
-            application = new Application(appIcon, appLabel, isSystemApp, appIntent, pkgName);
-            //如果使用按拼音排序
-            if (isSortByPinyin) {
-                pinyin = PinyinUtils.getPingYin(appLabel.toString());
-                sortString = pinyin.substring(0, 1).toUpperCase();
-                if (sortString.matches("[A-Za-z]")) {
-                    application.setLetters(sortString.toUpperCase());
-                } else {
-                    application.setLetters("#");
-                }
-            }
-            if(appLabel!=getString(R.string.trd_apps) && appLabel!=getString(R.string.app_name) && !isSystemApp){ mApplicationList.add(application);}
-        }
-        //如果使用按拼音排序
-        if (isSortByPinyin) {
-            mApplicationList.sort(mComparator);
-        }
-        AppRecyclerView mAppRecyclerView = findViewById(R.id.app_list);
-        //如果是网格布局
-        if(app_list_style.equals("grid")){
-            //      设置布局管理器
-            mAppRecyclerView.setLayoutManager(new GridLayoutManager(this,3));
-            //      设置适配器
-            mAppRecyclerView.setAdapter(new AppAdapter(mApplicationList, 1));
-        }else{
-            mAppRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-            mAppRecyclerView.setAdapter(new AppAdapter(mApplicationList, 0));
-        }*/
         List<Application> mApplicationList = new ArrayList<>();
         mComparator = new PinyinComparator();
         //设置启动Intent
