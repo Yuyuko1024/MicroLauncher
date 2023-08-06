@@ -28,7 +28,7 @@
             android:key="list_preference_clock_locate"
             android:title="@string/clock_locate_title" />
         <ListPreference
-            android:defaultValue="56"
+            android:defaultValue="44"
             android:entries="@array/clock_size_entries"
             android:entryValues="@array/clock_size_entries"
             android:key="list_preference_clock_size"
