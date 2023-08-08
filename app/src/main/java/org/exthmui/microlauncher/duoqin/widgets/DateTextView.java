@@ -21,6 +21,7 @@ public class DateTextView extends TextView {
 
     private String mDateFormat;
     private BroadcastReceiver receiver;
+    private IntentFilter filter;
 
     public DateTextView(Context context) {
         super(context);
@@ -66,7 +67,7 @@ public class DateTextView extends TextView {
     }
 
     private void registerReceiver() {
-        IntentFilter filter = new IntentFilter();
+        filter = new IntentFilter();
         filter.addAction(Intent.ACTION_TIME_TICK);
         filter.addAction(Intent.ACTION_TIME_CHANGED);
         filter.addAction(Intent.ACTION_TIMEZONE_CHANGED);
@@ -84,6 +85,25 @@ public class DateTextView extends TextView {
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        if (receiver != null) getContext().unregisterReceiver(receiver);
+        if (receiver != null) {
+            getContext().unregisterReceiver(receiver);
+            receiver = null;
+        }
+    }
+
+    @Override
+    public void dispatchWindowVisibilityChanged(int visibility) {
+        super.dispatchWindowVisibilityChanged(visibility);
+        if (visibility == VISIBLE) {
+            updateText();
+            if (receiver == null){
+                getContext().registerReceiver(receiver, filter);
+            }
+        } else if (visibility == GONE || visibility == INVISIBLE) {
+            if (receiver != null){
+                getContext().unregisterReceiver(receiver);
+                receiver = null;
+            }
+        }
     }
 }

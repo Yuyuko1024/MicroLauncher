@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.SystemClock;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
@@ -116,7 +115,6 @@ public class AboutActivity extends AppCompatActivity implements SharedPreference
         int id = item.getItemId();
         // When the home button is pressed, take the user back to the MainActivity
         if (id == android.R.id.home) {
-            //NavUtils.navigateUpFromSameTask(this);
             finish();
         }
         return super.onOptionsItemSelected(item);
@@ -125,15 +123,11 @@ public class AboutActivity extends AppCompatActivity implements SharedPreference
     private void loadSettings(){
         SharedPreferences sharedPreferences = getSharedPreferences(getPackageName()+"_preferences",Context.MODE_PRIVATE);
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
-        boolean lock_isEnabled = (sharedPreferences.getBoolean("preference_main_lockscreen",true));
-        lock_enable= lock_isEnabled;
+        lock_enable = sharedPreferences.getBoolean("preference_main_lockscreen",true);
     }
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if(key.equals("preference_main_lockscreen")){
-            boolean lock_isEnabled = (sharedPreferences.getBoolean("preference_main_lockscreen",true));
-            lock_enable= lock_isEnabled;
-        }
+        lock_enable = sharedPreferences.getBoolean("preference_main_lockscreen",true);
     }
 }

@@ -47,6 +47,9 @@ import org.exthmui.microlauncher.duoqin.widgets.LunarDateTextView;
 import java.lang.reflect.Method;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import es.dmoral.toasty.Toasty;
 import pub.devrel.easypermissions.AfterPermissionGranted;
@@ -215,11 +218,12 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     private void setClockLocate(String clockLocate) {
         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mainBinding.clock.textClock.getLayoutParams();
         switch (clockLocate){
-            case "left":
-                params.gravity = Gravity.START;
-                break;
             case "right":
                 params.gravity = Gravity.END;
+                break;
+            case "left":
+            default:
+                params.gravity = Gravity.START;
                 break;
         }
         mainBinding.clock.textClock.setLayoutParams(params);
@@ -304,8 +308,8 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                 i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(i);
             } else if (v.getId() == R.id.menu) {
-                Intent menu_it = new Intent(MainActivity.this, AppListActivity.class);
-                startActivity(menu_it);
+                Intent menuIt = new Intent(MainActivity.this, AppListActivity.class);
+                startActivity(menuIt);
             }
         }
     }
@@ -313,13 +317,14 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        finish();
         unregisterObserver();
+        finish();
     }
 
     @Override
     protected void onUserLeaveHint() {
         super.onUserLeaveHint();
+        unregisterObserver();
         // TODO: 实现其他用户离开Activity焦点功能
     }
 
@@ -382,14 +387,11 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                 return true;
            } else if (keyCode == KeyEvent.KEYCODE_MENU ){
                Snackbar.make(mainBinding.getRoot(),R.string.loading,Snackbar.LENGTH_SHORT).show();
-               Timer timer = new Timer();
-               timer.schedule(new TimerTask() {
-                   @Override
-                   public void run() {
-                       Intent menu_it = new Intent(MainActivity.this, AppListActivity.class);
-                       startActivity(menu_it);
-                   }
-               },500); // 延时0.5秒，不加延时的话应用列表的菜单误触我很难顶啊QAQ
+               new Handler(Looper.myLooper()).postDelayed(() -> {
+                   Intent menuIt = new Intent(MainActivity.this, AppListActivity.class);
+                   startActivity(menuIt);
+               },500);
+               // 延时0.5秒，不加延时的话应用列表的菜单误触我很难顶啊QAQ
                return true;
            } else if (keyCode == KeyEvent.KEYCODE_BACK) {
                if (event.getAction() == KeyEvent.ACTION_DOWN) {
@@ -450,10 +452,10 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
            } else if(keyCode == KeyEvent.KEYCODE_STAR){
                 if(xiaoai_enable){
                     try{
-                        Intent ai_intent = new Intent();
-                        ai_intent.setClassName("com.duoqin.ai","com.duoqin.ai.MainActivity");
-                        ai_intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(ai_intent);
+                        Intent aiIntent = new Intent();
+                        aiIntent.setClassName("com.duoqin.ai","com.duoqin.ai.MainActivity");
+                        aiIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(aiIntent);
                     }catch (Exception e){
                         e.printStackTrace();
                         Toasty.error(getApplicationContext(),R.string.err_pkg_not_found,Toasty.LENGTH_LONG).show();
@@ -469,7 +471,8 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             manager = (CameraManager) getApplicationContext().getSystemService(Context.CAMERA_SERVICE);
             if(torch){
                 try {
-                    manager.setTorchMode("0", true);// "0"是主闪光灯
+                    manager.setTorchMode("0", true);
+                    // "0"是主闪光灯
                 } catch (CameraAccessException e) {
                     e.printStackTrace();
                 }
@@ -488,9 +491,10 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         }
     }
 
-    /*
-    * 下拉通知栏
-    */
+    /**
+     * 通过反射调用系统方法打开通知栏
+     * @param mContext
+     */
     private static void doInStatusBar(Context mContext) {
         try {
             @SuppressLint("WrongConstant") Object service = mContext.getSystemService("statusbar");

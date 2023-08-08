@@ -6,6 +6,9 @@ import android.content.SharedPreferences;
 
 import org.exthmui.microlauncher.duoqin.utils.BuglyUtils;
 
+/**
+ * @author Maribel
+ */
 public class MainApplication extends Application {
 
     @Override

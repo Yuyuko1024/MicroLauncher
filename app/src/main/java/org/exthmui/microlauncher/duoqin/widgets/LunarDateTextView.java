@@ -18,6 +18,7 @@ import java.util.Calendar;
 public class LunarDateTextView extends TextView {
 
     private BroadcastReceiver receiver;
+    private IntentFilter filter;
 
     public LunarDateTextView(Context context) {
         super(context);
@@ -61,7 +62,7 @@ public class LunarDateTextView extends TextView {
     }
 
     private void registerReceiver() {
-        IntentFilter filter = new IntentFilter();
+        filter = new IntentFilter();
         filter.addAction(Intent.ACTION_TIME_TICK);
         filter.addAction(Intent.ACTION_TIME_CHANGED);
         filter.addAction(Intent.ACTION_TIMEZONE_CHANGED);
@@ -81,6 +82,23 @@ public class LunarDateTextView extends TextView {
         super.onDetachedFromWindow();
         if (receiver != null) {
             getContext().unregisterReceiver(receiver);
+            receiver = null;
+        }
+    }
+
+    @Override
+    public void dispatchWindowVisibilityChanged(int visibility) {
+        super.dispatchWindowVisibilityChanged(visibility);
+        if (visibility == VISIBLE) {
+            updateText(getContext());
+            if (receiver == null){
+                getContext().registerReceiver(receiver, filter);
+            }
+        } else if (visibility == GONE || visibility == INVISIBLE) {
+            if (receiver != null){
+                getContext().unregisterReceiver(receiver);
+                receiver = null;
+            }
         }
     }
 

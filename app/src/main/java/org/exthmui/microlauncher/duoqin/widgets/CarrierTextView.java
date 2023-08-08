@@ -17,6 +17,7 @@ import org.exthmui.microlauncher.duoqin.R;
 public class CarrierTextView extends TextView {
 
     public final static String ACTION_SIM_STATE_CHANGED = "android.intent.action.SIM_STATE_CHANGED";
+    private TelephonyManager tm;
 
     public CarrierTextView(Context context) {
         super(context);
@@ -34,6 +35,7 @@ public class CarrierTextView extends TextView {
     }
 
     private void init(Context context){
+        tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
         updateText(context);
         registerSimReceiver(context);
     }
@@ -70,7 +72,7 @@ public class CarrierTextView extends TextView {
         }
         setText(carrierText);
         setTextColor(Color.WHITE);
-        setTextSize(14);
+        setTextSize(16);
     }
 
     private void registerSimReceiver(Context context) {
@@ -82,7 +84,6 @@ public class CarrierTextView extends TextView {
     private BroadcastReceiver simStateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
             if (tm.getSimState() == TelephonyManager.SIM_STATE_READY) {
                 updateText(context);
             } else {
@@ -111,6 +112,9 @@ public class CarrierTextView extends TextView {
             case "46005":
             case "46011":
                 carrierName = context.getString(R.string.carrier_chn_ct);
+                break;
+            default:
+                // 什么都不做
                 break;
         }
         return carrierName;

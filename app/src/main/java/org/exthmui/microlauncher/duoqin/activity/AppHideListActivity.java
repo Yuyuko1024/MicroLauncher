@@ -47,10 +47,9 @@ public class AppHideListActivity extends AppCompatActivity
 
     private AppHideListViewBinding binding;
     private PkgDelReceiver mPkgDelReceiver;
-    private HideAppReceiver HideAppReceiver;
-    private SharedPreferences sharedPreferences;
+    private HideAppReceiver hideAppReceiver;
     private List<String> excludePackagesList;
-    private boolean reload_flag = false;
+    private boolean reloadFlag = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -63,7 +62,6 @@ public class AppHideListActivity extends AppCompatActivity
         }
         binding.menuBack.setOnClickListener(new funFunc());
         binding.menuExcludeMenu.setOnClickListener(new funFunc());
-        sharedPreferences = getSharedPreferences(launcherSettingsPref, MODE_PRIVATE);
         loadSettings();
         receiveSyscast();
         loadApp();
@@ -112,13 +110,13 @@ public class AppHideListActivity extends AppCompatActivity
         intentFilter.addAction("android.intent.action.PACKAGE_ADDED");
         intentFilter.addAction("android.intent.action.PACKAGE_REMOVED");
         intentFilter.addDataScheme("package");
-        if (mPkgDelReceiver == null && HideAppReceiver == null) {
+        if (mPkgDelReceiver == null && hideAppReceiver == null) {
             mPkgDelReceiver = new PkgDelReceiver();
-            HideAppReceiver = new HideAppReceiver();
+            hideAppReceiver = new HideAppReceiver();
             LocalBroadcastManager.getInstance(this)
                     .registerReceiver(mPkgDelReceiver, intentFilter);
             LocalBroadcastManager.getInstance(this)
-                    .registerReceiver(HideAppReceiver,
+                    .registerReceiver(hideAppReceiver,
                             new IntentFilter(Constants.HIDE_APP_ACTION));
         }
     }
@@ -146,7 +144,7 @@ public class AppHideListActivity extends AppCompatActivity
         @Override
         public void onClick(View v) {
             if(v == binding.menuBack) {
-                rebootLauncher(reload_flag);
+                rebootLauncher(reloadFlag);
                 finish();
             }else if(v == binding.menuExcludeMenu){
                 showMenu(v);
@@ -177,8 +175,7 @@ public class AppHideListActivity extends AppCompatActivity
         int id = item.getItemId();
         // When the home button is pressed, take the user back to the MainActivity
         if (id == android.R.id.home) {
-            //NavUtils.navigateUpFromSameTask(this);
-            rebootLauncher(reload_flag);
+            rebootLauncher(reloadFlag);
             finish();
         } else if (id == R.id.clear_all_app) {
             LauncherUtils.showClearAllExcludeDialog(this);
@@ -195,11 +192,11 @@ public class AppHideListActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mPkgDelReceiver != null && HideAppReceiver != null) {
+        if (mPkgDelReceiver != null && hideAppReceiver != null) {
             LocalBroadcastManager.getInstance(this).unregisterReceiver(mPkgDelReceiver);
-            LocalBroadcastManager.getInstance(this).unregisterReceiver(HideAppReceiver);
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(hideAppReceiver);
             mPkgDelReceiver = null;
-            HideAppReceiver = null;
+            hideAppReceiver = null;
         }
     }
 }
