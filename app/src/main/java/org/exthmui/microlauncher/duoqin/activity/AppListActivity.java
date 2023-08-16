@@ -120,8 +120,7 @@ public class AppListActivity extends AppCompatActivity
         if (mPkgDelReceiver == null && HideAppReceiver == null) {
             mPkgDelReceiver = new PkgDelReceiver();
             HideAppReceiver = new HideAppReceiver();
-            LocalBroadcastManager.getInstance(this).
-                    registerReceiver(mPkgDelReceiver, intentFilter);
+            getApplicationContext().registerReceiver(mPkgDelReceiver, intentFilter);
             LocalBroadcastManager.getInstance(this)
                     .registerReceiver(HideAppReceiver,
                             new IntentFilter(Constants.HIDE_APP_ACTION));
@@ -360,8 +359,7 @@ public class AppListActivity extends AppCompatActivity
     protected void onDestroy() {
         super.onDestroy();
         if (mPkgDelReceiver != null){
-            LocalBroadcastManager.getInstance(this)
-                    .unregisterReceiver(mPkgDelReceiver);
+            getApplicationContext().unregisterReceiver(mPkgDelReceiver);
             LocalBroadcastManager.getInstance(this)
                     .unregisterReceiver(HideAppReceiver);
             mPkgDelReceiver = null;
