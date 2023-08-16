@@ -16,10 +16,6 @@
         </menu>
     </item>
     <item
-        android:id="@+id/menu_app_manage"
-        android:title="@string/app_menu_manage"
-        app:showAsAction="never" />
-    <item
         android:id="@+id/menu_volume_changer"
         android:title="@string/menu_volume_dash"
         app:showAsAction="never"/>

@@ -267,13 +267,6 @@ public class AppListActivity extends AppCompatActivity
         popupMenu.getMenuInflater().inflate(R.menu.app_option,popupMenu.getMenu());
         popupMenu.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()){
-                case R.id.menu_app_manage:
-                    Intent i = new Intent();
-                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    i.setClassName("com.android.settings",
-                            "com.android.settings.applications.ManageApplications");
-                    startActivity(i);
-                    break;
                 case R.id.menu_about_phone:
                     Log.e("Device Info","Device SDK="+Build.VERSION.SDK_INT);
                     if (Build.VERSION.SDK_INT >= 28){
@@ -326,12 +319,6 @@ public class AppListActivity extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
-            case R.id.menu_app_manage:
-                Intent i = new Intent();
-                i.setClassName("com.android.settings",
-                        "com.android.settings.applications.ManageApplications");
-                startActivity(i);
-                break;
             case R.id.menu_about_phone:
                 if (Build.VERSION.SDK_INT >= 28){
                     Log.e("Device Info","Device SDK="+Build.VERSION.SDK_INT);
