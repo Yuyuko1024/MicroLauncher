@@ -34,6 +34,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
+import org.exthmui.microlauncher.duoqin.BuildConfig;
 import org.exthmui.microlauncher.duoqin.R;
 import org.exthmui.microlauncher.duoqin.adapter.AppAdapter;
 import org.exthmui.microlauncher.duoqin.utils.Application;
@@ -41,6 +42,7 @@ import org.exthmui.microlauncher.duoqin.utils.Constants;
 import org.exthmui.microlauncher.duoqin.utils.LauncherUtils;
 import org.exthmui.microlauncher.duoqin.utils.PinyinComparator;
 import org.exthmui.microlauncher.duoqin.utils.PinyinUtils;
+import org.exthmui.microlauncher.duoqin.utils.TextSpeech;
 import org.exthmui.microlauncher.duoqin.widgets.AppRecyclerView;
 
 import java.util.ArrayList;
@@ -48,7 +50,8 @@ import java.util.List;
 
 import es.dmoral.toasty.Toasty;
 
-public class AppList3rdActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener{
+public class AppList3rdActivity extends AppCompatActivity
+        implements SharedPreferences.OnSharedPreferenceChangeListener, AppAdapter.OnItemSelectCallback {
     private final static String TAG = "AppListActivity";
     private PkgDelReceiver mPkgDelReceiver;
     private HideAppReceiver HideAppReceiver;
@@ -59,6 +62,7 @@ public class AppList3rdActivity extends AppCompatActivity implements SharedPrefe
     private boolean isSimpleList,isEnablePwd,pwdUseKeyguard;
     private List<String> excludePackagesList;
     private boolean isSortByPinyin = false;
+    private boolean isTTSEnable;
     private SharedPreferences sharedPreferences;
 
     @Override
@@ -69,6 +73,7 @@ public class AppList3rdActivity extends AppCompatActivity implements SharedPrefe
         back=findViewById(R.id.app_back);
         back.setOnClickListener(new funClick());
         menu.setOnClickListener(new funClick());
+        TextSpeech.getInstance(this);
         sharedPreferences = getSharedPreferences(launcherSettingsPref,Context.MODE_PRIVATE);
         loadSettings(sharedPreferences);
         if (isEnablePwd) {
@@ -136,6 +141,7 @@ public class AppList3rdActivity extends AppCompatActivity implements SharedPrefe
         pwdUseKeyguard=sp.getBoolean("toolbox_password_use_keyguard",true);
         pwdCustom=sp.getString("toolbox_password_use_custom","");
         isSortByPinyin=sp.getBoolean("switch_preference_app_list_sort",false);
+        isTTSEnable = sharedPreferences.getBoolean("app_list_tts",false);
         excludePackagesList = LauncherUtils.getExcludePackagesName(this);
     }
 
@@ -157,6 +163,19 @@ public class AppList3rdActivity extends AppCompatActivity implements SharedPrefe
             LocalBroadcastManager.getInstance(this)
                     .registerReceiver(HideAppReceiver,
                             new IntentFilter(Constants.HIDE_APP_ACTION));
+        }
+    }
+
+    @Override
+    public void onItemSelect(View v, int position) {
+        Application application = ((AppAdapter) ((AppRecyclerView) v.getParent()).getAdapter()).getItem(position);
+        if (application == null) {
+            return;
+        }
+        if (isTTSEnable) {
+            String appName = application.getAppLabel().toString();
+            if (BuildConfig.DEBUG) Log.d(TAG,"TTS is enabled, reading content: " + appName);
+            TextSpeech.read(appName);
         }
     }
 
@@ -230,17 +249,21 @@ public class AppList3rdActivity extends AppCompatActivity implements SharedPrefe
             mApplicationList.sort(mComparator);
         }
         AppRecyclerView mAppRecyclerView = findViewById(R.id.app_list);
+        AppAdapter appAdapter;
         //如果是网格布局
         if(app_list_style.equals("grid")){
+            appAdapter = new AppAdapter(mApplicationList, 1);
             //      设置布局管理器
             mAppRecyclerView.setLayoutManager(new GridLayoutManager(this,3));
             //      设置适配器
-            mAppRecyclerView.setAdapter(new AppAdapter(mApplicationList, 1));
+            mAppRecyclerView.setAdapter(appAdapter);
         }else{
+            appAdapter = new AppAdapter(mApplicationList, 0);
             //列表布局
             mAppRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-            mAppRecyclerView.setAdapter(new AppAdapter(mApplicationList, 0));
+            mAppRecyclerView.setAdapter(appAdapter);
         }
+        appAdapter.setOnItemSelectCallback(this);
     }
 
     @SuppressLint("NonConstantResourceId")

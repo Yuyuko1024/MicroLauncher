@@ -48,6 +48,7 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ApplicationViewH
     private static int mPosition = -1;
 
     private OnItemCallback onItemCallBack;
+    public OnItemSelectCallback onItemSelectCallback;
 
     /**
      * @param applicationList: 类型为Application的List集
@@ -130,7 +131,7 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ApplicationViewH
         notifyDataSetChanged();
     }
 
-    public Object getItem(int position) {
+    public Application getItem(int position) {
         return mApplicationList.get(position);
     }
 
@@ -292,6 +293,9 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ApplicationViewH
             if (onItemCallBack != null){
                 onItemCallBack.onFocusChange(v,hasFocus,position);
             }
+            if (onItemSelectCallback != null && hasFocus){
+                onItemSelectCallback.onItemSelect(v,position);
+            }
         }
     }
 
@@ -312,6 +316,14 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ApplicationViewH
 
     public void setOnItemClickCallback(OnItemCallback onItemCallback){
         this.onItemCallBack = onItemCallback;
+    }
+
+    public void setOnItemSelectCallback(OnItemSelectCallback onItemSelectCallback){
+        this.onItemSelectCallback = onItemSelectCallback;
+    }
+
+    public interface OnItemSelectCallback {
+        void onItemSelect(View v, int position);
     }
 
 }

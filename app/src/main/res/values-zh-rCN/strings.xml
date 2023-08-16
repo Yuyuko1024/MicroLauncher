@@ -128,6 +128,10 @@
     <string name="carrier_cmcc">中国移动</string>
     <string name="carrier_chn_ct">中国电信</string>
 
+    <!-- TTS -->
+    <string name="tts_settings_title">语音播报</string>
+    <string name="tts_settings_summary">应用列表和主页时钟使用系统TTS播报内容，需要系统安装所支持语言的TTS引擎\n不会播报隐藏App列表的内容</string>
+
     <!-- Hide App -->
     <string name="menu_hide_app_label">隐藏 App</string>
     <string name="menu_hide_app_summary">

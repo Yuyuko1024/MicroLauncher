@@ -74,6 +74,11 @@
             android:summary="@string/preference_app_list_func_category"/>
         <SwitchPreference
             android:defaultValue="false"
+            android:key="app_list_tts"
+            android:title="@string/tts_settings_title"
+            android:summary="@string/tts_settings_summary"/>
+        <SwitchPreference
+            android:defaultValue="false"
             android:key="hide_app"
             android:title="@string/menu_hide_app_label"
             android:summary="@string/menu_hide_app_summary"/>

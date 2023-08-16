@@ -131,6 +131,10 @@
     <string name="carrier_cmcc">CMCC</string>
     <string name="carrier_chn_ct">China Telecom</string>
 
+    <!-- TTS -->
+    <string name="tts_settings_title">TTS Read</string>
+    <string name="tts_settings_summary">Application list and homepage clocks use system TTS to read content, requiring the system to install the TTS engine for the supported languages \nDoesnt broadcast whats in the hidden app list</string>
+
     <!-- Hide App -->
     <string name="menu_hide_app_label">Hidden Apps</string>
     <string name="menu_hide_app_summary">

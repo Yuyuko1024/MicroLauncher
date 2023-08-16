@@ -38,6 +38,7 @@ import org.exthmui.microlauncher.duoqin.databinding.ActivityMainBinding;
 import org.exthmui.microlauncher.duoqin.utils.BuglyUtils;
 import org.exthmui.microlauncher.duoqin.utils.Constants;
 import org.exthmui.microlauncher.duoqin.utils.LauncherUtils;
+import org.exthmui.microlauncher.duoqin.utils.TextSpeech;
 import org.exthmui.microlauncher.duoqin.widgets.CallSmsCounter;
 import org.exthmui.microlauncher.duoqin.widgets.CarrierTextView;
 import org.exthmui.microlauncher.duoqin.widgets.ClockViewManager;
@@ -62,10 +63,12 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     private boolean xiaoai_enable;
     private boolean dialpad_enable;
     private boolean callsms_counter;
+    private boolean lunar_isEnable;
     private boolean bugly_init;
     private boolean disagree_privacy;
     private boolean torch = false;
     private boolean isShortPress;
+    private boolean isTTSEnable;
     private String clock_locate;
     private CameraManager manager;
     private ContentObserver mMissedPhoneContentObserver;
@@ -94,7 +97,18 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         lunarDate = new LunarDateTextView(this);
         carrier = new CarrierTextView(this);
         clockViewManager.insertOrUpdateView(1, date);
+        TextSpeech.getInstance(this);
         loadSettings();
+        mainBinding.clock.textClock.setOnClickListener(v -> {
+            if (isTTSEnable) {
+                String readText = date.getText().toString() + ","
+                        + mainBinding.clock.textClock.getText().toString();
+                if (lunar_isEnable) {
+                    readText = readText + "," + lunarDate.getText().toString();
+                }
+                TextSpeech.read(readText);
+            }
+        });
     }
 
     private void GrantPermissions(){
@@ -167,7 +181,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     private void loadSettings(){
         SharedPreferences sharedPreferences = getSharedPreferences(launcherSettingsPref,Context.MODE_PRIVATE);
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
-        boolean lunar_isEnable= (sharedPreferences.getBoolean("switch_preference_lunar",true));
+        lunar_isEnable= (sharedPreferences.getBoolean("switch_preference_lunar",true));
         if(lunar_isEnable){
             Log.d(TAG, "Enable lunar");
             clockViewManager.insertOrUpdateView(2, lunarDate);
@@ -198,12 +212,13 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         clock_locate = (sharedPreferences.getString("list_preference_clock_locate","left"));
         setClockLocate(clock_locate);
         pound_func = (sharedPreferences.getString("preference_pound_func","volume"));
-        String clock_size = (sharedPreferences.getString("list_preference_clock_size","58"));
+        String clock_size = (sharedPreferences.getString("list_preference_clock_size","44"));
         mainBinding.clock.textClock.setTextSize(Float.parseFloat(clock_size));
         xiaoai_enable = sharedPreferences.getBoolean("preference_main_xiaoai_ai",true);
         dialpad_enable = sharedPreferences.getBoolean("preference_dial_pad",true);
         bugly_init = sharedPreferences.getBoolean("bugly_init",false);
         disagree_privacy = sharedPreferences.getBoolean("disagree",false);
+        isTTSEnable = sharedPreferences.getBoolean("app_list_tts",false);
         if(bugly_init){
             BuglyUtils.initBugly(this);
         } else {
@@ -244,7 +259,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         switch (key) {
             case "switch_preference_lunar":
-                boolean lunar_isEnable = (sharedPreferences.getBoolean("switch_preference_lunar", true));
+                lunar_isEnable = (sharedPreferences.getBoolean("switch_preference_lunar", true));
                 if (lunar_isEnable) {
                     Log.d(TAG, "Enable lunar");
                     clockViewManager.insertOrUpdateView(2, lunarDate);
@@ -294,6 +309,9 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                 break;
             case "disagree":
                 disagree_privacy = sharedPreferences.getBoolean("disagree",false);
+                break;
+            case "app_list_tts":
+                isTTSEnable = sharedPreferences.getBoolean("app_list_tts",false);
                 break;
             default:
                 break;
