@@ -295,6 +295,8 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             case "disagree":
                 disagree_privacy = sharedPreferences.getBoolean("disagree",false);
                 break;
+            default:
+                break;
         }
     }
 
@@ -354,18 +356,18 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         Log.d(TAG,"这个按键的KeyCode是 "+keyCode);
-           if(keyCode == KeyEvent.KEYCODE_DPAD_DOWN){
+        Intent it = new Intent();
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_DPAD_DOWN:
                 doInStatusBar(getApplicationContext());
                 return true;
-           } else if (keyCode == KeyEvent.KEYCODE_DPAD_UP){
-               Intent it = new Intent();
+            case KeyEvent.KEYCODE_DPAD_UP:
                 it.setClassName("com.android.settings",
                         "com.android.settings.Settings");
                 startActivity(it);
                 return true;
-           } else if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
+            case KeyEvent.KEYCODE_DPAD_LEFT:
                 try {
-                    Intent it = new Intent();
                     it.setAction("android.intent.action.MAIN");
                     it.addCategory("android.intent.category.APP_BROWSER");
                     it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -374,9 +376,8 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                     Log.d(TAG,"没有找到系统浏览器或者系统浏览器被禁用");
                 }
                 return true;
-           } else if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT){
+            case KeyEvent.KEYCODE_DPAD_RIGHT:
                 try{
-                    Intent it = new Intent();
                     it.setAction("android.intent.action.MAIN");
                     it.addCategory("android.intent.category.APP_MESSAGING");
                     it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -385,71 +386,33 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                     Log.d(TAG,"没有找到系统短信或者系统短信被禁用");
                 }
                 return true;
-           } else if (keyCode == KeyEvent.KEYCODE_MENU ){
-               Snackbar.make(mainBinding.getRoot(),R.string.loading,Snackbar.LENGTH_SHORT).show();
-               new Handler(Looper.myLooper()).postDelayed(() -> {
-                   Intent menuIt = new Intent(MainActivity.this, AppListActivity.class);
-                   startActivity(menuIt);
-               },500);
-               // 延时0.5秒，不加延时的话应用列表的菜单误触我很难顶啊QAQ
-               return true;
-           } else if (keyCode == KeyEvent.KEYCODE_BACK) {
-               if (event.getAction() == KeyEvent.ACTION_DOWN) {
-                   event.startTracking();
-                   if (event.getRepeatCount() == 0) {
-                       isShortPress = true;
-                       return true;
-                   }
-               }
-               return true;
-           }
-           //突然想起来得把音量控制面板绑定到#键上
-           else if (keyCode == KeyEvent.KEYCODE_POUND ){
-               if(pound_func.equals("volume")){
-                   Intent vol_it = new Intent(MainActivity.this, VolumeChanger.class);
-                   vol_it.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
-                   startActivity(vol_it);
-               }else{
-                   turnOnTorch();
-               }
-               return true;
-           } else if(keyCode >=7 && keyCode <= 16){
-               if(dialpad_enable){
-                   try {
-                       Intent it = new Intent("android.intent.action.DIAL", Uri.parse("tel:" + event.getNumber()));
-                       it.setClassName("com.android.dialer","com.duoqin.dialer.DialpadActivity");
-                       it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                       startActivity(it);
-                   } catch (Exception e){
-                       Log.e(TAG,"没有找到拨号盘,正在尝试AOSP方式");
-                       try {
-                           Intent it = new Intent("android.intent.action.DIAL", Uri.parse("tel:" + event.getNumber()));
-                           it.setClassName("com.android.dialer","com.android.dialer.main.impl.MainActivity");
-                           it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                           startActivity(it);
-                       } catch (Exception ex) {
-                           Toasty.error(this,"没有找到拨号盘",Toasty.LENGTH_LONG).show();
-                           Log.e(TAG,"没有找到拨号盘");
-                           e.printStackTrace();
-                       }
-                   }
-               }
-               return true;
-           } else if (keyCode == KeyEvent.KEYCODE_CALL) {
-               try {
-                   Intent it = new Intent();
-                   it.setClassName("com.android.dialer","com.duoqin.dialer.DialpadActivity");
-                   it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                   startActivity(it);
-               } catch (Exception e) {
-                   Log.e(TAG,"没有找到拨号盘,正在尝试AOSP方式");
-                   Intent it = new Intent();
-                   it.setClassName("com.android.dialer","com.android.dialer.main.impl.MainActivity");
-                   it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                   startActivity(it);
-               }
-               return true;
-           } else if(keyCode == KeyEvent.KEYCODE_STAR){
+            case KeyEvent.KEYCODE_MENU:
+                Snackbar.make(mainBinding.getRoot(),R.string.loading,Snackbar.LENGTH_SHORT).show();
+                new Handler(Looper.myLooper()).postDelayed(() -> {
+                    Intent menuIt = new Intent(MainActivity.this, AppListActivity.class);
+                    startActivity(menuIt);
+                },500);
+                // 延时0.5秒，不加延时的话应用列表的菜单误触我很难顶啊QAQ
+                return true;
+            case KeyEvent.KEYCODE_BACK:
+                if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                    event.startTracking();
+                    if (event.getRepeatCount() == 0) {
+                        isShortPress = true;
+                        return true;
+                    }
+                }
+                return true;
+            case KeyEvent.KEYCODE_POUND:
+                if(pound_func.equals("volume")){
+                    Intent vol_it = new Intent(MainActivity.this, VolumeChanger.class);
+                    vol_it.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+                    startActivity(vol_it);
+                }else{
+                    turnOnTorch();
+                }
+                return true;
+            case KeyEvent.KEYCODE_STAR:
                 if(xiaoai_enable){
                     try{
                         Intent aiIntent = new Intent();
@@ -462,7 +425,47 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                     }
                 }
                 return true;
-           }
+            case KeyEvent.KEYCODE_CALL:
+                try {
+                    it = new Intent();
+                    it.setClassName("com.android.dialer","com.duoqin.dialer.DialpadActivity");
+                    it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(it);
+                } catch (Exception e) {
+                    Log.e(TAG,"没有找到拨号盘,正在尝试AOSP方式");
+                    it = new Intent();
+                    it.setClassName("com.android.dialer","com.android.dialer.main.impl.MainActivity");
+                    it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(it);
+                }
+                return true;
+            default:
+                break;
+        }
+        // 7 到 16 的 keyCode 为数字键1到9，0的值
+        if(keyCode >= 7 && keyCode <= 16){
+            if(dialpad_enable){
+                try {
+                    it = new Intent("android.intent.action.DIAL", Uri.parse("tel:" + event.getNumber()));
+                    it.setClassName("com.android.dialer","com.duoqin.dialer.DialpadActivity");
+                    it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(it);
+                } catch (Exception e){
+                    Log.e(TAG,"没有找到拨号盘,正在尝试AOSP方式");
+                    try {
+                        it = new Intent("android.intent.action.DIAL", Uri.parse("tel:" + event.getNumber()));
+                        it.setClassName("com.android.dialer","com.android.dialer.main.impl.MainActivity");
+                        it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(it);
+                    } catch (Exception ex) {
+                        Toasty.error(this,"没有找到拨号盘",Toasty.LENGTH_LONG).show();
+                        Log.e(TAG,"没有找到拨号盘");
+                        e.printStackTrace();
+                    }
+                }
+            }
+            return true;
+        }
         return super.onKeyDown(keyCode, event);
     }
 
