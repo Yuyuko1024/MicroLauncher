@@ -46,10 +46,12 @@ public class AppHideListActivity extends AppCompatActivity
     private static final String TAG = AppHideListActivity.class.getSimpleName();
 
     private AppHideListViewBinding binding;
+    private SharedPreferences sharedPreferences;
     private PkgDelReceiver mPkgDelReceiver;
     private HideAppReceiver hideAppReceiver;
     private List<String> excludePackagesList;
     private boolean reloadFlag = false;
+    private boolean isFocusItemZoom;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -62,12 +64,15 @@ public class AppHideListActivity extends AppCompatActivity
         }
         binding.menuBack.setOnClickListener(new funFunc());
         binding.menuExcludeMenu.setOnClickListener(new funFunc());
+        sharedPreferences = getSharedPreferences(launcherSettingsPref, Context.MODE_PRIVATE);
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
         loadSettings();
         receiveSyscast();
         loadApp();
     }
 
     private void loadSettings(){
+        isFocusItemZoom = sharedPreferences.getBoolean("app_list_focus_zoom",true);
         excludePackagesList = LauncherUtils.getExcludePackagesName(this);
     }
 
@@ -102,7 +107,7 @@ public class AppHideListActivity extends AppCompatActivity
         AppRecyclerView mAppRecyclerView = binding.hideAppList;
         //列表布局
         mAppRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        mAppRecyclerView.setAdapter(new HideAppAdapter(mApplicationList, 0));
+        mAppRecyclerView.setAdapter(new HideAppAdapter(mApplicationList, 0, isFocusItemZoom));
     }
 
     private void receiveSyscast(){
@@ -198,5 +203,6 @@ public class AppHideListActivity extends AppCompatActivity
             mPkgDelReceiver = null;
             hideAppReceiver = null;
         }
+        sharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
     }
 }

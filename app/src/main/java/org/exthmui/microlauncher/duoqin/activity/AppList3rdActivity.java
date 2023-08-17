@@ -59,10 +59,12 @@ public class AppList3rdActivity extends AppCompatActivity
     private TextView menu,back;
     private String app_list_style;
     private String pwdCustom;
+    private String iconPackPkg;
     private boolean isSimpleList,isEnablePwd,pwdUseKeyguard;
     private List<String> excludePackagesList;
     private boolean isSortByPinyin = false;
     private boolean isTTSEnable;
+    private boolean isFocusItemZoom;
     private SharedPreferences sharedPreferences;
 
     @Override
@@ -75,6 +77,7 @@ public class AppList3rdActivity extends AppCompatActivity
         menu.setOnClickListener(new funClick());
         TextSpeech.getInstance(this);
         sharedPreferences = getSharedPreferences(launcherSettingsPref,Context.MODE_PRIVATE);
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
         loadSettings(sharedPreferences);
         if (isEnablePwd) {
             if (pwdUseKeyguard){
@@ -142,6 +145,8 @@ public class AppList3rdActivity extends AppCompatActivity
         pwdCustom=sp.getString("toolbox_password_use_custom","");
         isSortByPinyin=sp.getBoolean("switch_preference_app_list_sort",false);
         isTTSEnable = sharedPreferences.getBoolean("app_list_tts",false);
+        isFocusItemZoom = sharedPreferences.getBoolean("app_list_focus_zoom",true);
+        iconPackPkg = sharedPreferences.getString("pref_iconPackPackage", "android");
         excludePackagesList = LauncherUtils.getExcludePackagesName(this);
     }
 
@@ -218,17 +223,31 @@ public class AppList3rdActivity extends AppCompatActivity
             String packageName = resolveInfo.activityInfo.packageName;
             boolean isSystemApp = (resolveInfo.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 1;
             Intent appIntent = new Intent().setClassName(packageName, resolveInfo.activityInfo.name);
+            Drawable appIcon = resolveInfo.loadIcon(getPackageManager());
             //如果应用的包名在排除列表内
             if (excludePackagesList != null && excludePackagesList.contains(packageName)) {
                 continue;
             }
-            //初始化Application Bean
-            Application application = new Application(
-                    resolveInfo.loadIcon(getPackageManager()), //图标
-                    resolveInfo.loadLabel(getPackageManager()), //名称
-                    isSystemApp, //是否为系统应用
-                    appIntent, //启动Intent
-                    resolveInfo.activityInfo.packageName); //包名
+            if (BuildConfig.DEBUG) Log.d(TAG,"packageName: " + packageName);
+            Application application;
+            //如果使用图标包
+            if (iconPackPkg.equals("android")){
+                //初始化Application Bean
+                application = new Application(
+                        appIcon, //图标
+                        resolveInfo.loadLabel(getPackageManager()), //名称
+                        isSystemApp, //是否为系统应用
+                        appIntent, //启动Intent
+                        resolveInfo.activityInfo.packageName); //包名
+            } else {
+                //初始化Application Bean
+                application = new Application(
+                        LauncherUtils.getFromIconPack(this, appIcon, packageName), //图标
+                        resolveInfo.loadLabel(getPackageManager()), //名称
+                        isSystemApp, //是否为系统应用
+                        appIntent, //启动Intent
+                        resolveInfo.activityInfo.packageName); //包名
+            }
             //如果使用按拼音排序
             if (isSortByPinyin) {
                 String pinyin = PinyinUtils.getPingYin(appLabel);
@@ -251,13 +270,13 @@ public class AppList3rdActivity extends AppCompatActivity
         AppAdapter appAdapter;
         //如果是网格布局
         if(app_list_style.equals("grid")){
-            appAdapter = new AppAdapter(mApplicationList, 1);
+            appAdapter = new AppAdapter(mApplicationList, 1, isFocusItemZoom);
             //      设置布局管理器
             mAppRecyclerView.setLayoutManager(new GridLayoutManager(this,3));
             //      设置适配器
             mAppRecyclerView.setAdapter(appAdapter);
         }else{
-            appAdapter = new AppAdapter(mApplicationList, 0);
+            appAdapter = new AppAdapter(mApplicationList, 0, isFocusItemZoom);
             //列表布局
             mAppRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
             mAppRecyclerView.setAdapter(appAdapter);
@@ -363,12 +382,13 @@ public class AppList3rdActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mPkgDelReceiver != null) {
+        if (mPkgDelReceiver != null && HideAppReceiver != null ) {
             getApplicationContext().unregisterReceiver(mPkgDelReceiver);
             LocalBroadcastManager.getInstance(this)
                     .unregisterReceiver(HideAppReceiver);
             mPkgDelReceiver = null;
             HideAppReceiver = null;
         }
+        sharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
     }
 }

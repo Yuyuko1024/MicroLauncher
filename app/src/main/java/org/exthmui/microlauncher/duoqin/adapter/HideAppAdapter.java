@@ -36,8 +36,8 @@ public class HideAppAdapter extends AppAdapter {
      * @param applicationList : 类型为Application的List集
      * @param layoutMode      :      0，线性；1：网格
      */
-    public HideAppAdapter(List<Application> applicationList, int layoutMode) {
-        super(applicationList, layoutMode);
+    public HideAppAdapter(List<Application> applicationList, int layoutMode, boolean zoomItem) {
+        super(applicationList, layoutMode, zoomItem);
         mApplicationList = applicationList;
         mLayoutMode = layoutMode;
         setHasStableIds(true);

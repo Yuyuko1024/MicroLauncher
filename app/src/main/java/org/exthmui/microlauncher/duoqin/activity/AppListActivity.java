@@ -75,6 +75,7 @@ public class AppListActivity extends AppCompatActivity
     private List<String> excludePackagesList;
     private boolean isSimpleList;
     private boolean isTTSEnable;
+    private boolean isFocusItemZoom;
     private boolean isSortByPinyin = false;
 
     @Override
@@ -86,6 +87,7 @@ public class AppListActivity extends AppCompatActivity
         binding.appMenu.setOnClickListener(new funClick());
         TextSpeech.getInstance(this);
         sharedPreferences = getSharedPreferences(launcherSettingsPref,Context.MODE_PRIVATE);
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
         loadSettings(sharedPreferences);
         loadApp();
         receiveSyscast();
@@ -107,7 +109,8 @@ public class AppListActivity extends AppCompatActivity
         isSimpleList=sharedPreferences.getBoolean("switch_preference_app_list_func",false);
         isSortByPinyin=sharedPreferences.getBoolean("switch_preference_app_list_sort",false);
         isTTSEnable = sharedPreferences.getBoolean("app_list_tts",false);
-        iconPackPkg = sharedPreferences.getString("pref_iconPackPackage", null);
+        iconPackPkg = sharedPreferences.getString("pref_iconPackPackage", "android");
+        isFocusItemZoom = sharedPreferences.getBoolean("app_list_focus_zoom",true);
         excludePackagesList = LauncherUtils.getExcludePackagesName(this);
     }
 
@@ -147,7 +150,7 @@ public class AppListActivity extends AppCompatActivity
     class PkgDelReceiver extends BroadcastReceiver{
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.e(TAG,"detect package change...");
+            if (BuildConfig.DEBUG) Log.e(TAG,"detect package change...");
             Toasty.info(context,R.string.refreshing_pkg_list,Toasty.LENGTH_SHORT).show();
             loadApp();
         }
@@ -156,7 +159,7 @@ public class AppListActivity extends AppCompatActivity
     class HideAppReceiver extends BroadcastReceiver{
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.i(TAG, "Receive hide app list refresh broadcast");
+            if (BuildConfig.DEBUG) Log.i(TAG, "Receive hide app list refresh broadcast");
             excludePackagesList = LauncherUtils.getExcludePackagesName(AppListActivity.this);
             Toasty.info(context,R.string.refreshing_pkg_list,Toasty.LENGTH_SHORT).show();
             loadApp();
@@ -170,7 +173,8 @@ public class AppListActivity extends AppCompatActivity
             arrayCopy();
             mHits[mHits.length - 1] = SystemClock.uptimeMillis();
             if (mHits[0] >= (SystemClock.uptimeMillis() - DELAY_TIMER_MILLIS)) {
-                final Intent intent = new Intent(Intent.ACTION_VIEW).setAction("org.exthmui.microlauncher.duoqin.action.HIDE_APP_LIST");
+                final Intent intent = new Intent(Intent.ACTION_VIEW)
+                        .setAction("org.exthmui.microlauncher.duoqin.action.HIDE_APP_LIST");
                 startActivity(intent);
                 return true;
             }
@@ -264,13 +268,13 @@ public class AppListActivity extends AppCompatActivity
         AppAdapter appAdapter;
         //如果是网格布局
         if(app_list_style.equals("grid")){
-            appAdapter = new AppAdapter(mApplicationList, 1);
+            appAdapter = new AppAdapter(mApplicationList, 1, isFocusItemZoom);
             //      设置布局管理器
             mAppRecyclerView.setLayoutManager(new GridLayoutManager(this,3));
             //      设置适配器
             mAppRecyclerView.setAdapter(appAdapter);
         }else{
-            appAdapter = new AppAdapter(mApplicationList, 0);
+            appAdapter = new AppAdapter(mApplicationList, 0, isFocusItemZoom);
             //列表布局
             mAppRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
             mAppRecyclerView.setAdapter(appAdapter);
@@ -376,12 +380,13 @@ public class AppListActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mPkgDelReceiver != null){
+        if (mPkgDelReceiver != null && HideAppReceiver != null){
             getApplicationContext().unregisterReceiver(mPkgDelReceiver);
             LocalBroadcastManager.getInstance(this)
                     .unregisterReceiver(HideAppReceiver);
             mPkgDelReceiver = null;
             HideAppReceiver = null;
         }
+        sharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
     }
 }

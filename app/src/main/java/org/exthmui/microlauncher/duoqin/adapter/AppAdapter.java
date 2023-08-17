@@ -2,6 +2,7 @@ package org.exthmui.microlauncher.duoqin.adapter;
 
 import static org.exthmui.microlauncher.duoqin.utils.Constants.launcherSettingsPref;
 
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -47,6 +48,7 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ApplicationViewH
     private final int mLayoutMode;
     private static int mPosition = -1;
 
+    private boolean zoomItem;
     private OnItemCallback onItemCallBack;
     public OnItemSelectCallback onItemSelectCallback;
 
@@ -54,9 +56,10 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ApplicationViewH
      * @param applicationList: 类型为Application的List集
      * @param layoutMode:      0，线性；1：网格
      */
-    public AppAdapter(List<Application> applicationList, int layoutMode ) {
+    public AppAdapter(List<Application> applicationList, int layoutMode, boolean zoomItem) {
         this.mApplicationList = applicationList;
         this.mLayoutMode = layoutMode;
+        this.zoomItem = zoomItem;
         setHasStableIds(true);
     }
 
@@ -274,6 +277,7 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ApplicationViewH
 
     private class FocusChange implements View.OnFocusChangeListener {
         int position;
+        private ObjectAnimator mCurrentAnimation;
         ApplicationViewHolder holder;
 
         public FocusChange(int position, ApplicationViewHolder holder){
@@ -284,10 +288,10 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ApplicationViewH
         @Override
         public void onFocusChange(View v, boolean hasFocus) {
             if (hasFocus) {
-                holder.mAppItem.animate().scaleX(1.1f).scaleY(1.1f).start();
+                if (zoomItem) holder.mAppItem.animate().scaleX(1.1f).scaleY(1.1f).start();
                 holder.mAppItem.setBackgroundResource(R.drawable.border_app_item);
             }else{
-                holder.mAppItem.animate().scaleX(1f).scaleY(1f).start();
+                if (zoomItem) holder.mAppItem.animate().scaleX(1f).scaleY(1f).start();
                 holder.mAppItem.setBackgroundResource(R.color.no_color);
             }
             if (onItemCallBack != null){
