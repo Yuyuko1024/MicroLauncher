@@ -35,6 +35,8 @@
     <string name="current_volume">Current Volume :</string>
     <string name="what">What are you looking forward to? XD</string>
     <string name="version">"Version: "</string>
+    <string name="channel_name">"Channel: "</string>
+    <string name="debug_type">"Debug type: "</string>
     <string name="connect_us">Connect with us</string>
     <string name="about_desc">Wow such a good Gensokyo! \\n a simple Launcher for DPad Android Phone. \\n DuoQin Version</string>
     <string name="easter_egg_string">Such a good Gensokyo!</string>

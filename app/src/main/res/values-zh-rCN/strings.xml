@@ -35,8 +35,10 @@
     <string name="current_volume">当前音量：</string>
     <string name="what">你在期待什么？XD</string>
     <string name="version">版本：</string>
+    <string name="channel_name">渠道：</string>
+    <string name="debug_type">是否调试：</string>
     <string name="connect_us">和我联系~</string>
-    <string name="about_desc">一个简单的适用于带有DPad的Android手机的启动器。\\n \\n  部分图标来源:iconfont \\n \\n 多亲F21Pro/Pro+版</string>
+    <string name="about_desc">一个简单的启动器，适用于带有DPad的Android手机。\\n部分图标来源：iconfont</string>
     <string name="easter_egg_string">多么棒的幻想乡！</string>
     <string name="error_lock_phone">错误：无法锁定手机！</string>
     <string name="preference_main_category">主界面设置</string>

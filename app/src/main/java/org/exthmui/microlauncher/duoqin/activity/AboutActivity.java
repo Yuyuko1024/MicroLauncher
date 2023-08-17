@@ -44,7 +44,9 @@ public class AboutActivity extends AppCompatActivity implements SharedPreference
                 .setDescription(getString(R.string.about_desc).replace("\\n","\n"))
                 .setImage(R.drawable.ic_home)
                 .addItem(versionElement())
+                .addItem(channelElement())
                 .addItem(opensourceLicense())
+                .addItem(debugElement())
                 .addGroup(getString(R.string.connect_us))
                 .addEmail("dingwenxuan4@gmail.com")
                 .addWebsite("https://gitee.com/kira_rumia/MicroLauncher/")
@@ -74,16 +76,40 @@ public class AboutActivity extends AppCompatActivity implements SharedPreference
         return versionElement;
     }
 
+    Element channelElement() {
+        Element channelElement = new Element();
+        final String channel = getString(R.string.channel_name)+BuildConfig.FLAVOR;
+        channelElement.setTitle(channel);
+        return channelElement;
+    }
+
+    Element debugElement() {
+        Element debugElement = new Element();
+        final String debug = getString(R.string.debug_type)+BuildConfig.BUILD_TYPE;
+        debugElement.setTitle(debug);
+        return debugElement;
+    }
+
     Element opensourceLicense(){
         Element opensourceLicense = new Element();
         final String osl = getString(R.string.osl);
         opensourceLicense.setTitle(osl);
         opensourceLicense.setOnClickListener(v -> {
             final Notices notices = new Notices();
-            notices.addNotice(new Notice("MicroLauncher","https://github.com/Yuyuko1024/MicroLauncher","Yuyuko1024",new ApacheSoftwareLicense20()));
-            notices.addNotice(new Notice("EasyPermissions", "https://github.com/googlesamples/easypermissions", "googlesamples", new ApacheSoftwareLicense20()));
-            notices.addNotice(new Notice("Toasty","https://github.com/GrenderG/Toasty","GrenderG",new GnuGeneralPublicLicense30()));
-            notices.addNotice(new Notice("android-about-page","https://github.com/medyo/android-about-page","medyo",new MITLicense()));
+            notices.addNotice(new Notice("MicroLauncher","https://github.com/Yuyuko1024/MicroLauncher",
+                    "Yuyuko1024",new ApacheSoftwareLicense20()));
+            notices.addNotice(new Notice("Trebuchet Launcher", "https://github.com/LineageOS/android_packages_apps_Trebuchet",
+                    "Copyright (C) 2018-2019 The LineageOS Project", new ApacheSoftwareLicense20()));
+            notices.addNotice(new Notice("pinyin4j", "https://github.com/belerweb/pinyin4j/",
+                    "lemann,belerweb", new GnuGeneralPublicLicense30()));
+            notices.addNotice(new Notice("EasyPermissions", "https://github.com/googlesamples/easypermissions",
+                    "googlesamples", new ApacheSoftwareLicense20()));
+            notices.addNotice(new Notice("Gson", "https://github.com/google/gson",
+                    "Copyright 2008 Google Inc", new ApacheSoftwareLicense20()));
+            notices.addNotice(new Notice("Toasty","https://github.com/GrenderG/Toasty",
+                    "GrenderG",new GnuGeneralPublicLicense30()));
+            notices.addNotice(new Notice("android-about-page","https://github.com/medyo/android-about-page",
+                    "medyo",new MITLicense()));
             new LicensesDialog.Builder(this)
                     .setNotices(notices)
                     .setIncludeOwnLicense(true)
