@@ -156,4 +156,17 @@
     <string name="unhide_app_dialog_message">Unhidden this app will reappear in the app list. Continue?</string>
     <string name="unhide_success">Unhidden app success</string>
     <string name="unhide_failed">Unhidden app fail</string>
+
+    <!-- Icon Packs -->
+    <!-- Default icon pack package. Set to "android" to use default / original icons -->
+    <string name="icon_pack_default_pkg" translatable="false">android</string>
+    <!-- String representing the intent for search on the apps market. To specify a query, add
+    q=<query> to the data to the intent -->
+    <string name="market_search_intent" translatable="false">market://search?c=apps</string>
+    <string name="icon_pack_title">Icon pack</string>
+    <string name="icon_pack_default_label">Default</string>
+    <string name="icon_pack_add">Install more</string>
+    <string name="icon_pack_no_market">There\'s no available app store</string>
+
+
 </resources>

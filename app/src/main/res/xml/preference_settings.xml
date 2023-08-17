@@ -67,6 +67,11 @@
         android:textColor="#00838F"
         android:title="@string/preference_app_list_category"
         android:key="preference_app_list">
+        <Preference
+            android:key="icon_pack"
+            android:title="@string/icon_pack_title">
+            <intent android:action="org.exthmui.microlauncher.duoqin.action.ICON_PACK"/>
+        </Preference>
         <SwitchPreference
             android:defaultValue="false"
             android:key="switch_preference_app_list_func"
@@ -85,8 +90,7 @@
         <Preference
             android:key="hide_app_list"
             android:title="@string/hide_app_list_label">
-            <intent android:targetPackage="org.exthmui.microlauncher.duoqin"
-                android:targetClass="org.exthmui.microlauncher.duoqin.activity.AppHideListActivity"/>
+            <intent android:action="org.exthmui.microlauncher.duoqin.action.HIDE_APP_LIST"/>
         </Preference>
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/preference_func_category"

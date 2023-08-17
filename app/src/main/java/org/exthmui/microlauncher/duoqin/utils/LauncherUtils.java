@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ResolveInfo;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -18,6 +19,8 @@ import org.exthmui.microlauncher.duoqin.BuildConfig;
 import org.exthmui.microlauncher.duoqin.R;
 import org.exthmui.microlauncher.duoqin.activity.AppHideListActivity;
 import org.exthmui.microlauncher.duoqin.bean.AppExcludeBean;
+import org.exthmui.microlauncher.duoqin.icons.IconPack;
+import org.exthmui.microlauncher.duoqin.icons.providers.IconPackProvider;
 
 import java.util.List;
 
@@ -40,6 +43,22 @@ public class LauncherUtils {
             return BuildConfig.APPLICATION_ID.equals(info.activityInfo.packageName);
         }
         return false;
+    }
+
+    /**
+     * 从图标包获取图标
+     * @param icon
+     * @param packageName
+     * @return
+     */
+    public static Drawable getFromIconPack(Context context,Drawable icon, String packageName) {
+        final IconPack iconPack = IconPackProvider.loadAndGetIconPack(context);
+        if (iconPack == null) {
+            return null;
+        }
+
+        final Drawable iconMask = iconPack.getIcon(packageName, null, "");
+        return iconMask == null ? icon : iconMask;
     }
 
     /**

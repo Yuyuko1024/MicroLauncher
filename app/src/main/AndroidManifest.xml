@@ -138,7 +138,7 @@
             android:excludeFromRecents="true"
             android:clearTaskOnLaunch="true"/>
         <activity android:name=".activity.AppHideListActivity"
-            android:exported="true"
+            android:exported="false"
             android:label="@string/hide_app_list_label"
             android:excludeFromRecents="true">
             <intent-filter>
@@ -146,6 +146,18 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".icons.IconPackSettingsActivity"
+            android:exported="false"
+            android:label="@string/icon_pack_title"
+            android:theme="@style/Theme.MicroLauncher"
+            android:autoRemoveFromRecents="true">
+            <intent-filter>
+                <action android:name="org.exthmui.microlauncher.duoqin.action.ICON_PACK"/>
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
     </application>
 
 </manifest>

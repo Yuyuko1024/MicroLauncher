@@ -150,4 +150,10 @@
     <string name="unhide_app_dialog_message">取消隐藏该 App 将会重新显示在应用列表内。是否继续？</string>
     <string name="unhide_success">应用已取消隐藏！</string>
     <string name="unhide_failed">应用取消隐藏失败！</string>
+
+    <!-- Icon Packs -->
+    <string name="icon_pack_title">图标包</string>
+    <string name="icon_pack_default_label">默认</string>
+    <string name="icon_pack_add">安装更多</string>
+    <string name="icon_pack_no_market">没有可用的应用商店</string>
 </resources>

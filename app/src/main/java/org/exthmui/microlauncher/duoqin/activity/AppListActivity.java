@@ -42,6 +42,8 @@ import org.exthmui.microlauncher.duoqin.BuildConfig;
 import org.exthmui.microlauncher.duoqin.R;
 import org.exthmui.microlauncher.duoqin.adapter.AppAdapter;
 import org.exthmui.microlauncher.duoqin.databinding.AppListActivityBinding;
+import org.exthmui.microlauncher.duoqin.icons.IconPack;
+import org.exthmui.microlauncher.duoqin.icons.providers.IconPackProvider;
 import org.exthmui.microlauncher.duoqin.utils.Application;
 import org.exthmui.microlauncher.duoqin.utils.Constants;
 import org.exthmui.microlauncher.duoqin.utils.LauncherUtils;
@@ -69,6 +71,7 @@ public class AppListActivity extends AppCompatActivity
     private PinyinComparator mComparator;
     private SharedPreferences sharedPreferences;
     private String app_list_style;
+    private String iconPackPkg;
     private List<String> excludePackagesList;
     private boolean isSimpleList;
     private boolean isTTSEnable;
@@ -104,6 +107,7 @@ public class AppListActivity extends AppCompatActivity
         isSimpleList=sharedPreferences.getBoolean("switch_preference_app_list_func",false);
         isSortByPinyin=sharedPreferences.getBoolean("switch_preference_app_list_sort",false);
         isTTSEnable = sharedPreferences.getBoolean("app_list_tts",false);
+        iconPackPkg = sharedPreferences.getString("pref_iconPackPackage", null);
         excludePackagesList = LauncherUtils.getExcludePackagesName(this);
     }
 
@@ -202,17 +206,31 @@ public class AppListActivity extends AppCompatActivity
             String packageName = resolveInfo.activityInfo.packageName;
             boolean isSystemApp = (resolveInfo.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 1;
             Intent appIntent = new Intent().setClassName(packageName, resolveInfo.activityInfo.name);
+            Drawable appIcon = resolveInfo.loadIcon(getPackageManager());
             //如果应用的包名在排除列表内
             if (excludePackagesList != null && excludePackagesList.contains(packageName)) {
                 continue;
             }
-            //初始化Application Bean
-            Application application = new Application(
-                    resolveInfo.loadIcon(getPackageManager()), //图标
-                    resolveInfo.loadLabel(getPackageManager()), //名称
-                    isSystemApp, //是否为系统应用
-                    appIntent, //启动Intent
-                    resolveInfo.activityInfo.packageName); //包名
+            if (BuildConfig.DEBUG) Log.d(TAG,"packageName: " + packageName);
+            Application application;
+            //如果使用图标包
+            if (iconPackPkg.equals("android")){
+                //初始化Application Bean
+                application = new Application(
+                        appIcon, //图标
+                        resolveInfo.loadLabel(getPackageManager()), //名称
+                        isSystemApp, //是否为系统应用
+                        appIntent, //启动Intent
+                        resolveInfo.activityInfo.packageName); //包名
+            } else {
+                //初始化Application Bean
+                application = new Application(
+                        LauncherUtils.getFromIconPack(this, appIcon, packageName), //图标
+                        resolveInfo.loadLabel(getPackageManager()), //名称
+                        isSystemApp, //是否为系统应用
+                        appIntent, //启动Intent
+                        resolveInfo.activityInfo.packageName); //包名
+            }
             //如果使用按拼音排序
             if (isSortByPinyin) {
                 String pinyin = PinyinUtils.getPingYin(appLabel);
