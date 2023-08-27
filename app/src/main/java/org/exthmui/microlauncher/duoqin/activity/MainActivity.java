@@ -69,6 +69,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     private boolean torch = false;
     private boolean isShortPress;
     private boolean isTTSEnable;
+    private boolean isLoadApp = false;
     private String clock_locate;
     private CameraManager manager;
     private ContentObserver mMissedPhoneContentObserver;
@@ -405,11 +406,15 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                 }
                 return true;
             case KeyEvent.KEYCODE_MENU:
-                Snackbar.make(mainBinding.getRoot(),R.string.loading,Snackbar.LENGTH_SHORT).show();
-                new Handler(Looper.myLooper()).postDelayed(() -> {
-                    Intent menuIt = new Intent(MainActivity.this, AppListActivity.class);
-                    startActivity(menuIt);
-                },500);
+                if (!isLoadApp) {
+                    isLoadApp = true;
+                    Snackbar.make(mainBinding.getRoot(),R.string.loading,Snackbar.LENGTH_SHORT).show();
+                    new Handler(Looper.myLooper()).postDelayed(() -> {
+                        Intent menuIt = new Intent(MainActivity.this, AppListActivity.class);
+                        startActivity(menuIt);
+                        isLoadApp = false;
+                    },500);
+                }
                 // 延时0.5秒，不加延时的话应用列表的菜单误触我很难顶啊QAQ
                 return true;
             case KeyEvent.KEYCODE_BACK:
