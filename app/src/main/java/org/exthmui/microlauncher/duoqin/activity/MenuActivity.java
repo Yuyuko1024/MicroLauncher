@@ -109,7 +109,6 @@ public class MenuActivity extends AppCompatActivity{
     }
     class mItemClick implements AdapterView.OnItemClickListener
     {
-        @RequiresApi(api = Build.VERSION_CODES.N)
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             switch (Math.toIntExact(id)){
@@ -123,6 +122,7 @@ public class MenuActivity extends AppCompatActivity{
                 case 1:
                     it.setClassName("com.android.settings",
                             "com.android.settings.Settings");
+                    it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(it);
                     break;
                 case 2:

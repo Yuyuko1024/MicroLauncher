@@ -24,7 +24,7 @@ import es.dmoral.toasty.Toasty;
 import org.exthmui.microlauncher.duoqin.R;
 import org.exthmui.microlauncher.duoqin.databinding.VolumeDialogBinding;
 
-public class VolumeChanger extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener{
+public class VolumeChanger extends AppCompatActivity {
     private VolumeDialogBinding binding;
     private AudioManager mAudioManager;
     private NotificationManager notificationManager;
@@ -38,7 +38,6 @@ public class VolumeChanger extends AppCompatActivity implements SharedPreference
         setContentView(binding.getRoot());
         mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         binding.volumeBack.setOnClickListener(v -> finish());
-        loadSettings();
         //获取系统的Audio管理者
         initVolumeControl();
         PermissionGrant();
@@ -140,17 +139,4 @@ public class VolumeChanger extends AppCompatActivity implements SharedPreference
         return super.onKeyDown(keyCode,event);
     }
 
-    private void loadSettings(){
-        SharedPreferences sharedPreferences = getSharedPreferences(getPackageName()+"_preferences",Context.MODE_PRIVATE);
-        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
-        lock_enable = (sharedPreferences.getBoolean("preference_main_lockscreen",true));
-        modeStatus = mAudioManager.getRingerMode();
-    }
-
-    @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if(key.equals("preference_main_lockscreen")){
-            lock_enable = (sharedPreferences.getBoolean("preference_main_lockscreen",true));
-        }
-    }
 }

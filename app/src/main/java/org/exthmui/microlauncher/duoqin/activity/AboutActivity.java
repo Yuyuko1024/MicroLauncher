@@ -1,14 +1,9 @@
 package org.exthmui.microlauncher.duoqin.activity;
 
-import android.app.admin.DevicePolicyManager;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.SystemClock;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -29,7 +24,7 @@ import es.dmoral.toasty.Toasty;
 import mehdi.sakout.aboutpage.AboutPage;
 import mehdi.sakout.aboutpage.Element;
 
-public class AboutActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener{
+public class AboutActivity extends AppCompatActivity {
     private static final int DELAY_TIMER_MILLIS = 500;
     private static final int ACTIVITY_TRIGGER_COUNT = 3;
     private final long[] mHits = new long[ACTIVITY_TRIGGER_COUNT];
@@ -38,7 +33,6 @@ public class AboutActivity extends AppCompatActivity implements SharedPreference
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        loadSettings();
         View aboutPage = new AboutPage(this)
                 .isRTL(false)
                 .setDescription(getString(R.string.about_desc).replace("\\n","\n"))
@@ -97,7 +91,7 @@ public class AboutActivity extends AppCompatActivity implements SharedPreference
         opensourceLicense.setOnClickListener(v -> {
             final Notices notices = new Notices();
             notices.addNotice(new Notice("MicroLauncher","https://github.com/Yuyuko1024/MicroLauncher",
-                    "Yuyuko1024",new ApacheSoftwareLicense20()));
+                    "Copyright (C) 2021-2023 Yuyuko1024",new ApacheSoftwareLicense20()));
             notices.addNotice(new Notice("Trebuchet Launcher", "https://github.com/LineageOS/android_packages_apps_Trebuchet",
                     "Copyright (C) 2018-2019 The LineageOS Project", new ApacheSoftwareLicense20()));
             notices.addNotice(new Notice("pinyin4j", "https://github.com/belerweb/pinyin4j/",
@@ -124,19 +118,6 @@ public class AboutActivity extends AppCompatActivity implements SharedPreference
     }
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if(keyCode == KeyEvent.KEYCODE_STAR){
-            DevicePolicyManager mDPM = (DevicePolicyManager)getSystemService(Context.DEVICE_POLICY_SERVICE);
-            if(lock_enable){
-                    mDPM.lockNow();
-            }else{
-                Log.d("TAG","Lock screen is disabled");
-            }
-        }
-        return super.onKeyDown(keyCode,event);
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         // When the home button is pressed, take the user back to the MainActivity
@@ -146,14 +127,4 @@ public class AboutActivity extends AppCompatActivity implements SharedPreference
         return super.onOptionsItemSelected(item);
     }
 
-    private void loadSettings(){
-        SharedPreferences sharedPreferences = getSharedPreferences(getPackageName()+"_preferences",Context.MODE_PRIVATE);
-        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
-        lock_enable = sharedPreferences.getBoolean("preference_main_lockscreen",true);
-    }
-
-    @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        lock_enable = sharedPreferences.getBoolean("preference_main_lockscreen",true);
-    }
 }
