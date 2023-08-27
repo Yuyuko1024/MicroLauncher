@@ -1,35 +1,34 @@
 package org.exthmui.microlauncher.duoqin.activity;
 
+import static org.exthmui.microlauncher.duoqin.utils.Constants.launcherSettingsPref;
+
 import android.app.NotificationManager;
-import android.app.admin.DevicePolicyManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
-import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.util.Log;
-import android.view.KeyEvent;
-import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.material.button.MaterialButtonToggleGroup;
-import es.dmoral.toasty.Toasty;
+import org.exthmui.microlauncher.duoqin.BuildConfig;
 import org.exthmui.microlauncher.duoqin.R;
 import org.exthmui.microlauncher.duoqin.databinding.VolumeDialogBinding;
 
-public class VolumeChanger extends AppCompatActivity {
+import es.dmoral.toasty.Toasty;
+
+public class VolumeChanger extends AppCompatActivity implements
+        SharedPreferences.OnSharedPreferenceChangeListener{
     private VolumeDialogBinding binding;
     private AudioManager mAudioManager;
     private NotificationManager notificationManager;
+    private SharedPreferences sharedPreferences;
     private int maxVolume, currentVolume, modeStatus;
-    private boolean lock_enable = true;
+    private int memMediaVol, memRingVol, memAlarmVol;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +37,8 @@ public class VolumeChanger extends AppCompatActivity {
         setContentView(binding.getRoot());
         mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         binding.volumeBack.setOnClickListener(v -> finish());
+        sharedPreferences = getSharedPreferences(launcherSettingsPref,Context.MODE_PRIVATE);
+        loadSettings(sharedPreferences);
         //获取系统的Audio管理者
         initVolumeControl();
         PermissionGrant();
@@ -60,19 +61,22 @@ public class VolumeChanger extends AppCompatActivity {
         binding.modeToggleGroup.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
             if (isChecked) {
                 if (checkedId == R.id.mode_normal) {
+                    modeStatus = AudioManager.RINGER_MODE_NORMAL;
                     // 设置正常模式
                     mAudioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
-                    mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC,6,0);
-                    mAudioManager.setStreamVolume(AudioManager.STREAM_RING, 4, 0);
-                    mAudioManager.setStreamVolume(AudioManager.STREAM_ALARM, 4, 0);
-                    binding.volMediaSeek.setProgress(6);
-                    binding.volRingSeek.setProgress(4);
-                    binding.volAlarmSeek.setProgress(4);
+                    mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC,memMediaVol,0);
+                    mAudioManager.setStreamVolume(AudioManager.STREAM_RING, memRingVol, 0);
+                    mAudioManager.setStreamVolume(AudioManager.STREAM_ALARM, memAlarmVol, 0);
+                    binding.volMediaSeek.setProgress(memMediaVol);
+                    binding.volRingSeek.setProgress(memRingVol);
+                    binding.volAlarmSeek.setProgress(memAlarmVol);
                 } else if (checkedId == R.id.mode_vibrate) {
+                    modeStatus = AudioManager.RINGER_MODE_VIBRATE;
                     // 设置震动模式
                     mAudioManager.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
                     binding.volRingSeek.setProgress(0);
                 } else if (checkedId == R.id.mode_dnd) {
+                    modeStatus = AudioManager.RINGER_MODE_SILENT;
                     // 设置免打扰模式
                     mAudioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
                     mAudioManager.setStreamVolume(AudioManager.STREAM_RING, 0, 0);
@@ -118,6 +122,12 @@ public class VolumeChanger extends AppCompatActivity {
                 currentVolume = mAudioManager.getStreamVolume(streamType);
                 textView.setText(currentVolume + "");
                 seekBar.setProgress(currentVolume);
+                if (modeStatus == AudioManager.RINGER_MODE_NORMAL){
+                    writeMemVolume(streamType, seekBar.getProgress());
+                    if ( BuildConfig.DEBUG ) Log.d("VolumeChanger",
+                            "writeMemVolume: " + seekBar.getProgress()
+                                + ", type: " + streamType);
+                }
             }
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {}
@@ -126,17 +136,23 @@ public class VolumeChanger extends AppCompatActivity {
         });
     }
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if(keyCode == KeyEvent.KEYCODE_STAR){
-            DevicePolicyManager mDPM = (DevicePolicyManager)getSystemService(Context.DEVICE_POLICY_SERVICE);
-                if (lock_enable) {
-                    mDPM.lockNow();
-                } else {
-                    Log.d("TAG", "Lock screen is disabled");
-                }
-            }
-        return super.onKeyDown(keyCode,event);
+    private void writeMemVolume(int type, int volume) {
+        sharedPreferences.edit().putInt(
+                type == AudioManager.STREAM_MUSIC ? "media_vol" :
+                        type == AudioManager.STREAM_RING ? "ring_vol" :
+                                "alarm_vol", volume).apply();
     }
 
+    private void loadSettings(SharedPreferences sharedPreferences){
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
+        modeStatus = mAudioManager.getRingerMode();
+        memMediaVol = sharedPreferences.getInt("media_vol", 6);
+        memRingVol = sharedPreferences.getInt("ring_vol", 4);
+        memAlarmVol = sharedPreferences.getInt("alarm_vol", 4);
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        loadSettings(sharedPreferences);
+    }
 }
