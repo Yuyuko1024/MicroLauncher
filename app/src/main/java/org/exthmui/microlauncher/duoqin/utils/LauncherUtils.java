@@ -8,7 +8,9 @@ import android.content.SharedPreferences;
 import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.util.Log;
 
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -28,6 +30,7 @@ import es.dmoral.toasty.Toasty;
 
 public class LauncherUtils {
 
+    private static final String TAG = LauncherUtils.class.getSimpleName();
     private static SharedPreferences mSharedPreferences;
 
     /**
@@ -43,6 +46,20 @@ public class LauncherUtils {
             return BuildConfig.APPLICATION_ID.equals(info.activityInfo.packageName);
         }
         return false;
+    }
+
+    /**
+     * 设置启动器的暗色模式
+     * @param context 默认Context
+     * @param isDarkMode 是否为暗色模式
+     */
+    public static void setDarkMode(Context context, boolean isDarkMode) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            if (BuildConfig.DEBUG) Log.d(TAG, "setDarkMode: " + isDarkMode);
+            AppCompatDelegate.setDefaultNightMode(isDarkMode ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
+        } else {
+            Toasty.error(context, R.string.dark_mode_not_support, Toasty.LENGTH_SHORT).show();
+        }
     }
 
     /**

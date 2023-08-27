@@ -128,6 +128,10 @@
     <string name="focus_visual_title">Zoom effect of cursor focus</string>
     <string name="focus_visual_summary">When this option is enabled, selecting an application and moving the focus will have a zoom in and zoom out effect.</string>
     <string name="restart_dialog_msg">This will restart the launcher and is recommended only if there is a problem with the launcher. Does it continue?</string>
+    <string name="dark_mode_title">Dark mode</string>
+    <string name="dark_mode_summary">The app interface will be in dark color tones when this feature is enabled</string>
+    <string name="dark_mode_not_match">Caution! Currently this feature can cause occasional instability if it does not match the system`s Dark Mode state, and can be reintroduced back into the launcher by pressing the hangup button.</string>
+    <string name="dark_mode_not_support">Your device is not support dark mode!</string>
 
     <!-- Sort type -->
     <string name="sort_type_title">Sort type</string>

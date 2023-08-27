@@ -70,7 +70,9 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     private boolean isShortPress;
     private boolean isTTSEnable;
     private boolean isLoadApp = false;
+    private boolean isDarkMode;
     private String clock_locate;
+    private SharedPreferences sharedPreferences;
     private CameraManager manager;
     private ContentObserver mMissedPhoneContentObserver;
     private ContentObserver mMissedMsgContentObserver;
@@ -91,6 +93,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         if (BuildConfig.DEBUG) { showFirstLogcat(); }
         checkDevice();
         GrantPermissions();
+        sharedPreferences = getSharedPreferences(launcherSettingsPref,Context.MODE_PRIVATE);
         clockViewManager = new ClockViewManager(mainBinding.clock.datesLayout);
         mainBinding.contact.setOnClickListener(new mClick());
         mainBinding.menu.setOnClickListener(new mClick());
@@ -99,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         carrier = new CarrierTextView(this);
         clockViewManager.insertOrUpdateView(1, date);
         TextSpeech.getInstance(this);
-        loadSettings();
+        loadSettings(sharedPreferences);
         mainBinding.clock.textClock.setOnClickListener(v -> {
             if (isTTSEnable) {
                 String readText = date.getText().toString() + ","
@@ -179,8 +182,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         }
     }
 
-    private void loadSettings(){
-        SharedPreferences sharedPreferences = getSharedPreferences(launcherSettingsPref,Context.MODE_PRIVATE);
+    private void loadSettings(SharedPreferences sharedPreferences){
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
         lunar_isEnable= (sharedPreferences.getBoolean("switch_preference_lunar",true));
         if(lunar_isEnable){
@@ -199,11 +201,11 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             clockViewManager.removeView(3);
         }
         callsms_counter = sharedPreferences.getBoolean("switch_preference_callsms_counter",false);
-        if(callsms_counter){
+        if (callsms_counter && EasyPermissions.hasPermissions(this, Manifest.permission.READ_CALL_LOG,Manifest.permission.READ_SMS)){
+            initCallSmsObserver();
             if (callSmsCounter == null) {
                 callSmsCounter = new CallSmsCounter(this);
             }
-            initCallSmsObserver();
             Log.d(TAG, "Enable call/sms counter");
             clockViewManager.insertOrUpdateView(4, callSmsCounter);
         }else{
@@ -220,6 +222,8 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         bugly_init = sharedPreferences.getBoolean("bugly_init",false);
         disagree_privacy = sharedPreferences.getBoolean("disagree",false);
         isTTSEnable = sharedPreferences.getBoolean("app_list_tts",false);
+        isDarkMode = sharedPreferences.getBoolean("dark_mode",false);
+        LauncherUtils.setDarkMode(getApplicationContext(), isDarkMode);
         if(bugly_init){
             BuglyUtils.initBugly(this);
         } else {
@@ -258,65 +262,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        switch (key) {
-            case "switch_preference_lunar":
-                lunar_isEnable = (sharedPreferences.getBoolean("switch_preference_lunar", true));
-                if (lunar_isEnable) {
-                    Log.d(TAG, "Enable lunar");
-                    clockViewManager.insertOrUpdateView(2, lunarDate);
-                } else {
-                    Log.d(TAG, "Disable lunar");
-                    clockViewManager.removeView(2);
-                }
-                break;
-            case "list_preference_clock_locate":
-                clock_locate = (sharedPreferences.getString("list_preference_clock_locate", "left"));
-                setClockLocate(clock_locate);
-                break;
-            case "list_preference_clock_size":
-                String clock_size = (sharedPreferences.getString("list_preference_clock_size", "58"));
-                mainBinding.clock.textClock.setTextSize(Float.parseFloat(clock_size));
-                break;
-            case  "switch_preference_carrier_name":
-                carrier_enable = sharedPreferences.getBoolean("switch_preference_carrier_name",true);
-                if(carrier_enable){
-                    Log.d(TAG,"Enable carrier name");
-                    clockViewManager.insertOrUpdateView(3,carrier);
-                }else{
-                    Log.d(TAG,"Disable carrier name");
-                    clockViewManager.removeView(3);
-                }
-                break;
-            case "preference_main_xiaoai_ai":
-                xiaoai_enable = sharedPreferences.getBoolean("preference_main_xiaoai_ai",true);
-                break;
-            case "preference_dial_pad":
-                dialpad_enable = sharedPreferences.getBoolean("preference_dial_pad",true);
-                break;
-            case "preference_pound_func":
-                pound_func = sharedPreferences.getString("preference_pound_func","volume");
-                break;
-            case "switch_preference_callsms_counter":
-                callsms_counter = sharedPreferences.getBoolean("switch_preference_callsms_counter",false);
-                if (callsms_counter && EasyPermissions.hasPermissions(this, Manifest.permission.READ_CALL_LOG,Manifest.permission.READ_SMS)){
-                    if (callSmsCounter == null){
-                        callSmsCounter = new CallSmsCounter(this);
-                    }
-                    initCallSmsObserver();
-                }
-                break;
-            case "preference_bugly_init":
-                bugly_init = sharedPreferences.getBoolean("bugly_init",false);
-                break;
-            case "disagree":
-                disagree_privacy = sharedPreferences.getBoolean("disagree",false);
-                break;
-            case "app_list_tts":
-                isTTSEnable = sharedPreferences.getBoolean("app_list_tts",false);
-                break;
-            default:
-                break;
-        }
+        loadSettings(sharedPreferences);
     }
 
     class mClick implements View.OnClickListener{

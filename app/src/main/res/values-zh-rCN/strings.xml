@@ -125,6 +125,10 @@
     <string name="focus_visual_title">选中应用焦点缩放效果</string>
     <string name="focus_visual_summary">启用该选项后选中应用移动焦点将会有放大和缩小的效果</string>
     <string name="restart_dialog_msg">这将重启桌面，建议仅在桌面出现问题时使用。是否继续？</string>
+    <string name="dark_mode_title">深色模式</string>
+    <string name="dark_mode_summary">启用该功能后启动器内界面将以深色色调为主</string>
+    <string name="dark_mode_not_match">注意！目前该功能若与系统的深色模式状态不匹配会导致偶尔的不稳定，可按挂机键重新返回桌面。</string>
+    <string name="dark_mode_not_support">你的设备不支持深色模式！</string>
 
     <!-- Sort type -->
     <string name="sort_type_title">排序方式</string>

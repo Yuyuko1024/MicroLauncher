@@ -3,22 +3,29 @@ package org.exthmui.microlauncher.duoqin.activity;
 import android.Manifest;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import org.exthmui.microlauncher.duoqin.R;
 import org.exthmui.microlauncher.duoqin.databinding.ActivitySettingsBinding;
+import org.exthmui.microlauncher.duoqin.utils.LauncherUtils;
 import org.exthmui.microlauncher.duoqin.utils.RestartTool;
 
 import java.util.List;
 
+import es.dmoral.toasty.Toasty;
 import pub.devrel.easypermissions.EasyPermissions;
 
 public class SettingsActivity extends AppCompatActivity
@@ -95,6 +102,15 @@ public class SettingsActivity extends AppCompatActivity
             case "preference_pound_func":
                 if (sharedPreferences.getString("preference_pound_func","volume").equals("torch")){
                     GrantPermissions(new String[]{Manifest.permission.CAMERA},2);
+                }
+                break;
+            case "dark_mode":
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    //判断暗色模式是否与设置一致
+                    boolean isDarkMode = getApplicationContext().getResources().getConfiguration().isNightModeActive();
+                    if (isDarkMode != sharedPreferences.getBoolean("dark_mode",false)){
+                        Toasty.warning(getApplicationContext(),R.string.dark_mode_not_match,Toasty.LENGTH_LONG).show();
+                    }
                 }
                 break;
         }
