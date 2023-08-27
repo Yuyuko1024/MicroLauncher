@@ -122,6 +122,13 @@
     <string name="shortcuts_title">快捷方式</string>
     <string name="no_shortcuts_toast">该应用没有快捷方式</string>
     <string name="not_default_launcher_shortcut_msg">本桌面非默认桌面时不可使用快捷方式功能！</string>
+    <string name="focus_visual_title">选中应用焦点缩放效果</string>
+    <string name="focus_visual_summary">启用该选项后选中应用移动焦点将会有放大和缩小的效果</string>
+
+    <!-- Sort type -->
+    <string name="sort_type_title">排序方式</string>
+    <string name="sort_type_pinyin">名称（拼音）</string>
+    <string name="sort_type_default">默认</string>
 
     <!-- Carrier Name -->
     <string name="carrier_no_sim_text">无 SIM 卡</string>

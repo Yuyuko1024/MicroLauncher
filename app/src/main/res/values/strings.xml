@@ -100,8 +100,8 @@
     <string name="keyguard_description">Please enter your password and continue to open Extra Toolbox.</string>
     <string name="preference_security_category">Security</string>
     <string name="preference_toolbox_pwd_keyguard">Use Android keyguard authentication</string>
-    <string name="preference_toolbox_pwd_keyguard_summary">"If enabled, the desktop will uses the
-        system's screen-lock password for authentication. When disabled, you can use a custom password. "
+    <string name="preference_toolbox_pwd_keyguard_summary">\
+        "If enabled, the desktop will uses the system's screen-lock password for authentication. When disabled, you can use a custom password. "
     </string>
     <string name="preference_toolbox_pwd_custom">Use custom password</string>
     <string name="preference_toolbox_pwd_custom_summary">You can set a custom password.</string>
@@ -125,6 +125,13 @@
     <string name="shortcuts_title">App Shortcuts</string>
     <string name="no_shortcuts_toast">This app doesn\'t have shortcuts</string>
     <string name="not_default_launcher_shortcut_msg">This software is not the default launcher can not use the shortcut function!</string>
+    <string name="focus_visual_title">Zoom effect of cursor focus</string>
+    <string name="focus_visual_summary">When this option is enabled, selecting an application and moving the focus will have a zoom in and zoom out effect.</string>
+
+    <!-- Sort type -->
+    <string name="sort_type_title">Sort type</string>
+    <string name="sort_type_pinyin">Name (PinYin)</string>
+    <string name="sort_type_default">Default</string>
 
     <!-- Carrier Name -->
     <string name="carrier_no_sim_text">No SIM card</string>
