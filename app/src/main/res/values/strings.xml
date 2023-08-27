@@ -127,6 +127,7 @@
     <string name="not_default_launcher_shortcut_msg">This software is not the default launcher can not use the shortcut function!</string>
     <string name="focus_visual_title">Zoom effect of cursor focus</string>
     <string name="focus_visual_summary">When this option is enabled, selecting an application and moving the focus will have a zoom in and zoom out effect.</string>
+    <string name="restart_dialog_msg">This will restart the launcher and is recommended only if there is a problem with the launcher. Does it continue?</string>
 
     <!-- Sort type -->
     <string name="sort_type_title">Sort type</string>

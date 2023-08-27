@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory
         android:textColor="#00838F"
@@ -123,5 +124,9 @@
             android:title="@string/preference_main_default_launcher">
             <intent android:action="android.settings.MANAGE_DEFAULT_APPS_SETTINGS" />
         </Preference>
+        <org.exthmui.microlauncher.duoqin.widgets.ButtonPreference
+            app:btn_text="@string/status_reload_launcher"
+            app:btn_icon="@drawable/ic_power"
+            />
     </PreferenceCategory>
 </PreferenceScreen>

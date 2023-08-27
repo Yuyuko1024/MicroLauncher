@@ -31,4 +31,16 @@
         <item name="android:scrollbarThumbVertical">@color/title_color</item>
     </style>
 
+    <style name="Material3Button" parent="Widget.Material3.Button.ElevatedButton.Icon">
+        <item name="iconSize">18dp</item>
+        <item name="backgroundTint">@color/system_accent_soft</item>
+        <item name="elevation">10dp</item>
+    </style>
+
+    <declare-styleable name="ButtonPreference">
+        <attr name="btn_icon" format="reference" />
+        <attr name="btn_text" format="string" />
+        <attr name="isClickable" format="boolean" />
+    </declare-styleable>
+
 </resources>
